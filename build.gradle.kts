@@ -8,6 +8,7 @@ plugins {
   id("org.jetbrains.kotlin.jvm") version "1.9.22"
   id("com.google.protobuf") version "0.9.4"
   id("com.ncorti.ktfmt.gradle") version "0.17.0"
+  id("maven-publish")
 }
 
 tasks.named("ktfmtCheckMain") {
@@ -41,6 +42,28 @@ protobuf {
     all().forEach { task ->
       task.plugins {
         create("kotlin")
+      }
+    }
+  }
+}
+
+publishing {
+  publications {
+    create<MavenPublication>("maven") {
+      groupId = "com.boltfortesla"
+      artifactId = "teslafleetsdk"
+      version = "1.0"
+
+      from(components["java"])
+    }
+  }
+
+  repositories {
+    maven("https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+      name = "OSSRH"
+      credentials {
+        username = System.getenv("MAVEN_USERNAME")
+        password = System.getenv("MAVEN_PASSWORD")
       }
     }
   }
