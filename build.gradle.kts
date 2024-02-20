@@ -8,6 +8,15 @@ plugins {
   id("org.jetbrains.kotlin.jvm") version "1.9.22"
   id("com.google.protobuf") version "0.9.4"
   id("com.ncorti.ktfmt.gradle") version "0.17.0"
+  id("maven-publish")
+}
+
+group = "com.boltfortesla"
+version = "1.0.0"
+
+java {
+	withSourcesJar()
+	withJavadocJar()
 }
 
 tasks.named("ktfmtCheckMain") {
@@ -43,6 +52,14 @@ protobuf {
       task.plugins {
         create("kotlin")
       }
+    }
+  }
+}
+
+publishing {
+  publications {
+    create<MavenPublication>("teslafleetsdk") {
+      from(components["java"])
     }
   }
 }
