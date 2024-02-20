@@ -26,6 +26,7 @@ dependencies {
   implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
   implementation("com.google.code.gson:gson:2.10.1")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC2")
+  implementation("com.squareup.okio:okio:1.17.6")
   testImplementation("junit:junit:4.13.2")
   testImplementation("com.google.truth:truth:1.3.0")
   testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
