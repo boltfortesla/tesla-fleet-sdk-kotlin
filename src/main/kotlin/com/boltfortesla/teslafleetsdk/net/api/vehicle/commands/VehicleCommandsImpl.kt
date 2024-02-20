@@ -737,7 +737,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setPinToDrive(vin, SetPinToDriveRequest(enable, pin ?: ""))
+      vehicleCommandsApi.setPinToDrive(vin, SetPinToDriveRequest(enable, pin))
     }
   }
 
