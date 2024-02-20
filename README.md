@@ -95,37 +95,42 @@ val retryConfig = RetryConfig()
 // An optional OkHttpClient.Builder, to customize network requests. For example, to add additional
 // interceptors.
 val clientBuilder = OkHttpClient.Builder()
-)
+```
+
+### `FleetApiEndpoints`
+Returns an API for performing actions not related to a specific product
+```kotlin
+TeslaFleetApi.fleetApiEndpoints(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `TeslaOAuth`
 Returns an API for performing OAuth related actions (currently only `refreshToken`).
-```kotln
+```kotlin
 TeslaFleetApi.oAuth(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `ChargingEndpoints`
 Returns an API for performing actions related to Charging history and sessions
-```kotln
+```kotlin
 TeslaFleetApi.oAuth(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `EnergyEndpoints`
 Returns an API for performing actions related to Energy products (Solar & Powerwall)
-```kotln
+```kotlin
 TeslaFleetApi.energyEndpoints(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `UserEndpoints`
 Returns an API for performing actions related to the current User
-```kotln
+```kotlin
 TeslaFleetApi.userEndpoints(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `VehicleEndpoints`
 Returns an API for performing actions related to a Vehicle
 Note: This class also contains a `listVehicles` call that does NOT require a valid VIN.
-```kotln
+```kotlin
 TeslaFleetApi.vehicleEndpoints(
   vin = "5YJ3000000NEXUS01",
   region,
@@ -143,7 +148,7 @@ As part of the [Command Protocol](https://github.com/teslamotors/vehicle-command
 
 `SharedSecretFetcher` must be implemented. It takes in the Vehicle's public key, which the SDK will provide, and requres that you use that to return the hex-encoded SHA1 digest of the ECDH shared secret.
 See the [Key Agreement](https://github.com/teslamotors/vehicle-command/blob/main/pkg/protocol/protocol.md#key-agreement) section of the official documentation for more info on the algorithm.
-```kotln
+```kotlin
 val sharedSecretFetcher = { vehiclePublicKey ->
   /** A pseudocode example:
     val ecdh = createECDH(curveName = "p256")
