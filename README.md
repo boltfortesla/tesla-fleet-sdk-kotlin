@@ -1,4 +1,27 @@
 
+![Logo](https://avatars.githubusercontent.com/u/160552401)
+
+
+# Kotlin Tesla Fleet SDK 
+
+An implementation of the [Tesla Fleet API](https://developer.tesla.com/docs/fleet-api) in Kotlin.
+
+
+
+## Features
+
+- Supports both Signed Commands for Model 3/Y and 2021+ Model S and X Vehicles, in addition to pre-2021 Model S and X Vehicles
+  - Switching between communication protocols is handled automatically
+- Handles transient network and vehicle communication errors with a configurable built-in retry-with-backoff mechanism
+- Kotlin first, API is entirely async, utilizing Coroutines
+
+
+## Contributing
+
+Contributions are always welcome!
+
+There is currently no formal contribution process. Simply fork and propose a pull request.
+
 ## Usage/Examples
 
 ### Creating an instance of the API
@@ -40,36 +63,37 @@ val retryConfig = RetryConfig()
 // An optional OkHttpClient.Builder, to customize network requests. For example, to add additional
 // interceptors.
 val clientBuilder = OkHttpClient.Builder()
+)
 ```
 
 #### `TeslaOAuth`
 Returns an API for performing OAuth related actions (currently only `refreshToken`).
-```kotlin
+```kotln
 TeslaFleetApi.oAuth(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `ChargingEndpoints`
 Returns an API for performing actions related to Charging history and sessions
-```kotlin
+```kotln
 TeslaFleetApi.oAuth(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `EnergyEndpoints`
 Returns an API for performing actions related to Energy products (Solar & Powerwall)
-```kotlin
+```kotln
 TeslaFleetApi.energyEndpoints(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `UserEndpoints`
 Returns an API for performing actions related to the current User
-```kotlin
+```kotln
 TeslaFleetApi.userEndpoints(region, accessToken, retryConfig, clientbuilder)
 ```
 
 #### `VehicleEndpoints`
 Returns an API for performing actions related to a Vehicle
 Note: This class also contains a `listVehicles` call that does NOT require a valid VIN.
-```kotlin
+```kotln
 TeslaFleetApi.vehicleEndpoints(
   vin = "5YJ3000000NEXUS01",
   region,
@@ -80,14 +104,14 @@ TeslaFleetApi.vehicleEndpoints(
 ```
 
 #### `VehicleCommands`
-Returns an API for executing commands on a Vehicle.
+Returns an API for executing commands on a Vehicle. 
 
 ##### `SharedSecretFetcher`
 As part of the [Command Protocol](https://github.com/teslamotors/vehicle-command/blob/main/pkg/protocol/protocol.md#key-agreement), a "Shared Secret" must be calcuated using the Tesla Developer Application's Client Private Key and the Vehicle's Public Key. Because the Private Key should be kept private, this may not be a value that you will have stored alongside your usage of this SDK, and should not be shared over the internet.
 
 `SharedSecretFetcher` must be implemented. It takes in the Vehicle's public key, which the SDK will provide, and requres that you use that to return the hex-encoded SHA1 digest of the ECDH shared secret.
 See the [Key Agreement](https://github.com/teslamotors/vehicle-command/blob/main/pkg/protocol/protocol.md#key-agreement) section of the official documentation for more info on the algorithm.
-```kotlin
+```kotln
 val sharedSecretFetcher = { vehiclePublicKey ->
   /** A pseudocode example:
     val ecdh = createECDH(curveName = "p256")
@@ -99,7 +123,7 @@ val sharedSecretFetcher = { vehiclePublicKey ->
 ```
 If you know _ahead of time_ that the vehicle does not support the Command Protocol, set `commandProtocolSupported `
 to `false`. Otherwise, it should be `true` it will be automatically determined by the SDK.
-```kotlin
+```
 // Returns an API for executing commands on 
 TeslaFleetApi.vehicleCommands(
   vin = "5YJ3000000NEXUS01",
@@ -112,3 +136,7 @@ TeslaFleetApi.vehicleCommands(
 )
 
 ```
+## License
+
+[GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
+
