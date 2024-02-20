@@ -1,8 +1,13 @@
+repositories {
+  mavenCentral()
+  maven(url = "https://plugins.gradle.org/m2/")
+}
+
 plugins {
   id("java-library")
-  id("org.jetbrains.kotlin.jvm")
+  id("org.jetbrains.kotlin.jvm") version "1.9.22"
   id("com.google.protobuf") version "0.9.4"
-  id("com.ncorti.ktfmt.gradle")
+  id("com.ncorti.ktfmt.gradle") version "0.17.0"
 }
 
 ktfmt {
