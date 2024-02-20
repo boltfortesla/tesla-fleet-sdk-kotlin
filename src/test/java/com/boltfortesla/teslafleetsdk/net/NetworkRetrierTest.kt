@@ -29,6 +29,7 @@ class NetworkRetrierTest {
   }
   private val dispatcher = StandardTestDispatcher()
   private val scope = CoroutineScope(dispatcher)
+
   @Test
   fun doWithRetries_success_callsActionOnce() = runTest {
     val networkRetrier = NetworkRetrier(RetryConfig(), jitterFactorCalculator)
