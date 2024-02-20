@@ -1,0 +1,55 @@
+{
+  "data": [
+    {
+      "charging_periods": [
+        {
+          "dimensions": [
+            {
+              "type": "ENERGY",
+              "volume": 0
+            }
+          ],
+          "start_date_time": "string"
+        }
+      ],
+      "id": "string",
+      "location": {
+        "country": "string",
+        "name": "string"
+      },
+      "model": "string",
+      "start_date_time": "string",
+      "stop_date_time": "string",
+      "tariffs": {
+        "currency": "string",
+        "elements": [
+          {
+            "price_components": [
+              {
+                "price": 0,
+                "step_size": 0,
+                "type": "ENERGY"
+              }
+            ],
+            "restrictions": {
+              "additionalProp1": {}
+            }
+          }
+        ]
+      },
+      "total_cost": {
+        "excl_vat": 0,
+        "incl_vat": 0,
+        "vat": 0
+      },
+      "total_energy": 0,
+      "total_time": 0,
+      "vin": "string"
+    }
+  ],
+  "status_code": 0,
+  "status_message": "string",
+  "timestamp": {
+    "time.Time": "string"
+  }
+}

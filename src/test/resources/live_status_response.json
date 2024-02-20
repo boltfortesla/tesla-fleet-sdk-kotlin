@@ -1,0 +1,16 @@
+{
+  "response": {
+    "solar_power": 3102,
+    "energy_left": 18020.894736842107,
+    "total_pack_energy": 39343,
+    "percentage_charged": 45.80457701965307,
+    "backup_capable": true,
+    "battery_power": -3090,
+    "load_power": 2581,
+    "grid_status": "Active",
+    "grid_power": 2569,
+    "island_status": "on_grid",
+    "storm_mode_active": false,
+    "timestamp": "2023-01-01T00:00:00-08:00"
+  }
+}

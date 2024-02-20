@@ -1,0 +1,27 @@
+{
+  "response": [
+    {
+      "id": 100021,
+      "vehicle_id": 99999,
+      "vin": "TEST00000000VIN01",
+      "color": null,
+      "access_type": "OWNER",
+      "display_name": "Owned",
+      "option_codes": "TEST0,COUS",
+      "granular_access": {
+        "hide_private": false
+      },
+      "tokens": [
+        "4f993c5b9e2b937b",
+        "7a3153b1bbb48a96"
+      ],
+      "state": null,
+      "in_service": false,
+      "id_s": "100021",
+      "calendar_enabled": true,
+      "api_version": null,
+      "backseat_token": null,
+      "backseat_token_updated_at": null
+    }
+  ]
+}

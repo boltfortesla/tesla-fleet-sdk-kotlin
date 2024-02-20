@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "sessionId": 1234567,
+      "vin": "TEST00000000VIN01",
+      "siteLocationName": "Truckee, CA - Soaring Way",
+      "chargeStartDateTime": "2023-07-27T11:43:45-07:00",
+      "chargeStopDateTime": "2023-07-27T12:08:35-07:00",
+      "unlatchDateTime": "2023-07-27T12:25:31-07:00",
+      "countryCode": "US",
+      "fees": [
+        {
+          "sessionFeeId": 7654321,
+          "feeType": "CHARGING",
+          "currencyCode": "USD",
+          "pricingType": "PAYMENT",
+          "rateBase": 0.46,
+          "rateTier1": 0,
+          "rateTier2": 0,
+          "rateTier3": null,
+          "rateTier4": null,
+          "usageBase": 40,
+          "usageTier1": 0,
+          "usageTier2": 24,
+          "usageTier3": null,
+          "usageTier4": null,
+          "totalBase": 18.4,
+          "totalTier1": 0,
+          "totalTier2": 0,
+          "totalTier3": 0,
+          "totalTier4": 0,
+          "totalDue": 18.4,
+          "netDue": 18.4,
+          "uom": "kwh",
+          "isPaid": true,
+          "status": "PAID"
+        },
+        {
+          "sessionFeeId": 87654321,
+          "feeType": "PARKING",
+          "currencyCode": "USD",
+          "pricingType": "NO_CHARGE",
+          "rateBase": 0,
+          "rateTier1": 0,
+          "rateTier2": 0,
+          "rateTier3": null,
+          "rateTier4": null,
+          "usageBase": 0,
+          "usageTier1": 0,
+          "usageTier2": 0,
+          "usageTier3": null,
+          "usageTier4": null,
+          "totalBase": 0,
+          "totalTier1": 0,
+          "totalTier2": 0,
+          "totalTier3": 0,
+          "totalTier4": 0,
+          "totalDue": 0,
+          "netDue": 0,
+          "uom": "min",
+          "isPaid": true,
+          "status": "PAID"
+        }
+      ],
+      "billingType": "IMMEDIATE",
+      "invoices": [
+        {
+          "fileName": "ABC-123NN-US.pdf",
+          "contentId": "abc-123-efg",
+          "invoiceType": "IMMEDIATE"
+        }
+      ],
+      "vehicleMakeType": "TSLA"
+    }
+  ]
+}

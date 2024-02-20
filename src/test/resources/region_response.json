@@ -1,0 +1,6 @@
+{
+  "response": {
+    "region": "eu",
+    "fleet_api_base_url": "https://fleet-api.prd.eu.vn.cloud.tesla.com"
+  }
+}

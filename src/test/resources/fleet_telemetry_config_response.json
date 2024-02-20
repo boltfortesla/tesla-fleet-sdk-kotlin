@@ -1,0 +1,21 @@
+{
+  "response": {
+    "synced": true,
+    "config": {
+      "hostname": "test-telemetry.com",
+      "ca": "-----BEGIN CERTIFICATE-----\ncert\n-----END CERTIFICATE-----\n",
+      "exp": 1704067200,
+      "fields": {
+        "DriveRail": {
+          "interval_seconds": 1800
+        },
+        "BmsFullchargecomplete": {
+          "interval_seconds": 1800
+        }
+      },
+      "alert_types": [
+        "service"
+      ]
+    }
+  }
+}

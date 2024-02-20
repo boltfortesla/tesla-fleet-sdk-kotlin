@@ -1,0 +1,33 @@
+{
+  "response": {
+    "id": "0000000-00-A--TEST0000000DIN",
+    "site_name": "My Home",
+    "backup_reserve_percent": 20,
+    "default_real_mode": "autonomous",
+    "installation_date": "2023-01-01T00:00:00-08:00",
+    "user_settings": {
+      "storm_mode_enabled": true
+    },
+    "components": {
+      "solar": true,
+      "solar_type": "pv_panel",
+      "battery": true,
+      "grid": true,
+      "backup": true,
+      "load_meter": true,
+      "storm_mode_capable": true,
+      "off_grid_vehicle_charging_reserve_supported": true,
+      "solar_value_enabled": true,
+      "set_islanding_mode_enabled": true,
+      "battery_type": "ac_powerwall",
+      "configurable": true
+    },
+    "version": "23.12.11 452c76cb",
+    "battery_count": 3,
+    "nameplate_power": 15000,
+    "nameplate_energy": 40500,
+    "installation_time_zone": "America/Los_Angeles",
+    "max_site_meter_power_ac": 1000000000,
+    "min_site_meter_power_ac": -11.726
+  }
+}

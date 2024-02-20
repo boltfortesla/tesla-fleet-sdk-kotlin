@@ -1,0 +1,40 @@
+{
+  "codes": [
+    {
+      "code": "$MT315",
+      "displayName": "Long Range All-Wheel Drive",
+      "isActive": true
+    },
+    {
+      "code": "$PPSW",
+      "colorCode": "PPSW",
+      "displayName": "Pearl White Multi-Coat",
+      "isActive": true
+    },
+    {
+      "code": "$W40B",
+      "displayName": "18’’ Aero Wheels",
+      "isActive": true
+    },
+    {
+      "code": "$IPB0",
+      "displayName": "All Black Premium Interior",
+      "isActive": true
+    },
+    {
+      "code": "$APBS",
+      "displayName": "Basic Autopilot",
+      "isActive": true
+    },
+    {
+      "code": "$APF2",
+      "displayName": "Full Self-Driving Capability",
+      "isActive": true
+    },
+    {
+      "code": "$SC04",
+      "displayName": "Supercharger Network Access + Pay-as-you-go",
+      "isActive": true
+    }
+  ]
+}

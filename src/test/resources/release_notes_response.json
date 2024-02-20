@@ -1,0 +1,19 @@
+{
+  "response": {
+    "release_notes": [
+      {
+        "title": "Minor Fixes",
+        "subtitle": "Some more info",
+        "description": "This release contains minor fixes and improvements",
+        "customer_version": "2022.42.0",
+        "icon": "release_notes_icon",
+        "show_in_history": true,
+        "image_url": "https://vehicle-files.teslamotors.com/release_notes/d0fa3e08a458696e6464a46c938ffc0a",
+        "light_image_url": "https://vehicle-files.teslamotors.com/release_notes/9a122cff8916fffcb61cfd65a15c276f"
+      }
+    ],
+    "deployed_version": 123,
+    "staged_version": null,
+    "release_notes_version": 456
+  }
+}

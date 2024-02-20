@@ -1,0 +1,33 @@
+{
+  "activeWarranty": [
+    {
+      "warrantyType": "NEW_MFG_WARRANTY",
+      "warrantyDisplayName": "Basic Vehicle Limited Warranty",
+      "expirationDate": "2025-10-21T00:00:00Z",
+      "expirationOdometer": 50000,
+      "odometerUnit": "MI",
+      "warrantyExpiredOn": null,
+      "coverageAgeInYears": 4
+    },
+    {
+      "warrantyType": "BATTERY_WARRANTY",
+      "warrantyDisplayName": "Battery Limited Warranty",
+      "expirationDate": "2029-10-21T00:00:00Z",
+      "expirationOdometer": 120000,
+      "odometerUnit": "MI",
+      "warrantyExpiredOn": null,
+      "coverageAgeInYears": 8
+    },
+    {
+      "warrantyType": "DRIVEUNIT_WARRANTY",
+      "warrantyDisplayName": "Drive Unit Limited Warranty",
+      "expirationDate": "2029-10-21T00:00:00Z",
+      "expirationOdometer": 120000,
+      "odometerUnit": "MI",
+      "warrantyExpiredOn": null,
+      "coverageAgeInYears": 8
+    }
+  ],
+  "upcomingWarranty": [],
+  "expiredWarranty": []
+}

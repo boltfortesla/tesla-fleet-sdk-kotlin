@@ -1,0 +1,13 @@
+{
+  "response": {
+    "signaling": {
+      "enabled": true,
+      "subscribe_connectivity": false,
+      "use_auth_token": false
+    },
+    "auth_rejection": {
+      "enabled": true,
+      "min_version": 4
+    }
+  }
+}

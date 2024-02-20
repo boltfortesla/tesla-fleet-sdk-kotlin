@@ -1,0 +1,15 @@
+{
+  "response": {
+    "charge_history": [
+      {
+        "charge_start_time": {
+          "seconds": 1672560000
+        },
+        "charge_duration": {
+          "seconds": 12000
+        },
+        "energy_added_wh": 25000
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "response": [
+    {
+      "vehicleMapId": 1234466,
+      "referenceNumber": "RN00000001",
+      "vin": "5YJ30000000000001",
+      "orderStatus": "BOOKED",
+      "orderSubstatus": "_Z",
+      "modelCode": "m3",
+      "countryCode": "US",
+      "locale": "en_US",
+      "mktOptions": "APBS,DV2W,IBB1,PMNG,PRM30,SC04,MDL3,W41B,MT322,CPF0,RSF1,CW03",
+      "isB2b": false
+    }
+  ]
+}

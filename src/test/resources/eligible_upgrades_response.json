@@ -1,0 +1,20 @@
+{
+  "vin": "TEST00000000VIN01",
+  "country": "US",
+  "type": "VEHICLE",
+  "eligible": [
+    {
+      "optionCode": "$FM3U",
+      "optionGroup": "PERF_FIRMWARE",
+      "currentOptionCode": "$FM3B",
+      "pricing": [
+        {
+          "price": 2000,
+          "total": 2000,
+          "currencyCode": "USD",
+          "isPrimary": true
+        }
+      ]
+    }
+  ]
+}

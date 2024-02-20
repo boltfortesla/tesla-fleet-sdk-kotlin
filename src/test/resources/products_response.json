@@ -1,0 +1,39 @@
+[
+  {
+    "id": 100021,
+    "user_id": 429511308124,
+    "vehicle_id": 99999,
+    "vin": "5YJ3000000NEXUS01",
+    "color": null,
+    "access_type": "OWNER",
+    "display_name": "Owned",
+    "option_codes": "TEST0,COUS",
+    "cached_data": null,
+    "granular_access": {
+      "hide_private": false
+    },
+    "tokens": [
+      "4f993c5b9e2b937b",
+      "7a3153b1bbb48a96"
+    ],
+    "state": null,
+    "in_service": false,
+    "id_s": "100021",
+    "calendar_enabled": false,
+    "api_version": null,
+    "backseat_token": null,
+    "backseat_token_updated_at": null,
+    "command_signing": "off"
+  },
+  {
+    "energy_site_id": 429124,
+    "resource_type": "battery",
+    "site_name": "My Home",
+    "id": "STE12345678-12345",
+    "gateway_id": "1112345-00-E--TG0123456789",
+    "energy_left": 35425,
+    "total_pack_energy": 39362,
+    "percentage_charged": 90,
+    "battery_power": 1000
+  }
+]

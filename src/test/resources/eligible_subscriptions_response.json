@@ -1,0 +1,31 @@
+{
+  "country": "string",
+  "eligible": [
+    {
+      "addons": [
+        {
+          "billingPeriod": "string",
+          "currencyCode": "string",
+          "optionCode": "string",
+          "price": 0,
+          "tax": 0,
+          "total": 0
+        }
+      ],
+      "billingOptions": [
+        {
+          "billingPeriod": "string",
+          "currencyCode": "string",
+          "optionCode": "string",
+          "price": 0,
+          "tax": 0,
+          "total": 0
+        }
+      ],
+      "optionCode": "string",
+      "product": "string",
+      "startDate": "string"
+    }
+  ],
+  "vin": "string"
+}
