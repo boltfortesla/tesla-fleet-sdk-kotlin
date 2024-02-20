@@ -8,6 +8,7 @@ import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticatorImpl
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoderImpl
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
 import com.boltfortesla.teslafleetsdk.net.api.FleetApiEndpoints
+import com.boltfortesla.teslafleetsdk.net.api.FleetApiEndpointsFactory
 import com.boltfortesla.teslafleetsdk.net.api.charging.ChargingEndpoints
 import com.boltfortesla.teslafleetsdk.net.api.charging.ChargingEndpointsFactory
 import com.boltfortesla.teslafleetsdk.net.api.energy.EnergyEndpoints
@@ -25,6 +26,22 @@ import okhttp3.OkHttpClient
 
 /** Main entrypoint for the Fleet API. */
 interface TeslaFleetApi {
+  /**
+   * API for general Fleet API endpoints not specific to a particular resource
+   *
+   * @param region the [Region] the API calls should be made to
+   * @param accessToken Fleet API access token. Will be added to all requests
+   * @param retryConfig a [RetryConfig] for network calls made with this API
+   * @param clientBuilder a pre-configured [OkHttpClient.Builder] that will be used when making
+   *   network requests
+   */
+  fun fleetApiEndpoints(
+    region: Region,
+    accessToken: String,
+    retryConfig: RetryConfig = RetryConfig(),
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
+  ): FleetApiEndpoints
+
   /**
    * API for actions related to authentication
    *
@@ -222,6 +239,7 @@ interface TeslaFleetApi {
           SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
           identifiers,
         ),
+        FleetApiEndpointsFactory(jitterFactorCalculator),
         TeslaOauthFactory(jitterFactorCalculator),
         ChargingEndpointsFactory(jitterFactorCalculator),
         EnergyEndpointsFactory(jitterFactorCalculator),

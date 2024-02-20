@@ -5,6 +5,8 @@ import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.SharedSecretFetcher
 import com.boltfortesla.teslafleetsdk.log.Log
 import com.boltfortesla.teslafleetsdk.net.AuthenticationInterceptor
+import com.boltfortesla.teslafleetsdk.net.api.FleetApiEndpoints
+import com.boltfortesla.teslafleetsdk.net.api.FleetApiEndpointsFactory
 import com.boltfortesla.teslafleetsdk.net.api.charging.ChargingEndpoints
 import com.boltfortesla.teslafleetsdk.net.api.charging.ChargingEndpointsFactory
 import com.boltfortesla.teslafleetsdk.net.api.energy.EnergyEndpoints
@@ -24,6 +26,7 @@ internal class TeslaFleetApiImpl(
   private val logger: TeslaFleetApi.Logger?,
   private val clientPublicKey: ByteArray,
   private val vehicleCommandsFactory: VehicleCommandsFactory,
+  private val fleetApiEndpointsFactory: FleetApiEndpointsFactory,
   private val teslaOauthFactory: TeslaOauthFactory,
   private val chargingEndpointsFactory: ChargingEndpointsFactory,
   private val energyEndpointsFactory: EnergyEndpointsFactory,
@@ -35,10 +38,18 @@ internal class TeslaFleetApiImpl(
     logger?.let { Log.setLogger(logger) }
   }
 
-  /**
-   * @param clientBuilder a pre-configured [OkHttpClient.Builder] that will be used when making
-   *   network requests
-   */
+  override fun fleetApiEndpoints(
+    region: Region,
+    accessToken: String,
+    retryConfig: RetryConfig,
+    clientBuilder: OkHttpClient.Builder,
+  ): FleetApiEndpoints =
+    fleetApiEndpointsFactory.create(
+      region,
+      retryConfig,
+      clientBuilder.withAuthInterceptor(accessToken)
+    )
+
   override fun oAuth(
     region: Region,
     accessToken: String,
