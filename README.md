@@ -16,6 +16,38 @@ An implementation of the [Tesla Fleet API](https://developer.tesla.com/docs/flee
 - Kotlin first, API is entirely async, utilizing Coroutines
 
 
+## Installation
+
+### Gradle
+```kts
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+  }
+}
+
+dependencies {
+  implementation 'com.boltfortesla:tesla-fleet-sdk-kotlin:1.0.0'
+}
+```
+
+### Maven
+```xml
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>  
+  </repository>
+</repositories>
+
+<dependency>
+  <groupId>com.boltfortesla</groupId>
+  <artifactId>tesla-fleet-sdk-kotlin</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
 ## Contributing
 
 Contributions are always welcome!
