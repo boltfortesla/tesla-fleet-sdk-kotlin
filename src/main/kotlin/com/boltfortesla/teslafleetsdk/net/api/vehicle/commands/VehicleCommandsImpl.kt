@@ -203,7 +203,9 @@ internal class VehicleCommandsImpl(
   override suspend fun setChargeMaxRange(): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
-        vehicleAction = vehicleAction { chargingStartStopAction { startMaxRange = void {} } }
+        vehicleAction = vehicleAction {
+          chargingStartStopAction = chargingStartStopAction { startMaxRange = void {} }
+        }
       }
     ) {
       vehicleCommandsApi.chargeMaxRange(vin)
@@ -233,7 +235,9 @@ internal class VehicleCommandsImpl(
   override suspend fun setChargeStandard(): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
-        vehicleAction = vehicleAction { chargingStartStopAction { startStandard = void {} } }
+        vehicleAction = vehicleAction {
+          chargingStartStopAction = chargingStartStopAction { startStandard = void {} }
+        }
       }
     ) {
       vehicleCommandsApi.chargeStandard(vin)
@@ -242,7 +246,11 @@ internal class VehicleCommandsImpl(
 
   override suspend fun startCharging(): Result<VehicleCommandResponse> {
     return executeCommand(
-      action { vehicleAction = vehicleAction { chargingStartStopAction { start = void {} } } }
+      action {
+        vehicleAction = vehicleAction {
+          chargingStartStopAction = chargingStartStopAction { start = void {} }
+        }
+      }
     ) {
       vehicleCommandsApi.startCharging(vin)
     }
@@ -250,7 +258,11 @@ internal class VehicleCommandsImpl(
 
   override suspend fun stopCharging(): Result<VehicleCommandResponse> {
     return executeCommand(
-      action { vehicleAction = vehicleAction { chargingStartStopAction { stop = void {} } } }
+      action {
+        vehicleAction = vehicleAction {
+          chargingStartStopAction = chargingStartStopAction { stop = void {} }
+        }
+      }
     ) {
       vehicleCommandsApi.stopCharging(vin)
     }
@@ -358,7 +370,9 @@ internal class VehicleCommandsImpl(
 
   override suspend fun mediaVolumeDown(): Result<VehicleCommandResponse> {
     return executeCommand(
-      action { vehicleAction = vehicleAction { mediaUpdateVolume { volumeDelta = -1 } } }
+      action {
+        vehicleAction = vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta = -1 } }
+      }
     ) {
       vehicleCommandsApi.decreaseMediaVolume(vin)
     }
@@ -366,7 +380,9 @@ internal class VehicleCommandsImpl(
 
   override suspend fun mediaVolumeUp(): Result<VehicleCommandResponse> {
     return executeCommand(
-      action { vehicleAction = vehicleAction { mediaUpdateVolume { volumeDelta + 1 } } }
+      action {
+        vehicleAction = vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta + 1 } }
+      }
     ) {
       vehicleCommandsApi.increaseMediaVolume(vin)
     }
