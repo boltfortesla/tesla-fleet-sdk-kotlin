@@ -283,7 +283,11 @@ class VehicleCommandsImplTest {
 
   @Test
   fun setChargeMaxRange_commandProtocol() {
-    testInfotainmentCommand(vehicleAction { chargingStartStopAction { startMaxRange = void {} } }) {
+    testInfotainmentCommand(
+      vehicleAction {
+        chargingStartStopAction = chargingStartStopAction { startMaxRange = void {} }
+      }
+    ) {
       setChargeMaxRange()
     }
   }
@@ -335,7 +339,11 @@ class VehicleCommandsImplTest {
 
   @Test
   fun setChargeStandard_commandProtocol() {
-    testInfotainmentCommand(vehicleAction { chargingStartStopAction { startStandard = void {} } }) {
+    testInfotainmentCommand(
+      vehicleAction {
+        chargingStartStopAction = chargingStartStopAction { startStandard = void {} }
+      }
+    ) {
       setChargeStandard()
     }
   }
@@ -347,7 +355,9 @@ class VehicleCommandsImplTest {
 
   @Test
   fun startCharging_commandProtocol() {
-    testInfotainmentCommand(vehicleAction { chargingStartStopAction { start = void {} } }) {
+    testInfotainmentCommand(
+      vehicleAction { chargingStartStopAction = chargingStartStopAction { start = void {} } }
+    ) {
       startCharging()
     }
   }
@@ -359,7 +369,9 @@ class VehicleCommandsImplTest {
 
   @Test
   fun stopCharging_commandProtocol() {
-    testInfotainmentCommand(vehicleAction { chargingStartStopAction { stop = void {} } }) {
+    testInfotainmentCommand(
+      vehicleAction { chargingStartStopAction = chargingStartStopAction { stop = void {} } }
+    ) {
       stopCharging()
     }
   }
@@ -541,7 +553,9 @@ class VehicleCommandsImplTest {
 
   @Test
   fun mediaVolumeDown_commandProtocol() {
-    testInfotainmentCommand(vehicleAction { mediaUpdateVolume { volumeDelta = -1 } }) {
+    testInfotainmentCommand(
+      vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta = -1 } }
+    ) {
       mediaVolumeDown()
     }
   }
@@ -1626,9 +1640,8 @@ class VehicleCommandsImplTest {
     action: suspend VehicleCommands.() -> Unit
   ) {
     testCommand(
-      "/api/1/vehicles/${Constants.VIN}/signed_command",
       action { vehicleAction = expectedAction },
-      Responses.INFOTAINMENT_COMMAND_RESPONSE,
+      INFOTAINMENT_COMMAND_RESPONSE,
       Domain.DOMAIN_INFOTAINMENT,
       action
     )
@@ -1638,17 +1651,10 @@ class VehicleCommandsImplTest {
     expectedMessage: UnsignedMessage,
     action: suspend VehicleCommands.() -> Unit
   ) {
-    testCommand(
-      "/api/1/vehicles/${Constants.VIN}/signed_command",
-      expectedMessage,
-      Responses.SECURITY_COMMAND_RESPONSE,
-      Domain.DOMAIN_VEHICLE_SECURITY,
-      action
-    )
+    testCommand(expectedMessage, SECURITY_COMMAND_RESPONSE, Domain.DOMAIN_VEHICLE_SECURITY, action)
   }
 
   private fun testCommand(
-    expectedPath: String,
     expectedBytesMessage: GeneratedMessageV3,
     response: RoutableMessage,
     domain: Domain,
@@ -1676,7 +1682,7 @@ class VehicleCommandsImplTest {
         Base64.getDecoder().decode(requestBody.get("routable_message") as String)
       )
 
-    assertThat(request.path).isEqualTo(expectedPath)
+    assertThat(request.path).isEqualTo("/api/1/vehicles/${Constants.VIN}/signed_command")
     val expectedMessage = routableMessage {
       toDestination = destination { this.domain = domain }
       fromDestination = destination {
