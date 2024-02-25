@@ -1,8 +1,10 @@
 package com.boltfortesla.teslafleetsdk.net.api.vehicle.commands
 
+import com.boltfortesla.teslafleetsdk.TeslaFleetApi.SharedSecretFetcher
 import com.boltfortesla.teslafleetsdk.commands.CommandSigner
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
 import com.boltfortesla.teslafleetsdk.log.Log
+import com.boltfortesla.teslafleetsdk.net.HandshakeRecoveryStrategyFactory
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutor
 import com.boltfortesla.teslafleetsdk.net.SignedMessagesFaultException
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandProtocolResponse
@@ -24,12 +26,14 @@ internal class SignedCommandSenderImpl(
   private val commandSigner: CommandSigner,
   private val vehicleEndpoints: VehicleEndpoints,
   private val networkExecutor: NetworkExecutor,
+  private val handshakeRecoveryStrategyFactory: HandshakeRecoveryStrategyFactory,
   private val vin: String,
 ) : SignedCommandSender {
   override suspend fun signAndSend(
     message: GeneratedMessageV3,
     sessionInfo: SessionInfo,
-    clientPublicKey: ByteArray
+    clientPublicKey: ByteArray,
+    sharedSecretFetcher: SharedSecretFetcher,
   ): Result<CommandProtocolResponse> {
     sessionInfo.counter.incrementAndGet()
     val domain =
@@ -43,7 +47,9 @@ internal class SignedCommandSenderImpl(
       }
     val signedMessage = commandSigner.sign(vin, message, sessionInfo, domain, clientPublicKey)
     Log.d("Sending signed command to Fleet API")
-    return networkExecutor.execute {
+    return networkExecutor.execute(
+      handshakeRecoveryStrategyFactory.create(vin, domain, sharedSecretFetcher)
+    ) {
       val rawResponse =
         vehicleEndpoints
           .signedCommand(Base64.getEncoder().encodeToString(signedMessage.toByteArray()))

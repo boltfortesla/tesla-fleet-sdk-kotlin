@@ -116,7 +116,6 @@ import com.tesla.generated.vcsec.Vcsec.RKEAction_E.RKE_ACTION_REMOTE_DRIVE
 import com.tesla.generated.vcsec.Vcsec.RKEAction_E.RKE_ACTION_UNLOCK
 import com.tesla.generated.vcsec.closureMoveRequest
 import com.tesla.generated.vcsec.unsignedMessage
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -140,7 +139,6 @@ internal class VehicleCommandsImpl(
   private val sessionInfoRepository: SessionInfoRepository
 ) : VehicleCommands {
   private val handshakeMutex = Mutex()
-  private val sessionInfoMap = ConcurrentHashMap<Domain, SessionInfo>()
   private var useCommandProtocol = commandProtocolSupported
 
   override suspend fun actuateTrunk(trunk: VehicleCommands.Trunk): Result<VehicleCommandResponse> {
@@ -1137,7 +1135,12 @@ internal class VehicleCommandsImpl(
         val sessionInfo = ensureSessionStarted(domain)
         if (sessionInfo != null && useCommandProtocol) {
           Log.d("Signing command and sending via command protocol")
-          return signedCommandSender.signAndSend(action, sessionInfo, clientPublicKey)
+          return signedCommandSender.signAndSend(
+            action,
+            sessionInfo,
+            clientPublicKey,
+            sharedSecretFetcher
+          )
         }
       } catch (e: Exception) {
         return Result.failure(e)

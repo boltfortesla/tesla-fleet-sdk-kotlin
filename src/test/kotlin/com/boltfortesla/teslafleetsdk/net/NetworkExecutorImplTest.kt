@@ -1,11 +1,9 @@
 package com.boltfortesla.teslafleetsdk.net
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
-import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl.Companion.RETRYABLE_MESSAGE_FAULTS
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl.Companion.RETRYABLE_STATUS_CODES
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleTemporarilyUnavailableException
 import com.google.common.truth.Truth.assertThat
-import com.tesla.generated.universalmessage.UniversalMessage.MessageFault_E
 import java.io.IOException
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -95,25 +93,6 @@ class NetworkExecutorImplTest {
     assertThat(response.isFailure).isTrue()
     val exception = response.exceptionOrNull() as HttpException
     assertThat(exception.code()).isEqualTo(500)
-  }
-
-  @Test
-  fun fails_retryableMessageFault_retries() = runTest {
-    val networkExecutorImpl = NetworkExecutorImpl(RetryConfig(), jitterFactorCalculator)
-    var executionCount = 0
-
-    val response =
-      networkExecutorImpl.execute {
-        val fault =
-          RETRYABLE_MESSAGE_FAULTS.getOrNull(executionCount++)
-            ?: MessageFault_E.MESSAGEFAULT_ERROR_UNKNOWN_KEY_ID
-        throw SignedMessagesFaultException(fault)
-      }
-
-    assertThat(executionCount).isEqualTo(RETRYABLE_MESSAGE_FAULTS.size + 1)
-    assertThat(response.isFailure).isTrue()
-    val exception = response.exceptionOrNull() as SignedMessagesFaultException
-    assertThat(exception.fault).isEqualTo(MessageFault_E.MESSAGEFAULT_ERROR_UNKNOWN_KEY_ID)
   }
 
   @Test
