@@ -3,7 +3,6 @@ package com.boltfortesla.teslafleetsdk.net
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
 import com.boltfortesla.teslafleetsdk.log.Log
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleTemporarilyUnavailableException
-import com.tesla.generated.universalmessage.UniversalMessage.MessageFault_E
 import java.io.IOException
 import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.CancellationException
@@ -13,13 +12,14 @@ import retrofit2.HttpException
 /** Implementation of [NetworkExecutor] */
 internal class NetworkExecutorImpl(
   private val retryConfig: RetryConfig,
-  private val jitterFactorCalculator: JitterFactorCalculator
+  private val jitterFactorCalculator: JitterFactorCalculator,
 ) : NetworkExecutor {
   override suspend fun <T> execute(
+    messageFaultRecoveryStrategy: MessageFaultRecoveryStrategy,
     action: suspend () -> T,
   ): Result<T> {
-    return NetworkRetrier(retryConfig, jitterFactorCalculator).doWithRetries(
-      {
+    return NetworkRetrier(retryConfig, jitterFactorCalculator, messageFaultRecoveryStrategy)
+      .doWithRetries({
         if (!coroutineContext.isActive) {
           Log.d("Coroutine not active, not executing request")
           Result.failure(CancellationException("coroutine not active"))
@@ -31,21 +31,19 @@ internal class NetworkExecutorImpl(
             Result.failure(throwable)
           }
         }
-      },
-    ) {
-      if (it.isSuccess) {
-        false
-      } else {
-        Log.d("Network call failed with ${it.exceptionOrNull()}")
-        when (val exception = it.exceptionOrNull()) {
-          is IOException,
-          is VehicleTemporarilyUnavailableException -> true
-          is HttpException -> RETRYABLE_STATUS_CODES.contains(exception.code())
-          is SignedMessagesFaultException -> RETRYABLE_MESSAGE_FAULTS.contains(exception.fault)
-          else -> false
+      }) {
+        if (isSuccess) {
+          false
+        } else {
+          Log.d("Network call failed with ${exceptionOrNull()}")
+          when (val exception = exceptionOrNull()) {
+            is IOException,
+            is VehicleTemporarilyUnavailableException -> true
+            is HttpException -> RETRYABLE_STATUS_CODES.contains(exception.code())
+            else -> false
+          }
         }
       }
-    }
   }
 
   internal companion object {
@@ -54,16 +52,5 @@ internal class NetworkExecutorImpl(
      * result in a retry.
      */
     val RETRYABLE_STATUS_CODES = listOf(408, 429, 503, 504)
-    val RETRYABLE_MESSAGE_FAULTS =
-      listOf(
-        MessageFault_E.MESSAGEFAULT_ERROR_BUSY,
-        MessageFault_E.MESSAGEFAULT_ERROR_TIMEOUT,
-        MessageFault_E.MESSAGEFAULT_ERROR_INVALID_SIGNATURE,
-        MessageFault_E.MESSAGEFAULT_ERROR_INVALID_TOKEN_OR_COUNTER,
-        MessageFault_E.MESSAGEFAULT_ERROR_INTERNAL,
-        MessageFault_E.MESSAGEFAULT_ERROR_INCORRECT_EPOCH,
-        MessageFault_E.MESSAGEFAULT_ERROR_TIME_EXPIRED,
-        MessageFault_E.MESSAGEFAULT_ERROR_TIME_TO_LIVE_TOO_LONG,
-      )
   }
 }

@@ -18,6 +18,7 @@ import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticatorImpl
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.Pem
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoderImpl
+import com.boltfortesla.teslafleetsdk.net.HandshakeRecoveryStrategyFactory
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.AutoSeat
@@ -146,12 +147,23 @@ class VehicleCommandsImplTest {
       publicKeyEncoder,
       fakeIdentifiers
     )
+  private val handshaker =
+    HandshakerImpl(
+      TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+      publicKeyEncoder,
+      vehicleEndpointsApi,
+      SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
+      fakeIdentifiers,
+      networkExecutor,
+    )
+
   private val signedCommandSender =
     SignedCommandSenderImpl(
       commandSigner,
       VehicleEndpointsImpl(Constants.VIN, vehicleEndpointsApi, networkExecutor),
       networkExecutor,
-      Constants.VIN
+      HandshakeRecoveryStrategyFactory(handshaker, sessionInfoRepository),
+      Constants.VIN,
     )
 
   private val vehicleCommands =
@@ -160,14 +172,7 @@ class VehicleCommandsImplTest {
       Pem(TestKeys.CLIENT_PUBLIC_KEY).byteArray(),
       sharedSecretFetcher = { Constants.HANDSHAKE_KEY.decodeHex() },
       commandProtocolSupported = true,
-      HandshakerImpl(
-        TestKeys.CLIENT_PUBLIC_KEY_BYTES,
-        publicKeyEncoder,
-        vehicleEndpointsApi,
-        SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
-        fakeIdentifiers,
-        networkExecutor
-      ),
+      handshaker,
       vehicleCommandsApi,
       networkExecutor,
       signedCommandSender,
@@ -186,7 +191,7 @@ class VehicleCommandsImplTest {
         vehicleEndpointsApi,
         SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
         fakeIdentifiers,
-        networkExecutor
+        networkExecutor,
       ),
       vehicleCommandsApi,
       networkExecutor,
