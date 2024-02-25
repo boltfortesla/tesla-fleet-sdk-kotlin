@@ -22,6 +22,8 @@ import com.tesla.generated.universalmessage.routableMessage
 import com.tesla.generated.universalmessage.sessionInfoRequest
 import java.util.Base64
 import java.util.concurrent.atomic.AtomicInteger
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Implementation of [Handshaker].
@@ -36,67 +38,71 @@ internal class HandshakerImpl(
   private val identifiers: Identifiers,
   private val networkExecutor: NetworkExecutor,
 ) : Handshaker {
+  private val handshakeMutex = Mutex()
+
   override suspend fun performHandshake(
     vin: String,
     domain: Domain,
     sharedSecretFetcher: SharedSecretFetcher,
   ): SessionInfo {
-    val handshakeUuid = identifiers.randomUuid()
-    // Create the message to be sent as the handshake
-    val message = routableMessage {
-      toDestination = destination { this.domain = domain }
-      fromDestination = destination {
-        routingAddress = ByteString.copyFrom(identifiers.randomRoutingAddress())
+    handshakeMutex.withLock {
+      val handshakeUuid = identifiers.randomUuid()
+      // Create the message to be sent as the handshake
+      val message = routableMessage {
+        toDestination = destination { this.domain = domain }
+        fromDestination = destination {
+          routingAddress = ByteString.copyFrom(identifiers.randomRoutingAddress())
+        }
+        sessionInfoRequest = sessionInfoRequest {
+          publicKey = ByteString.copyFrom(publicKeyEncoder.encodedPublicKey(clientPublicKey))
+        }
+        this.uuid = ByteString.copyFrom(handshakeUuid)
       }
-      sessionInfoRequest = sessionInfoRequest {
-        publicKey = ByteString.copyFrom(publicKeyEncoder.encodedPublicKey(clientPublicKey))
+      Log.d("Sending handshake message ${message.toByteArray().toHexString()}")
+
+      // Make the request against the Fleet API to initiate the handshake
+      val response =
+        networkExecutor.execute {
+          val response =
+            vehicleEndpointsApi.sendSignedCommand(
+              vin,
+              SignedCommandRequest(Base64.getEncoder().encodeToString(message.toByteArray()))
+            )
+          val routableMessage =
+            RoutableMessage.parseFrom(Base64.getDecoder().decode(response.responseBase64))
+          routableMessage.signedMessageFault()?.let { throw SignedMessagesFaultException(it) }
+          HandshakeResponse(routableMessage)
+        }
+      response.onFailure {
+        Log.e("Handshake failed! Response code", throwable = response.exceptionOrNull())
+        throw it
       }
-      this.uuid = ByteString.copyFrom(handshakeUuid)
+
+      // Parse the response, extract the public key, and use generate the shared secret
+      val responseMessage =
+        response.getOrNull()?.routableMessage ?: RoutableMessage.getDefaultInstance()
+      Log.d(
+        "got handshake response: ${responseMessage.copy { signatureData = signatureData {  } }.toByteArray().toHexString()}"
+      )
+      val sessionInfo = TeslaSessionInfo.parseFrom(responseMessage.sessionInfo)
+      Log.d("fetching shared secret")
+      val sharedSecret = sharedSecretFetcher.fetchSharedSecret(sessionInfo.publicKey.toByteArray())
+      Log.d("fetched shared secret with length ${sharedSecret.size}")
+      // Verify that the response from the vehicle is valid
+      sessionInfoAuthenticator.authenticate(
+        sharedSecret,
+        vin,
+        handshakeUuid,
+        sessionInfo.toByteArray(),
+        responseMessage.signatureData.sessionInfoTag.tag.toByteArray()
+      )
+
+      return SessionInfo(
+        sessionInfo.epoch.toByteArray(),
+        sessionInfo.clockTime,
+        AtomicInteger(sessionInfo.counter),
+        sharedSecret,
+      )
     }
-    Log.d("Sending handshake message ${message.toByteArray().toHexString()}")
-
-    // Make the request against the Fleet API to initiate the handshake
-    val response =
-      networkExecutor.execute {
-        val response =
-          vehicleEndpointsApi.sendSignedCommand(
-            vin,
-            SignedCommandRequest(Base64.getEncoder().encodeToString(message.toByteArray()))
-          )
-        val routableMessage =
-          RoutableMessage.parseFrom(Base64.getDecoder().decode(response.responseBase64))
-        routableMessage.signedMessageFault()?.let { throw SignedMessagesFaultException(it) }
-        HandshakeResponse(routableMessage)
-      }
-    response.onFailure {
-      Log.e("Handshake failed! Response code", throwable = response.exceptionOrNull())
-      throw it
-    }
-
-    // Parse the response, extract the public key, and use generate the shared secret
-    val responseMessage =
-      response.getOrNull()?.routableMessage ?: RoutableMessage.getDefaultInstance()
-    Log.d(
-      "got handshake response: ${responseMessage.copy { signatureData = signatureData {  } }.toByteArray().toHexString()}"
-    )
-    val sessionInfo = TeslaSessionInfo.parseFrom(responseMessage.sessionInfo)
-    Log.d("fetching shared secret")
-    val sharedSecret = sharedSecretFetcher.fetchSharedSecret(sessionInfo.publicKey.toByteArray())
-    Log.d("fetched shared secret with length ${sharedSecret.size}")
-    // Verify that the response from the vehicle is valid
-    sessionInfoAuthenticator.authenticate(
-      sharedSecret,
-      vin,
-      handshakeUuid,
-      sessionInfo.toByteArray(),
-      responseMessage.signatureData.sessionInfoTag.tag.toByteArray()
-    )
-
-    return SessionInfo(
-      sessionInfo.epoch.toByteArray(),
-      sessionInfo.clockTime,
-      AtomicInteger(sessionInfo.counter),
-      sharedSecret,
-    )
   }
 }

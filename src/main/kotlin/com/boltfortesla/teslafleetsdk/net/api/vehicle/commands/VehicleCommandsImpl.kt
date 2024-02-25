@@ -3,6 +3,7 @@ package com.boltfortesla.teslafleetsdk.net.api.vehicle.commands
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.SharedSecretFetcher
 import com.boltfortesla.teslafleetsdk.handshake.Handshaker
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepository
 import com.boltfortesla.teslafleetsdk.log.Log
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutor
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.ErrorResultException.ActionFailureException
@@ -135,7 +136,8 @@ internal class VehicleCommandsImpl(
   private val handshaker: Handshaker,
   private val vehicleCommandsApi: VehicleCommandsApi,
   private val networkExecutor: NetworkExecutor,
-  private val signedCommandSender: SignedCommandSender
+  private val signedCommandSender: SignedCommandSender,
+  private val sessionInfoRepository: SessionInfoRepository
 ) : VehicleCommands {
   private val handshakeMutex = Mutex()
   private val sessionInfoMap = ConcurrentHashMap<Domain, SessionInfo>()
@@ -1146,11 +1148,12 @@ internal class VehicleCommandsImpl(
   private suspend fun ensureSessionStarted(domain: Domain): SessionInfo? {
     Log.d("Starting session for $domain if needed")
     handshakeMutex.withLock {
-      if (useCommandProtocol && sessionInfoMap[domain] == null) {
+      val sessionInfo = sessionInfoRepository.get(vin, domain)
+      if (useCommandProtocol && sessionInfo == null) {
         try {
-          val sessionInfo = handshaker.performHandshake(vin, domain, sharedSecretFetcher)
-          sessionInfoMap[domain] = sessionInfo
-          return sessionInfo
+          return handshaker.performHandshake(vin, domain, sharedSecretFetcher).also {
+            sessionInfoRepository.set(vin, domain, it)
+          }
         } catch (httpException: HttpException) {
           if (httpException.code() == 422) {
             Log.d("Vehicle does not support the command protocol")
@@ -1161,12 +1164,12 @@ internal class VehicleCommandsImpl(
         }
       } else {
         Log.d(
-          "Not starting session for $domain.useCommandProtocol: $useCommandProtocol. Has existing session info? ${sessionInfoMap[domain] != null}"
+          "Not starting session for $domain.useCommandProtocol: $useCommandProtocol. Has existing session info? ${sessionInfo != null}"
         )
-        return sessionInfoMap[domain]
+        sessionInfo
       }
     }
-    return sessionInfoMap[domain]
+    return null
   }
 
   private companion object {

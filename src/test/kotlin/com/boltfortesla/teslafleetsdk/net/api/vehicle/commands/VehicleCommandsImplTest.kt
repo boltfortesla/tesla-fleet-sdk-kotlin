@@ -15,6 +15,7 @@ import com.boltfortesla.teslafleetsdk.fixtures.Responses.signedCommandJson
 import com.boltfortesla.teslafleetsdk.fixtures.fakes.FakeIdentifiers
 import com.boltfortesla.teslafleetsdk.handshake.HandshakerImpl
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticatorImpl
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.Pem
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoderImpl
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
@@ -121,6 +122,7 @@ class VehicleCommandsImplTest {
   private val retryConfig = RetryConfig(maxRetries = 0)
   private val jitterFactorCalculator = JitterFactorCalculatorImpl()
   private val networkExecutor = NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
+  private val sessionInfoRepository = SessionInfoRepositoryImpl()
   private val commandSigner =
     CommandSignerImpl(
       object : CommandAuthenticator {
@@ -168,7 +170,8 @@ class VehicleCommandsImplTest {
       ),
       vehicleCommandsApi,
       networkExecutor,
-      signedCommandSender
+      signedCommandSender,
+      sessionInfoRepository
     )
 
   private val commandProtocolUnsupportedVehicleCommands =
@@ -187,7 +190,8 @@ class VehicleCommandsImplTest {
       ),
       vehicleCommandsApi,
       networkExecutor,
-      signedCommandSender
+      signedCommandSender,
+      sessionInfoRepository
     )
 
   @After
@@ -1626,9 +1630,8 @@ class VehicleCommandsImplTest {
     action: suspend VehicleCommands.() -> Unit
   ) {
     testCommand(
-      "/api/1/vehicles/${Constants.VIN}/signed_command",
       action { vehicleAction = expectedAction },
-      Responses.INFOTAINMENT_COMMAND_RESPONSE,
+      INFOTAINMENT_COMMAND_RESPONSE,
       Domain.DOMAIN_INFOTAINMENT,
       action
     )
@@ -1638,17 +1641,10 @@ class VehicleCommandsImplTest {
     expectedMessage: UnsignedMessage,
     action: suspend VehicleCommands.() -> Unit
   ) {
-    testCommand(
-      "/api/1/vehicles/${Constants.VIN}/signed_command",
-      expectedMessage,
-      Responses.SECURITY_COMMAND_RESPONSE,
-      Domain.DOMAIN_VEHICLE_SECURITY,
-      action
-    )
+    testCommand(expectedMessage, SECURITY_COMMAND_RESPONSE, Domain.DOMAIN_VEHICLE_SECURITY, action)
   }
 
   private fun testCommand(
-    expectedPath: String,
     expectedBytesMessage: GeneratedMessageV3,
     response: RoutableMessage,
     domain: Domain,
@@ -1676,7 +1672,7 @@ class VehicleCommandsImplTest {
         Base64.getDecoder().decode(requestBody.get("routable_message") as String)
       )
 
-    assertThat(request.path).isEqualTo(expectedPath)
+    assertThat(request.path).isEqualTo("/api/1/vehicles/${Constants.VIN}/signed_command")
     val expectedMessage = routableMessage {
       toDestination = destination { this.domain = domain }
       fromDestination = destination {
