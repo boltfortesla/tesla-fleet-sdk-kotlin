@@ -8,7 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * @param epoch a random 16-byte value generated at vehicle boot
  * @param clockTime the number of seconds since the start of the [epoch]
  * @param counter a monotonically increasing counter. Must be incremented for every command sent
- * @param sharedSecret the generated HMAC shared secret for this session, used to sign commands
+ * @param sharedSecret the generated HMAC shared secret for this session, used to sign commands.
+ *   This is sensitive information and should be handled like a raw credential
  */
 internal data class SessionInfo(
   val epoch: ByteArray,

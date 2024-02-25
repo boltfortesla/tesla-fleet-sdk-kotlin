@@ -15,6 +15,7 @@ import com.boltfortesla.teslafleetsdk.fixtures.Responses.signedCommandJson
 import com.boltfortesla.teslafleetsdk.fixtures.fakes.FakeIdentifiers
 import com.boltfortesla.teslafleetsdk.handshake.HandshakerImpl
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticatorImpl
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.Pem
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoderImpl
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
@@ -121,6 +122,7 @@ class VehicleCommandsImplTest {
   private val retryConfig = RetryConfig(maxRetries = 0)
   private val jitterFactorCalculator = JitterFactorCalculatorImpl()
   private val networkExecutor = NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
+  private val sessionInfoRepository = SessionInfoRepositoryImpl()
   private val commandSigner =
     CommandSignerImpl(
       object : CommandAuthenticator {
@@ -168,7 +170,8 @@ class VehicleCommandsImplTest {
       ),
       vehicleCommandsApi,
       networkExecutor,
-      signedCommandSender
+      signedCommandSender,
+      sessionInfoRepository
     )
 
   private val commandProtocolUnsupportedVehicleCommands =
@@ -187,7 +190,8 @@ class VehicleCommandsImplTest {
       ),
       vehicleCommandsApi,
       networkExecutor,
-      signedCommandSender
+      signedCommandSender,
+      sessionInfoRepository
     )
 
   @After
