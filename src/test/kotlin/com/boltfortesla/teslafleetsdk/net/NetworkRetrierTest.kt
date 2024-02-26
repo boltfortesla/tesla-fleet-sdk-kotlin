@@ -10,7 +10,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.runTest
+import okhttp3.Protocol
+import okhttp3.Request
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
+import retrofit2.HttpException
+import retrofit2.Response
 
 class NetworkRetrierTest {
 
@@ -22,7 +27,7 @@ class NetworkRetrierTest {
     }
 
   private var actionCount = 0
-  private val expectedResult = Result.success(Unit)
+  private var expectedResult = Result.success(Unit)
   private val fakeAction: () -> Result<Unit> = {
     actionCount++
     expectedResult
@@ -83,6 +88,52 @@ class NetworkRetrierTest {
 
     assertThat(actionCount).isEqualTo(1)
     for (delaysAndCounts in listOf(100L to 2, 150L to 3, 225L to 4, 338L to 5, 507L to 6)) {
+      dispatcher.advanceTimeByAndRun(delaysAndCounts.first)
+      assertThat(actionCount).isEqualTo(delaysAndCounts.second)
+    }
+    runTest { assertThat(result.await()).isEqualTo(expectedResult) }
+  }
+
+  @Test
+  fun doWithRetries_429_usesRetryAfterHeader() {
+    expectedResult =
+      Result.failure(
+        HttpException(
+          Response.error<Any>(
+            "".toResponseBody(),
+            okhttp3.Response.Builder() //
+              .body("".toResponseBody())
+              .code(429)
+              .message("Response.error()")
+              .protocol(Protocol.HTTP_1_1)
+              .addHeader("Retry-After", "12345")
+              .request(Request.Builder().url("http://localhost/").build())
+              .build()
+          )
+        )
+      )
+    val networkRetrier = NetworkRetrier(RetryConfig(maxRetries = 5), jitterFactorCalculator)
+
+    val result =
+      scope.async {
+        networkRetrier.doWithRetries(
+          fakeAction,
+        ) {
+          true
+        }
+      }
+    dispatcher.scheduler.runCurrent()
+
+    assertThat(actionCount).isEqualTo(1)
+    val retryAfterMs = (12345 * 1000).toLong()
+    for (delaysAndCounts in
+      listOf(
+        retryAfterMs to 2,
+        retryAfterMs to 3,
+        retryAfterMs to 4,
+        retryAfterMs to 5,
+        retryAfterMs to 6
+      )) {
       dispatcher.advanceTimeByAndRun(delaysAndCounts.first)
       assertThat(actionCount).isEqualTo(delaysAndCounts.second)
     }
