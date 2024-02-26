@@ -3,6 +3,9 @@ package com.boltfortesla.teslafleetsdk
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.Region
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.SharedSecretFetcher
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepository
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepository.SessionInfoKey
 import com.boltfortesla.teslafleetsdk.log.Log
 import com.boltfortesla.teslafleetsdk.net.AuthenticationInterceptor
 import com.boltfortesla.teslafleetsdk.net.api.FleetApiEndpoints
@@ -19,6 +22,11 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommandsFactory
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpoints
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpointsFactory
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.util.Base64
 import okhttp3.OkHttpClient
 
 /** Implementation of [Fleet API]. */
@@ -32,8 +40,8 @@ internal class TeslaFleetApiImpl(
   private val energyEndpointsFactory: EnergyEndpointsFactory,
   private val userEndpointsFactory: UserEndpointsFactory,
   private val vehicleEndpointsFactory: VehicleEndpointsFactory,
+  private val sessionInfoRepository: SessionInfoRepository,
 ) : TeslaFleetApi {
-
   init {
     logger?.let { Log.setLogger(logger) }
   }
@@ -47,7 +55,7 @@ internal class TeslaFleetApiImpl(
     fleetApiEndpointsFactory.create(
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken)
+      clientBuilder.withAuthInterceptor(accessToken),
     )
 
   override fun oAuth(
@@ -67,7 +75,7 @@ internal class TeslaFleetApiImpl(
     chargingEndpointsFactory.create(
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken)
+      clientBuilder.withAuthInterceptor(accessToken),
     )
 
   override fun energyEndpoints(
@@ -81,7 +89,7 @@ internal class TeslaFleetApiImpl(
       energySiteId,
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken)
+      clientBuilder.withAuthInterceptor(accessToken),
     )
 
   override fun userEndpoints(
@@ -108,7 +116,7 @@ internal class TeslaFleetApiImpl(
       commandProtocolSupported,
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken)
+      clientBuilder.withAuthInterceptor(accessToken),
     )
 
   override fun vehicleEndpoints(
@@ -122,10 +130,26 @@ internal class TeslaFleetApiImpl(
       vin,
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken)
+      clientBuilder.withAuthInterceptor(accessToken),
     )
 
-  private fun OkHttpClient.Builder.withAuthInterceptor(
-    accessToken: String,
-  ) = build().newBuilder().addInterceptor(AuthenticationInterceptor(accessToken))
+  override fun saveSessionInfo(): String {
+    val byteStream = ByteArrayOutputStream()
+    ObjectOutputStream(byteStream).use { it.writeObject(sessionInfoRepository.getAll()) }
+    byteStream.close()
+    return Base64.getEncoder().encodeToString(byteStream.toByteArray())
+  }
+
+  override fun loadSessionInfo(sessionInfoBase64: String) {
+    val sessionInfoBytes = Base64.getDecoder().decode(sessionInfoBase64)
+    val byteStream = ByteArrayInputStream(sessionInfoBytes)
+    ObjectInputStream(byteStream).use {
+      @Suppress("UNCHECKED_CAST")
+      sessionInfoRepository.load(it.readObject() as Map<SessionInfoKey, SessionInfo>)
+    }
+    byteStream.close()
+  }
+
+  private fun OkHttpClient.Builder.withAuthInterceptor(accessToken: String) =
+    build().newBuilder().addInterceptor(AuthenticationInterceptor(accessToken))
 }

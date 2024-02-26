@@ -4,7 +4,9 @@ import com.boltfortesla.teslafleetsdk.commands.CommandSignerImpl
 import com.boltfortesla.teslafleetsdk.commands.HmacCommandAuthenticator
 import com.boltfortesla.teslafleetsdk.crypto.HmacCalculatorImpl
 import com.boltfortesla.teslafleetsdk.encoding.TlvEncoderImpl
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticatorImpl
+import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoderImpl
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
 import com.boltfortesla.teslafleetsdk.net.api.FleetApiEndpoints
@@ -153,6 +155,15 @@ interface TeslaFleetApi {
   ): VehicleEndpoints
 
   /**
+   * Returns a string containing all [SessionInfo]. [SessionInfo] is sensitive and should be stored
+   * as a credential.
+   */
+  fun saveSessionInfo(): String
+
+  /** Loads [sessionInfoBase64] into memory, replacing any existing cached [SessionInfo]. */
+  fun loadSessionInfo(sessionInfoBase64: String)
+
+  /**
    * Interface to be implemented by users of [TeslaFleetApi.vehicleCommands] to generate a shared
    * secret for a Tesla Developer Application's private key and a Vehicle's public key.
    */
@@ -183,20 +194,14 @@ interface TeslaFleetApi {
     val maxRetries: Int = Int.MAX_VALUE,
     val initialBackoffDelayMs: Long = 200L,
     val maxBackoffDelay: Long = 2000L,
-    val backoffFactor: Double = 1.5
+    val backoffFactor: Double = 1.5,
   )
 
   enum class Region(val baseUrl: String, val authBaseUrl: String) {
     /** North America and Asia/Pacific */
-    NA_APAC(
-      "https://fleet-api.prd.na.vn.cloud.tesla.com",
-      "https://auth.tesla.com",
-    ),
+    NA_APAC("https://fleet-api.prd.na.vn.cloud.tesla.com", "https://auth.tesla.com"),
     /** Europe, Middle East, Africa. */
-    EMEA(
-      "https://fleet-api.prd.eu.vn.cloud.tesla.com",
-      "https://auth.tesla.com",
-    ),
+    EMEA("https://fleet-api.prd.eu.vn.cloud.tesla.com", "https://auth.tesla.com"),
     /** China */
     CHINA("https://fleet-api.prd.cn.vn.cloud.tesla.cn", "https://auth.tesla.cn");
 
@@ -222,6 +227,7 @@ interface TeslaFleetApi {
       val hmacCalculator = HmacCalculatorImpl()
       val identifiers = IdentifiersImpl()
       val jitterFactorCalculator = JitterFactorCalculatorImpl()
+      val sessionInfoRepository = SessionInfoRepositoryImpl()
 
       return TeslaFleetApiImpl(
         logger,
@@ -232,19 +238,21 @@ interface TeslaFleetApi {
             HmacCommandAuthenticator(hmacCalculator),
             tlvEncoder,
             publicKeyEncoder,
-            identifiers
+            identifiers,
           ),
           jitterFactorCalculator,
           publicKeyEncoder,
           SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
           identifiers,
+          sessionInfoRepository,
         ),
         FleetApiEndpointsFactory(jitterFactorCalculator),
         TeslaOauthFactory(jitterFactorCalculator),
         ChargingEndpointsFactory(jitterFactorCalculator),
         EnergyEndpointsFactory(jitterFactorCalculator),
         UserEndpointsFactory(jitterFactorCalculator),
-        VehicleEndpointsFactory(jitterFactorCalculator)
+        VehicleEndpointsFactory(jitterFactorCalculator),
+        sessionInfoRepository,
       )
     }
   }
