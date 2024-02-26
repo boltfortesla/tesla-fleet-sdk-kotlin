@@ -1,5 +1,7 @@
 package com.boltfortesla.teslafleetsdk.handshake
 
+import java.io.Serializable
+
 /**
  * Information needed for sending signed commands for a specific session.
  *
@@ -14,7 +16,7 @@ internal data class SessionInfo(
   val clockTime: Int,
   val counter: Int,
   val sharedSecret: ByteArray,
-) {
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (javaClass != other?.javaClass) return false

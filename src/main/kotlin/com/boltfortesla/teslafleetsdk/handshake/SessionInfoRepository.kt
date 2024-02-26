@@ -1,6 +1,7 @@
 package com.boltfortesla.teslafleetsdk.handshake
 
 import com.tesla.generated.universalmessage.UniversalMessage.Domain
+import java.io.Serializable
 
 /**
  * Repository that holds [SessionInfo]. A sessions "only expires when the infotainment system or
@@ -31,5 +32,5 @@ internal interface SessionInfoRepository {
   fun load(sessionInfoMap: Map<SessionInfoKey, SessionInfo>)
 
   /** Composite key for [SessionInfo] made up of a [vin] and [domain]. */
-  data class SessionInfoKey(val vin: String, val domain: Domain)
+  data class SessionInfoKey(val vin: String, val domain: Domain) : Serializable
 }
