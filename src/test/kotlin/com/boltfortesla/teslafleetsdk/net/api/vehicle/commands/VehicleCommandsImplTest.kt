@@ -158,7 +158,7 @@ class VehicleCommandsImplTest {
     VehicleCommandsImpl(
       vin = Constants.VIN,
       Pem(TestKeys.CLIENT_PUBLIC_KEY).byteArray(),
-      sharedSecretFetcher = { Constants.HANDSHAKE_KEY.decodeHex() },
+      sharedSecretFetcher = { Constants.SHARED_SECRET.decodeHex() },
       commandProtocolSupported = true,
       HandshakerImpl(
         TestKeys.CLIENT_PUBLIC_KEY_BYTES,
@@ -178,7 +178,7 @@ class VehicleCommandsImplTest {
     VehicleCommandsImpl(
       vin = Constants.VIN,
       Pem(TestKeys.CLIENT_PUBLIC_KEY).byteArray(),
-      sharedSecretFetcher = { Constants.HANDSHAKE_KEY.decodeHex() },
+      sharedSecretFetcher = { Constants.SHARED_SECRET.decodeHex() },
       commandProtocolSupported = false,
       HandshakerImpl(
         TestKeys.CLIENT_PUBLIC_KEY_BYTES,

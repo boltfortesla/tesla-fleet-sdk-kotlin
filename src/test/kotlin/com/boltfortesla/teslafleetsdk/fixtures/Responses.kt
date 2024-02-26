@@ -1,6 +1,6 @@
 package com.boltfortesla.teslafleetsdk.fixtures
 
-import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_REQUEST_UUID
+import com.boltfortesla.teslafleetsdk.fixtures.Constants.REQUEST_UUID
 import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_ROUTING_ADDRESS
 import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_SESSION_INFO_TAG
 import com.google.protobuf.ByteString
@@ -32,7 +32,7 @@ object Responses {
         "0806124104c7a1f47138486aa4729971494878d33b1a24e39571f748a6e16c5955b3d877d3a6aaa0e955166474af5d32c410f439a2234137ad1bb085fd4e8813c958f11d971a104c463f9cc0d3d26906e982ed224adde6255a0a0000"
       )
 
-    requestUuid = ByteString.fromHex(HANDSHAKE_REQUEST_UUID)
+    requestUuid = ByteString.fromHex(REQUEST_UUID)
   }
 
   val INFOTAINMENT_COMMAND_RESPONSE = routableMessage {
