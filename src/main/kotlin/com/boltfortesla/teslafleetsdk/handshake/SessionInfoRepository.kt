@@ -16,6 +16,12 @@ internal interface SessionInfoRepository {
   /** Stores the session info for [vin] in [domain]. */
   fun set(vin: String, domain: Domain, sessionInfo: SessionInfo)
 
+  /** Remove stored [SessionInfo] for [vin] and [domain]. */
+  fun remove(vin: String, domain: Domain)
+
+  /** Increment the counter for the [SessionInfo] for [vin] and [domain]. */
+  fun incrementCounter(vin: String, domain: Domain)
+
   /** Returns all the cached [SessionInfo]. Can be used for backup to disk. */
   fun getAll(): Map<SessionInfoKey, SessionInfo>
 
