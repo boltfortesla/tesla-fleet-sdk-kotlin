@@ -9,7 +9,6 @@ import com.boltfortesla.teslafleetsdk.handshake.HandshakerImpl
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticator
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoder
-import com.boltfortesla.teslafleetsdk.net.HandshakeRecoveryStrategyFactory
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculator
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpointsImpl
@@ -70,7 +69,6 @@ internal class VehicleCommandsFactory(
         commandSigner,
         VehicleEndpointsImpl(vin, endpointsApi, networkExecutor),
         networkExecutor,
-        HandshakeRecoveryStrategyFactory(handshaker, sessionInfoRepository),
         vin,
       ),
       sessionInfoRepository

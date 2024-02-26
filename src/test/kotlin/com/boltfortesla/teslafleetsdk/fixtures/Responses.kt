@@ -81,12 +81,6 @@ object Responses {
     }
   }
 
-  val RETRYABLE_SIGNED_MESSAGE_FAULT_RESPONSE = routableMessage {
-    signedMessageStatus = messageStatus {
-      signedMessageFault = MessageFault_E.MESSAGEFAULT_ERROR_BUSY
-    }
-  }
-
   fun signedCommandJson(routableMessage: RoutableMessage): String {
     return "{\"response\": \"${Base64.getEncoder().encodeToString(routableMessage.toByteArray())}\"}"
   }
