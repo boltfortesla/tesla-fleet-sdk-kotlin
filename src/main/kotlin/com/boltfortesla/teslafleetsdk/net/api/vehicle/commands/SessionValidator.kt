@@ -1,7 +1,6 @@
 package com.boltfortesla.teslafleetsdk.net.api.vehicle.commands
 
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
-import com.google.protobuf.ByteString
 import com.tesla.generated.universalmessage.UniversalMessage
 
 /** Determines if a session is valid. */

@@ -22,7 +22,8 @@ internal class SessionValidatorImpl(
     if (responseMessage.sessionInfo.isEmpty) return true
 
     return if (
-      responseMessage.requestUuid.isNotEmpty() && responseMessage.requestUuid != ByteString.copyFrom(requestUuid)
+      responseMessage.requestUuid.isNotEmpty() &&
+        responseMessage.requestUuid != ByteString.copyFrom(requestUuid)
     ) {
       Log.w("UUIDs did not match")
       false

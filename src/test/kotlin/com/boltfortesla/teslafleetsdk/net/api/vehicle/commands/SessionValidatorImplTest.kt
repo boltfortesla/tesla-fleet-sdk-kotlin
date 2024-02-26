@@ -81,9 +81,7 @@ class SessionValidatorImplTest {
   fun isSessionValid_responseFailsToAuthenticate_returnsFalse() {
     val result =
       validator.isSessionValid(
-        RESPONSE_MESSAGE.copy {
-          clearSignatureData()
-        },
+        RESPONSE_MESSAGE.copy { clearSignatureData() },
         REQUEST_UUID.decodeHex(),
         SessionInfo(EPOCH.decodeHex(), CLOCK_TIME, COUNTER, SHARED_SECRET.decodeHex()),
         VIN,

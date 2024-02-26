@@ -2,8 +2,8 @@ package com.boltfortesla.teslafleetsdk.fixtures.fakes
 
 import com.boltfortesla.teslafleetsdk.Identifiers
 import com.boltfortesla.teslafleetsdk.encoding.HexCodec.decodeHex
-import com.boltfortesla.teslafleetsdk.fixtures.Constants.REQUEST_UUID
 import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_ROUTING_ADDRESS
+import com.boltfortesla.teslafleetsdk.fixtures.Constants.REQUEST_UUID
 
 /** Fake implementation of [Identifiers]. */
 class FakeIdentifiers : Identifiers {
