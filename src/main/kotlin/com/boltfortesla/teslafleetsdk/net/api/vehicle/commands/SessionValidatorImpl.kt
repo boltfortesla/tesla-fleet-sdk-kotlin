@@ -19,7 +19,7 @@ internal class SessionValidatorImpl(
     vin: String,
   ): Boolean {
     val responseSessionInfo = Signatures.SessionInfo.parseFrom(responseMessage.sessionInfo)
-    if (responseMessage.sessionInfo.isEmpty){
+    if (responseMessage.sessionInfo.isEmpty) {
       Log.d("No session info found in response. Assuming invalid.")
       return false
     }
