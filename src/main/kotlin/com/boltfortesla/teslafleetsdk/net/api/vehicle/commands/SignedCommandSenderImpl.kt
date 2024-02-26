@@ -31,7 +31,7 @@ internal class SignedCommandSenderImpl(
     sessionInfo: SessionInfo,
     clientPublicKey: ByteArray
   ): Result<CommandProtocolResponse> {
-    sessionInfo.counter.incrementAndGet()
+    val requestSessionInfo = sessionInfo.copy(sessionInfo.counter + 1)
     val domain =
       when (message) {
         is UnsignedMessage -> Domain.DOMAIN_VEHICLE_SECURITY

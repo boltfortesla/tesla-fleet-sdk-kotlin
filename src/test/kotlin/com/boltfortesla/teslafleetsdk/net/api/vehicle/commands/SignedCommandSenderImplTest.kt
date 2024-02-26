@@ -51,7 +51,7 @@ class SignedCommandSenderImplTest {
     SessionInfo(
       "epoch".toByteArray(),
       clockTime = 0,
-      counter = AtomicInteger(0),
+      counter = 0,
       "sharedSecret".toByteArray()
     )
 

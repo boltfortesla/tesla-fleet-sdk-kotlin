@@ -20,7 +20,6 @@ import com.tesla.generated.universalmessage.UniversalMessage.Domain
 import com.tesla.generated.universalmessage.destination
 import com.tesla.generated.universalmessage.routableMessage
 import java.util.Base64
-import java.util.concurrent.atomic.AtomicInteger
 import org.junit.Test
 
 class CommandSignerImplTest {
@@ -36,12 +35,7 @@ class CommandSignerImplTest {
       commandSigner.sign(
         Constants.VIN,
         action {},
-        SessionInfo(
-          Constants.EPOCH.decodeHex(),
-          TIMER_START,
-          AtomicInteger(7),
-          HANDSHAKE_KEY.decodeHex()
-        ),
+        SessionInfo(Constants.EPOCH.decodeHex(), TIMER_START, 7, HANDSHAKE_KEY.decodeHex()),
         Domain.DOMAIN_INFOTAINMENT,
         Base64.getDecoder().decode(Pem(TestKeys.CLIENT_PUBLIC_KEY).base64())
       )

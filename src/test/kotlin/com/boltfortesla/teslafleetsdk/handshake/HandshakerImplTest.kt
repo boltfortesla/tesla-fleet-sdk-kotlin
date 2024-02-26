@@ -32,7 +32,6 @@ import com.tesla.generated.universalmessage.destination
 import com.tesla.generated.universalmessage.routableMessage
 import com.tesla.generated.universalmessage.sessionInfoRequest
 import java.util.Base64
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
@@ -92,7 +91,7 @@ class HandshakerImplTest {
         }
       )
     assertThat(commandAuthData)
-      .isEqualTo(SessionInfo(EPOCH.decodeHex(), 2650, AtomicInteger(6), HANDSHAKE_KEY.decodeHex()))
+      .isEqualTo(SessionInfo(EPOCH.decodeHex(), 2650, 6, HANDSHAKE_KEY.decodeHex()))
   }
 
   @Test
