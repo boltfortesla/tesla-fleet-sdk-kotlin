@@ -1137,7 +1137,7 @@ internal class VehicleCommandsImpl(
         val sessionInfo = ensureSessionStarted(domain)
         if (sessionInfo != null && useCommandProtocol) {
           Log.d("Signing command and sending via command protocol")
-          return signedCommandSender.signAndSend(action, sessionInfo, clientPublicKey)
+          return signedCommandSender.signAndSend(action, clientPublicKey, sharedSecretFetcher)
         }
       } catch (e: Exception) {
         return Result.failure(e)

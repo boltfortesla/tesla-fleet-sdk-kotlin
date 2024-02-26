@@ -123,6 +123,7 @@ class VehicleCommandsImplTest {
   private val jitterFactorCalculator = JitterFactorCalculatorImpl()
   private val networkExecutor = NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
   private val sessionInfoRepository = SessionInfoRepositoryImpl()
+  private val sessionInfoAuthenticator = SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator)
   private val commandSigner =
     CommandSignerImpl(
       object : CommandAuthenticator {
@@ -146,12 +147,25 @@ class VehicleCommandsImplTest {
       publicKeyEncoder,
       fakeIdentifiers
     )
+  private val handshaker =
+    HandshakerImpl(
+      TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+      publicKeyEncoder,
+      vehicleEndpointsApi,
+      sessionInfoAuthenticator,
+      fakeIdentifiers,
+      networkExecutor,
+    )
+
   private val signedCommandSender =
     SignedCommandSenderImpl(
       commandSigner,
       VehicleEndpointsImpl(Constants.VIN, vehicleEndpointsApi, networkExecutor),
       networkExecutor,
-      Constants.VIN
+      SessionValidatorImpl(sessionInfoAuthenticator),
+      sessionInfoRepository,
+      handshaker,
+      Constants.VIN,
     )
 
   private val vehicleCommands =
@@ -184,7 +198,7 @@ class VehicleCommandsImplTest {
         TestKeys.CLIENT_PUBLIC_KEY_BYTES,
         publicKeyEncoder,
         vehicleEndpointsApi,
-        SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
+        sessionInfoAuthenticator,
         fakeIdentifiers,
         networkExecutor
       ),

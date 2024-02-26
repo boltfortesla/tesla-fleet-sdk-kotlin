@@ -1,13 +1,14 @@
 package com.boltfortesla.teslafleetsdk.fixtures
 
-import com.boltfortesla.teslafleetsdk.fixtures.Constants.REQUEST_UUID
 import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_ROUTING_ADDRESS
 import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_SESSION_INFO_TAG
+import com.boltfortesla.teslafleetsdk.fixtures.Constants.REQUEST_UUID
 import com.google.protobuf.ByteString
 import com.tesla.generated.carserver.server.CarServer.OperationStatus_E
 import com.tesla.generated.carserver.server.actionStatus
 import com.tesla.generated.carserver.server.response
 import com.tesla.generated.signatures.hMACSignatureData
+import com.tesla.generated.signatures.sessionInfo
 import com.tesla.generated.signatures.signatureData
 import com.tesla.generated.universalmessage.UniversalMessage
 import com.tesla.generated.universalmessage.UniversalMessage.MessageFault_E
@@ -41,6 +42,24 @@ object Responses {
     protobufMessageAsBytes =
       response { actionStatus = actionStatus { result = OperationStatus_E.OPERATIONSTATUS_OK } }
         .toByteString()
+  }
+
+  val RETRYABLE_SIGNED_MESSAGE_FAULT_RESPONSE = routableMessage {
+    signedMessageStatus = messageStatus {
+      signedMessageFault = MessageFault_E.MESSAGEFAULT_ERROR_BUSY
+    }
+    sessionInfo =
+      sessionInfo {
+          counter = 6
+          clockTime = 3000
+          epoch = ByteString.copyFromUtf8("epoch")
+        }
+        .toByteString()
+    signatureData = signatureData {
+      sessionInfoTag = hMACSignatureData {
+        tag = ByteString.fromHex("140595e7f1e79b9efa24225d36174bda8ee05001e1d2ac6093812eb57bae2caa")
+      }
+    }
   }
 
   val INFOTAINMENT_OPERATION_FAILURE_RESPONSE = routableMessage {

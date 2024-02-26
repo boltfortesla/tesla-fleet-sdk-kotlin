@@ -42,7 +42,7 @@ internal class VehicleCommandsFactory(
     commandProtocolSupported: Boolean,
     region: Region,
     retryConfig: RetryConfig,
-    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): VehicleCommands {
     val networkExecutor = NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
     val endpointsApi = createVehicleEndpointsApi(region.baseUrl, clientBuilder)
@@ -54,7 +54,7 @@ internal class VehicleCommandsFactory(
         endpointsApi,
         sessionInfoAuthenticator,
         identifiers,
-        networkExecutor
+        networkExecutor,
       )
 
     return VehicleCommandsImpl(
@@ -69,9 +69,12 @@ internal class VehicleCommandsFactory(
         commandSigner,
         VehicleEndpointsImpl(vin, endpointsApi, networkExecutor),
         networkExecutor,
+        SessionValidatorImpl(sessionInfoAuthenticator),
+        sessionInfoRepository,
+        handshaker,
         vin,
       ),
-      sessionInfoRepository
+      sessionInfoRepository,
     )
   }
 }
