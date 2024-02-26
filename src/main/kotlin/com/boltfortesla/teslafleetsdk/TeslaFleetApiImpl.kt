@@ -134,6 +134,7 @@ internal class TeslaFleetApiImpl(
     )
 
   override fun saveSessionInfo(): String {
+    Log.d("Saving session info")
     val byteStream = ByteArrayOutputStream()
     ObjectOutputStream(byteStream).use { it.writeObject(sessionInfoRepository.getAll()) }
     byteStream.close()
@@ -141,6 +142,7 @@ internal class TeslaFleetApiImpl(
   }
 
   override fun loadSessionInfo(sessionInfoBase64: String) {
+    Log.d("Loading session info")
     val sessionInfoBytes = Base64.getDecoder().decode(sessionInfoBase64)
     val byteStream = ByteArrayInputStream(sessionInfoBytes)
     ObjectInputStream(byteStream).use {
