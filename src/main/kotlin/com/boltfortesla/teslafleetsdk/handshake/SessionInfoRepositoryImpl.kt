@@ -16,6 +16,17 @@ internal class SessionInfoRepositoryImpl : SessionInfoRepository {
     sessionInfoMap[SessionInfoKey(vin, domain)] = sessionInfo
   }
 
+  @Synchronized
+  override fun remove(vin: String, domain: Domain) {
+    sessionInfoMap.remove(SessionInfoKey(vin, domain))
+  }
+
+  @Synchronized
+  override fun incrementCounter(vin: String, domain: Domain) {
+    val existingSession = get(vin, domain) ?: return
+    set(vin, domain, existingSession.copy(counter = existingSession.counter + 1))
+  }
+
   @Synchronized override fun getAll() = sessionInfoMap.toMap()
 
   @Synchronized

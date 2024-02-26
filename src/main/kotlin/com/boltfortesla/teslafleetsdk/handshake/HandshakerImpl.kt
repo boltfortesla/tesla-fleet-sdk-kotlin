@@ -21,7 +21,6 @@ import com.tesla.generated.universalmessage.destination
 import com.tesla.generated.universalmessage.routableMessage
 import com.tesla.generated.universalmessage.sessionInfoRequest
 import java.util.Base64
-import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -100,7 +99,7 @@ internal class HandshakerImpl(
       return SessionInfo(
         sessionInfo.epoch.toByteArray(),
         sessionInfo.clockTime,
-        AtomicInteger(sessionInfo.counter),
+        sessionInfo.counter,
         sharedSecret,
       )
     }

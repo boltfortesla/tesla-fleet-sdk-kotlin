@@ -5,7 +5,7 @@ import com.boltfortesla.teslafleetsdk.crypto.HmacCalculatorImpl
 import com.boltfortesla.teslafleetsdk.encoding.HexCodec.decodeHex
 import com.boltfortesla.teslafleetsdk.encoding.TlvEncoderImpl
 import com.boltfortesla.teslafleetsdk.fixtures.Constants
-import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_KEY
+import com.boltfortesla.teslafleetsdk.fixtures.Constants.SHARED_SECRET
 import com.boltfortesla.teslafleetsdk.fixtures.fakes.FakeIdentifiers
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
 import com.boltfortesla.teslafleetsdk.keys.Pem
@@ -20,7 +20,6 @@ import com.tesla.generated.universalmessage.UniversalMessage.Domain
 import com.tesla.generated.universalmessage.destination
 import com.tesla.generated.universalmessage.routableMessage
 import java.util.Base64
-import java.util.concurrent.atomic.AtomicInteger
 import org.junit.Test
 
 class CommandSignerImplTest {
@@ -36,12 +35,7 @@ class CommandSignerImplTest {
       commandSigner.sign(
         Constants.VIN,
         action {},
-        SessionInfo(
-          Constants.EPOCH.decodeHex(),
-          TIMER_START,
-          AtomicInteger(7),
-          HANDSHAKE_KEY.decodeHex()
-        ),
+        SessionInfo(Constants.EPOCH.decodeHex(), TIMER_START, 7, SHARED_SECRET.decodeHex()),
         Domain.DOMAIN_INFOTAINMENT,
         Base64.getDecoder().decode(Pem(TestKeys.CLIENT_PUBLIC_KEY).base64())
       )

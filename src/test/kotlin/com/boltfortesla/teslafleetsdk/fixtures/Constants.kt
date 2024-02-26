@@ -5,9 +5,9 @@ package com.boltfortesla.teslafleetsdk.fixtures
  * https://github.com/teslamotors/vehicle-command/blob/main/pkg/protocol/protocol.md
  */
 object Constants {
-  const val HANDSHAKE_KEY = "1b2fce19967b79db696f909cff89ea9a"
+  const val SHARED_SECRET = "1b2fce19967b79db696f909cff89ea9a"
   const val HANDSHAKE_HMAC = "fceb679ee7bca756fcd441bf238bf2f338629b41d9eb9c67be1b32c9672ce300"
-  const val HANDSHAKE_REQUEST_UUID = "1588d5a30eabc6f8fc9a951b11f6fd11"
+  const val REQUEST_UUID = "1588d5a30eabc6f8fc9a951b11f6fd11"
   const val HANDSHAKE_TLV =
     "000106021135594a333031323334353637383941424306101588d5a30eabc6f8fc9a951b11f6fd11ff"
   const val HANDSHAKE_ROUTING_ADDRESS = "2c907bd76c640d360b3027dc7404efde"

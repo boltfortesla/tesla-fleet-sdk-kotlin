@@ -37,7 +37,7 @@ internal class CommandSignerImpl(
     val currentTimeSeconds = (System.currentTimeMillis() / 1000).toInt()
     val zeroTime = currentTimeSeconds - sessionInfo.clockTime
     val expirationTime = currentTimeSeconds + COMMAND_EXPIRATION.seconds.toInt() - zeroTime
-    val counter = sessionInfo.counter.get()
+    val counter = sessionInfo.counter
 
     val metadata =
       tlvEncoder.encodeTlv(

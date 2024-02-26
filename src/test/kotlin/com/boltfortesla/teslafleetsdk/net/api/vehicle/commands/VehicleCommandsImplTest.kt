@@ -18,7 +18,6 @@ import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticatorImpl
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.Pem
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoderImpl
-import com.boltfortesla.teslafleetsdk.net.HandshakeRecoveryStrategyFactory
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.AutoSeat
@@ -124,6 +123,7 @@ class VehicleCommandsImplTest {
   private val jitterFactorCalculator = JitterFactorCalculatorImpl()
   private val networkExecutor = NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
   private val sessionInfoRepository = SessionInfoRepositoryImpl()
+  private val sessionInfoAuthenticator = SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator)
   private val commandSigner =
     CommandSignerImpl(
       object : CommandAuthenticator {
@@ -152,7 +152,7 @@ class VehicleCommandsImplTest {
       TestKeys.CLIENT_PUBLIC_KEY_BYTES,
       publicKeyEncoder,
       vehicleEndpointsApi,
-      SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
+      sessionInfoAuthenticator,
       fakeIdentifiers,
       networkExecutor,
     )
@@ -162,7 +162,9 @@ class VehicleCommandsImplTest {
       commandSigner,
       VehicleEndpointsImpl(Constants.VIN, vehicleEndpointsApi, networkExecutor),
       networkExecutor,
-      HandshakeRecoveryStrategyFactory(handshaker, sessionInfoRepository),
+      SessionValidatorImpl(sessionInfoAuthenticator),
+      sessionInfoRepository,
+      handshaker,
       Constants.VIN,
     )
 
@@ -170,9 +172,16 @@ class VehicleCommandsImplTest {
     VehicleCommandsImpl(
       vin = Constants.VIN,
       Pem(TestKeys.CLIENT_PUBLIC_KEY).byteArray(),
-      sharedSecretFetcher = { Constants.HANDSHAKE_KEY.decodeHex() },
+      sharedSecretFetcher = { Constants.SHARED_SECRET.decodeHex() },
       commandProtocolSupported = true,
-      handshaker,
+      HandshakerImpl(
+        TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+        publicKeyEncoder,
+        vehicleEndpointsApi,
+        SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
+        fakeIdentifiers,
+        networkExecutor
+      ),
       vehicleCommandsApi,
       networkExecutor,
       signedCommandSender,
@@ -183,15 +192,15 @@ class VehicleCommandsImplTest {
     VehicleCommandsImpl(
       vin = Constants.VIN,
       Pem(TestKeys.CLIENT_PUBLIC_KEY).byteArray(),
-      sharedSecretFetcher = { Constants.HANDSHAKE_KEY.decodeHex() },
+      sharedSecretFetcher = { Constants.SHARED_SECRET.decodeHex() },
       commandProtocolSupported = false,
       HandshakerImpl(
         TestKeys.CLIENT_PUBLIC_KEY_BYTES,
         publicKeyEncoder,
         vehicleEndpointsApi,
-        SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
+        sessionInfoAuthenticator,
         fakeIdentifiers,
-        networkExecutor,
+        networkExecutor
       ),
       vehicleCommandsApi,
       networkExecutor,

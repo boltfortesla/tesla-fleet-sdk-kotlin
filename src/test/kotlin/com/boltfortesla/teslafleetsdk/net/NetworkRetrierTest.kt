@@ -4,7 +4,6 @@ package com.boltfortesla.teslafleetsdk.net
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
 import com.google.common.truth.Truth.assertThat
-import com.tesla.generated.universalmessage.UniversalMessage.MessageFault_E
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -38,8 +37,7 @@ class NetworkRetrierTest {
 
   @Test
   fun doWithRetries_success_callsActionOnce() = runTest {
-    val networkRetrier =
-      NetworkRetrier(RetryConfig(), jitterFactorCalculator, MessageFaultRecoveryStrategy.NONE)
+    val networkRetrier = NetworkRetrier(RetryConfig(), jitterFactorCalculator)
 
     val result = networkRetrier.doWithRetries(fakeAction) { false }
 
@@ -49,12 +47,7 @@ class NetworkRetrierTest {
 
   @Test
   fun doWithRetries_fails_retriesMaxRetries() = runTest {
-    val networkRetrier =
-      NetworkRetrier(
-        RetryConfig(maxRetries = 5),
-        jitterFactorCalculator,
-        MessageFaultRecoveryStrategy.NONE
-      )
+    val networkRetrier = NetworkRetrier(RetryConfig(maxRetries = 5), jitterFactorCalculator)
 
     val result = networkRetrier.doWithRetries(fakeAction) { true }
 
@@ -64,12 +57,7 @@ class NetworkRetrierTest {
 
   @Test
   fun doWithRetries_failsThenSucceeds_retriesUntilSuccess() = runTest {
-    val networkRetrier =
-      NetworkRetrier(
-        RetryConfig(maxRetries = 5),
-        jitterFactorCalculator,
-        MessageFaultRecoveryStrategy.NONE
-      )
+    val networkRetrier = NetworkRetrier(RetryConfig(maxRetries = 5), jitterFactorCalculator)
 
     val result = networkRetrier.doWithRetries(fakeAction) { actionCount <= 3 }
 
@@ -79,19 +67,9 @@ class NetworkRetrierTest {
 
   @Test
   fun doWithRetries_fails_noRetries_callsActionOnce() = runTest {
-    val networkRetrier =
-      NetworkRetrier(
-        RetryConfig(maxRetries = 0),
-        jitterFactorCalculator,
-        MessageFaultRecoveryStrategy.NONE
-      )
+    val networkRetrier = NetworkRetrier(RetryConfig(maxRetries = 0), jitterFactorCalculator)
 
-    val result =
-      networkRetrier.doWithRetries(
-        fakeAction,
-      ) {
-        true
-      }
+    val result = networkRetrier.doWithRetries(fakeAction) { true }
 
     assertThat(actionCount).isEqualTo(1)
     assertThat(result).isEqualTo(expectedResult)
@@ -102,18 +80,10 @@ class NetworkRetrierTest {
     val networkRetrier =
       NetworkRetrier(
         RetryConfig(maxRetries = 5, initialBackoffDelayMs = 100, backoffFactor = 1.5),
-        jitterFactorCalculator,
-        MessageFaultRecoveryStrategy.NONE
+        jitterFactorCalculator
       )
 
-    val result =
-      scope.async {
-        networkRetrier.doWithRetries(
-          fakeAction,
-        ) {
-          true
-        }
-      }
+    val result = scope.async { networkRetrier.doWithRetries(fakeAction) { true } }
     dispatcher.scheduler.runCurrent()
 
     assertThat(actionCount).isEqualTo(1)
@@ -125,7 +95,7 @@ class NetworkRetrierTest {
   }
 
   @Test
-  fun doWithReties_429_usesRetryAfterHeader() {
+  fun doWithRetries_429_usesRetryAfterHeader() {
     expectedResult =
       Result.failure(
         HttpException(
@@ -142,12 +112,7 @@ class NetworkRetrierTest {
           )
         )
       )
-    val networkRetrier =
-      NetworkRetrier(
-        RetryConfig(maxRetries = 5),
-        jitterFactorCalculator,
-        MessageFaultRecoveryStrategy.NONE
-      )
+    val networkRetrier = NetworkRetrier(RetryConfig(maxRetries = 5), jitterFactorCalculator)
 
     val result =
       scope.async {
@@ -185,18 +150,11 @@ class NetworkRetrierTest {
           backoffFactor = 1.75,
           maxBackoffDelay = 200
         ),
-        jitterFactorCalculator,
-        MessageFaultRecoveryStrategy.NONE
+        jitterFactorCalculator
       )
 
     val result =
-      CoroutineScope(dispatcher).async {
-        networkRetrier.doWithRetries(
-          fakeAction,
-        ) {
-          true
-        }
-      }
+      CoroutineScope(dispatcher).async { networkRetrier.doWithRetries(fakeAction) { true } }
     dispatcher.scheduler.runCurrent()
 
     assertThat(actionCount).isEqualTo(1)
@@ -221,18 +179,11 @@ class NetworkRetrierTest {
           override fun calculate(): Double {
             return 1.10
           }
-        },
-        MessageFaultRecoveryStrategy.NONE
+        }
       )
 
     val result =
-      CoroutineScope(dispatcher).async {
-        networkRetrier.doWithRetries(
-          fakeAction,
-        ) {
-          true
-        }
-      }
+      CoroutineScope(dispatcher).async { networkRetrier.doWithRetries(fakeAction) { true } }
     dispatcher.scheduler.runCurrent()
 
     assertThat(actionCount).isEqualTo(1)
@@ -243,38 +194,6 @@ class NetworkRetrierTest {
     }
 
     runTest { assertThat(result.await()).isEqualTo(expectedResult) }
-  }
-
-  @Test
-  fun doWithRetries_retryableMessageFault_attemptsRecovery() = runTest {
-    var recoveryAttempts = 0
-    val networkRetrier =
-      NetworkRetrier(RetryConfig(maxRetries = 5), jitterFactorCalculator) { recoveryAttempts++ }
-    expectedResult =
-      Result.failure(
-        SignedMessagesFaultException(MessageFault_E.MESSAGEFAULT_ERROR_INVALID_SIGNATURE)
-      )
-
-    val result = networkRetrier.doWithRetries(fakeAction) { false }
-
-    assertThat(actionCount).isEqualTo(6)
-    assertThat(recoveryAttempts).isEqualTo(5)
-    assertThat(result).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun doWithRetries_nonRetryableMessageFault_doesNotAttemptRecovery() = runTest {
-    var recoveryAttempts = 0
-    val networkRetrier =
-      NetworkRetrier(RetryConfig(maxRetries = 5), jitterFactorCalculator) { recoveryAttempts++ }
-    expectedResult =
-      Result.failure(SignedMessagesFaultException(MessageFault_E.MESSAGEFAULT_ERROR_UNKNOWN_KEY_ID))
-
-    val result = networkRetrier.doWithRetries(fakeAction) { false }
-
-    assertThat(actionCount).isEqualTo(1)
-    assertThat(recoveryAttempts).isEqualTo(0)
-    assertThat(result).isEqualTo(expectedResult)
   }
 
   private fun TestDispatcher.advanceTimeByAndRun(delayTimeMillis: Long) {

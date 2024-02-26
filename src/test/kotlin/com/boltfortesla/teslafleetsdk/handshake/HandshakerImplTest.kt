@@ -6,7 +6,7 @@ import com.boltfortesla.teslafleetsdk.crypto.HmacCalculatorImpl
 import com.boltfortesla.teslafleetsdk.encoding.HexCodec.decodeHex
 import com.boltfortesla.teslafleetsdk.encoding.TlvEncoderImpl
 import com.boltfortesla.teslafleetsdk.fixtures.Constants.EPOCH
-import com.boltfortesla.teslafleetsdk.fixtures.Constants.HANDSHAKE_KEY
+import com.boltfortesla.teslafleetsdk.fixtures.Constants.SHARED_SECRET
 import com.boltfortesla.teslafleetsdk.fixtures.Constants.VIN
 import com.boltfortesla.teslafleetsdk.fixtures.Responses
 import com.boltfortesla.teslafleetsdk.fixtures.Responses.HANDSHAKE_RESPONSE
@@ -32,7 +32,6 @@ import com.tesla.generated.universalmessage.destination
 import com.tesla.generated.universalmessage.routableMessage
 import com.tesla.generated.universalmessage.sessionInfoRequest
 import java.util.Base64
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
@@ -67,7 +66,7 @@ class HandshakerImplTest {
       MockResponse().setBody(signedCommandJson(HANDSHAKE_RESPONSE)).setResponseCode(200)
     )
     val commandAuthData =
-      handshaker.performHandshake(VIN, Domain.DOMAIN_INFOTAINMENT) { HANDSHAKE_KEY.decodeHex() }
+      handshaker.performHandshake(VIN, Domain.DOMAIN_INFOTAINMENT) { SHARED_SECRET.decodeHex() }
 
     val request = JSONObject(server.takeRequest().body.readUtf8())
     val routableMessage =
@@ -92,7 +91,7 @@ class HandshakerImplTest {
         }
       )
     assertThat(commandAuthData)
-      .isEqualTo(SessionInfo(EPOCH.decodeHex(), 2650, AtomicInteger(6), HANDSHAKE_KEY.decodeHex()))
+      .isEqualTo(SessionInfo(EPOCH.decodeHex(), 2650, 6, SHARED_SECRET.decodeHex()))
   }
 
   @Test
@@ -107,7 +106,7 @@ class HandshakerImplTest {
     server.enqueue(MockResponse().setBody(signedCommandJson(response)).setResponseCode(200))
 
     assertFailsWith<ResponseAuthenticationFailedException> {
-      handshaker.performHandshake(VIN, Domain.DOMAIN_INFOTAINMENT) { HANDSHAKE_KEY.decodeHex() }
+      handshaker.performHandshake(VIN, Domain.DOMAIN_INFOTAINMENT) { SHARED_SECRET.decodeHex() }
     }
   }
 
@@ -121,7 +120,7 @@ class HandshakerImplTest {
 
     val exception =
       assertFailsWith<SignedMessagesFaultException> {
-        handshaker.performHandshake(VIN, Domain.DOMAIN_INFOTAINMENT) { HANDSHAKE_KEY.decodeHex() }
+        handshaker.performHandshake(VIN, Domain.DOMAIN_INFOTAINMENT) { SHARED_SECRET.decodeHex() }
       }
     assertThat(exception.fault)
       .isEqualTo(UniversalMessage.MessageFault_E.MESSAGEFAULT_ERROR_BAD_PARAMETER)

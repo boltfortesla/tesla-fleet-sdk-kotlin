@@ -17,7 +17,7 @@ internal class SessionInfoAuthenticatorImpl(
   override fun authenticate(
     sharedSecret: ByteArray,
     vin: String,
-    handshakeUuid: ByteArray,
+    requestUuid: ByteArray,
     sessionInfo: ByteArray,
     sessionInfoTag: ByteArray,
   ) {
@@ -29,7 +29,7 @@ internal class SessionInfoAuthenticatorImpl(
           Tag.TAG_SIGNATURE_TYPE_VALUE to
             byteArrayOf(SignatureType.SIGNATURE_TYPE_HMAC.number.toByte()),
           Tag.TAG_PERSONALIZATION_VALUE to vin.toByteArray(),
-          Tag.TAG_CHALLENGE_VALUE to handshakeUuid,
+          Tag.TAG_CHALLENGE_VALUE to requestUuid,
         ),
         suffix = 0xff.toByte()
       )
@@ -41,10 +41,10 @@ internal class SessionInfoAuthenticatorImpl(
         hmacCalculator.calculateSha256Hmac(sessionInfoKey, metadata + sessionInfo)
       )
     if (!digestsMatch) {
-      Log.d("handshake failed, digests do not match")
+      Log.d("Session info failed to authenticate, digests do not match")
       throw ResponseAuthenticationFailedException()
     }
-    Log.d("digests match!")
+    Log.d("Session info is valid")
   }
 
   companion object {

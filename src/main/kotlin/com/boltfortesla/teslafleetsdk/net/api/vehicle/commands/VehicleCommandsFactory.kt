@@ -9,7 +9,6 @@ import com.boltfortesla.teslafleetsdk.handshake.HandshakerImpl
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticator
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoder
-import com.boltfortesla.teslafleetsdk.net.HandshakeRecoveryStrategyFactory
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculator
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpointsImpl
@@ -43,7 +42,7 @@ internal class VehicleCommandsFactory(
     commandProtocolSupported: Boolean,
     region: Region,
     retryConfig: RetryConfig,
-    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): VehicleCommands {
     val networkExecutor = NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
     val endpointsApi = createVehicleEndpointsApi(region.baseUrl, clientBuilder)
@@ -55,7 +54,7 @@ internal class VehicleCommandsFactory(
         endpointsApi,
         sessionInfoAuthenticator,
         identifiers,
-        networkExecutor
+        networkExecutor,
       )
 
     return VehicleCommandsImpl(
@@ -70,10 +69,12 @@ internal class VehicleCommandsFactory(
         commandSigner,
         VehicleEndpointsImpl(vin, endpointsApi, networkExecutor),
         networkExecutor,
-        HandshakeRecoveryStrategyFactory(handshaker, sessionInfoRepository),
+        SessionValidatorImpl(sessionInfoAuthenticator),
+        sessionInfoRepository,
+        handshaker,
         vin,
       ),
-      sessionInfoRepository
+      sessionInfoRepository,
     )
   }
 }

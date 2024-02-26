@@ -1,7 +1,5 @@
 package com.boltfortesla.teslafleetsdk.handshake
 
-import java.util.concurrent.atomic.AtomicInteger
-
 /**
  * Information needed for sending signed commands for a specific session.
  *
@@ -14,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger
 internal data class SessionInfo(
   val epoch: ByteArray,
   val clockTime: Int,
-  val counter: AtomicInteger,
+  val counter: Int,
   val sharedSecret: ByteArray,
 ) {
   override fun equals(other: Any?): Boolean {
@@ -25,14 +23,14 @@ internal data class SessionInfo(
 
     if (!epoch.contentEquals(other.epoch)) return false
     if (clockTime != other.clockTime) return false
-    if (counter.get() != other.counter.get()) return false
+    if (counter != other.counter) return false
     return sharedSecret.contentEquals(other.sharedSecret)
   }
 
   override fun hashCode(): Int {
     var result = epoch.contentHashCode()
     result = 31 * result + clockTime
-    result = 31 * result + counter.hashCode()
+    result = 31 * result + counter
     result = 31 * result + sharedSecret.contentHashCode()
     return result
   }
