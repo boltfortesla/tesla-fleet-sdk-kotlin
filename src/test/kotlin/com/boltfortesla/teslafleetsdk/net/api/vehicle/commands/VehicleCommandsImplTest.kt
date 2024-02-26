@@ -1599,6 +1599,7 @@ class VehicleCommandsImplTest {
 
     // Handshake, then two flash lights
     assertThat(server.requestCount).isEqualTo(3)
+    repeat(3) { assertThat(server.takeRequest().requestUrl.toString()).endsWith("/signed_command") }
   }
 
   @Test
@@ -1627,8 +1628,9 @@ class VehicleCommandsImplTest {
     vehicleCommands.flashLights()
     vehicleCommands.unlockDoors()
 
-    // Handshake, then two flash lights
+    // Handshake, then two flash lights + two unlock doors
     assertThat(server.requestCount).isEqualTo(6)
+    repeat(6) { assertThat(server.takeRequest().requestUrl.toString()).endsWith("/signed_command") }
   }
 
   private fun testApiCall(

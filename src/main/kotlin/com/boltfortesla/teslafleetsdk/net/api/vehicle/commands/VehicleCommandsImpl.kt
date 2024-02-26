@@ -116,7 +116,6 @@ import com.tesla.generated.vcsec.Vcsec.RKEAction_E.RKE_ACTION_REMOTE_DRIVE
 import com.tesla.generated.vcsec.Vcsec.RKEAction_E.RKE_ACTION_UNLOCK
 import com.tesla.generated.vcsec.closureMoveRequest
 import com.tesla.generated.vcsec.unsignedMessage
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -137,10 +136,9 @@ internal class VehicleCommandsImpl(
   private val vehicleCommandsApi: VehicleCommandsApi,
   private val networkExecutor: NetworkExecutor,
   private val signedCommandSender: SignedCommandSender,
-  private val sessionInfoRepository: SessionInfoRepository
+  private val sessionInfoRepository: SessionInfoRepository,
 ) : VehicleCommands {
   private val handshakeMutex = Mutex()
-  private val sessionInfoMap = ConcurrentHashMap<Domain, SessionInfo>()
   private var useCommandProtocol = commandProtocolSupported
 
   override suspend fun actuateTrunk(trunk: VehicleCommands.Trunk): Result<VehicleCommandResponse> {
@@ -393,13 +391,13 @@ internal class VehicleCommandsImpl(
   override suspend fun sendUrl(
     url: String,
     locale: String,
-    timestampMs: String
+    timestampMs: String,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.shareUrl(
         vin,
-        ShareRequest(value = Value(url), locale = locale, timestampMs = timestampMs)
+        ShareRequest(value = Value(url), locale = locale, timestampMs = timestampMs),
       )
     }
   }
@@ -407,13 +405,13 @@ internal class VehicleCommandsImpl(
   override suspend fun sendNavigationGps(
     latitude: Float,
     longitude: Float,
-    order: Int
+    order: Int,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.startNavigationToCoordinates(
         vin,
-        NavigationGpsRequest(latitude, longitude, order)
+        NavigationGpsRequest(latitude, longitude, order),
       )
     }
   }
@@ -421,26 +419,26 @@ internal class VehicleCommandsImpl(
   override suspend fun sendNavigationDestination(
     destination: String,
     locale: String,
-    timestampMs: String
+    timestampMs: String,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.sendNavigationLocation(
         vin,
-        ShareRequest(value = Value(destination), locale = locale, timestampMs = timestampMs)
+        ShareRequest(value = Value(destination), locale = locale, timestampMs = timestampMs),
       )
     }
   }
 
   override suspend fun sendNavigationSupercharger(
     id: Int,
-    order: Int
+    order: Int,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.startNavigationToSupercharger(
         vin,
-        NavigationSuperchargerRequest(id, order)
+        NavigationSuperchargerRequest(id, order),
       )
     }
   }
@@ -453,7 +451,7 @@ internal class VehicleCommandsImpl(
 
   private suspend fun automaticSeatClimateControl(
     seat: AutoSeat,
-    autoClimateOn: Boolean
+    autoClimateOn: Boolean,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -469,7 +467,7 @@ internal class VehicleCommandsImpl(
     ) {
       vehicleCommandsApi.setAutoSeatClimate(
         vin,
-        RemoteAutoSeatClimateRequest(seat.value, autoClimateOn = autoClimateOn)
+        RemoteAutoSeatClimateRequest(seat.value, autoClimateOn = autoClimateOn),
       )
     }
   }
@@ -493,7 +491,7 @@ internal class VehicleCommandsImpl(
     ) {
       vehicleCommandsApi.setAutoSteeringWheelHeat(
         vin,
-        RemoteAutoSteeringWheelHeatClimateRequest(on = on)
+        RemoteAutoSteeringWheelHeatClimateRequest(on = on),
       )
     }
   }
@@ -507,7 +505,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun setSeatCooler(
     seat: CoolerSeat,
-    level: SeatClimateLevel
+    level: SeatClimateLevel,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -527,7 +525,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun setSeatHeater(
     seat: HeaterSeat,
-    level: SeatClimateLevel
+    level: SeatClimateLevel,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -575,7 +573,7 @@ internal class VehicleCommandsImpl(
     ) {
       vehicleCommandsApi.setSteeringWheelHeatLevel(
         vin,
-        RemoteSteeringWheelHeatLevelRequest(level.value)
+        RemoteSteeringWheelHeatLevelRequest(level.value),
       )
     }
   }
@@ -642,7 +640,7 @@ internal class VehicleCommandsImpl(
 
   private suspend fun bioweaponDefenseMode(
     on: Boolean,
-    manualOverride: Boolean
+    manualOverride: Boolean,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -666,7 +664,7 @@ internal class VehicleCommandsImpl(
 
   private suspend fun cabinOverheatProtection(
     on: Boolean,
-    fanOnly: Boolean
+    fanOnly: Boolean,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -680,7 +678,7 @@ internal class VehicleCommandsImpl(
     ) {
       vehicleCommandsApi.setCabinOverheatProtection(
         vin,
-        SetCabinOverheatProtectionRequest(on, fanOnly)
+        SetCabinOverheatProtectionRequest(on, fanOnly),
       )
     }
   }
@@ -710,7 +708,7 @@ internal class VehicleCommandsImpl(
   }
 
   override suspend fun setClimateKeeperMode(
-    mode: ClimateKeeperMode,
+    mode: ClimateKeeperMode
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -741,10 +739,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun disablePinToDrive(pin: String) = pinToDrive(enable = false, pin)
 
-  private suspend fun pinToDrive(
-    enable: Boolean,
-    pin: String,
-  ): Result<VehicleCommandResponse> {
+  private suspend fun pinToDrive(enable: Boolean, pin: String): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
         vehicleAction = vehicleAction {
@@ -767,7 +762,7 @@ internal class VehicleCommandsImpl(
 
   private suspend fun maximumPreconditioning(
     on: Boolean,
-    manualOverride: Boolean?
+    manualOverride: Boolean?,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -781,7 +776,7 @@ internal class VehicleCommandsImpl(
     ) {
       vehicleCommandsApi.setPreconditioningMax(
         vin,
-        SetPreconditioningMaxRequest(on, manualOverride)
+        SetPreconditioningMaxRequest(on, manualOverride),
       )
     }
   }
@@ -794,7 +789,7 @@ internal class VehicleCommandsImpl(
 
   private suspend fun scheduledCharging(
     on: Boolean,
-    minutesAfterMidnight: Int? = null
+    minutesAfterMidnight: Int? = null,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -808,7 +803,7 @@ internal class VehicleCommandsImpl(
     ) {
       vehicleCommandsApi.setScheduledCharging(
         vin,
-        SetScheduledChargingRequest(on, minutesAfterMidnight)
+        SetScheduledChargingRequest(on, minutesAfterMidnight),
       )
     }
   }
@@ -819,7 +814,7 @@ internal class VehicleCommandsImpl(
     preconditioningWeekdaysOnly: Boolean,
     offPeakChargingEnabled: Boolean,
     offPeakChargingWeekdaysOnly: Boolean,
-    endOffPeakTime: Int
+    endOffPeakTime: Int,
   ) =
     scheduledDeparture(
       on = true,
@@ -828,7 +823,7 @@ internal class VehicleCommandsImpl(
       preconditioningWeekdaysOnly,
       offPeakChargingEnabled,
       offPeakChargingWeekdaysOnly,
-      endOffPeakTime
+      endOffPeakTime,
     )
 
   override suspend fun disableScheduledDeparture() = scheduledDeparture(on = false)
@@ -840,7 +835,7 @@ internal class VehicleCommandsImpl(
     preconditioningWeekdaysOnly: Boolean? = null,
     offPeakChargingEnabled: Boolean? = null,
     offPeakChargingWeekdaysOnly: Boolean? = null,
-    endOffPeakTime: Int? = null
+    endOffPeakTime: Int? = null,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -880,8 +875,8 @@ internal class VehicleCommandsImpl(
           preconditioningWeekdaysOnly,
           offPeakChargingEnabled,
           offPeakChargingWeekdaysOnly,
-          endOffPeakTime
-        )
+          endOffPeakTime,
+        ),
       )
     }
   }
@@ -890,9 +885,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun disableSentryMode() = sentryMode(on = false)
 
-  private suspend fun sentryMode(
-    on: Boolean,
-  ): Result<VehicleCommandResponse> {
+  private suspend fun sentryMode(on: Boolean): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
         vehicleAction = vehicleAction {
@@ -906,7 +899,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun setTemperaturesF(
     driverTempF: Float,
-    passengerTempF: Float
+    passengerTempF: Float,
   ): Result<VehicleCommandResponse> {
     fun Float.fToC(): Float {
       return ((this - 32) * (5f / 9f) * 2).roundToInt() / 2f
@@ -917,7 +910,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun setTemperaturesC(
     driverTempC: Float,
-    passengerTempC: Float
+    passengerTempC: Float,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -1053,7 +1046,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun triggerHomelink(
     latitude: Float,
-    longitude: Float
+    longitude: Float,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -1083,7 +1076,7 @@ internal class VehicleCommandsImpl(
   override suspend fun controlWindows(
     latitude: Float,
     longitude: Float,
-    command: WindowCommand
+    command: WindowCommand,
   ): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
@@ -1103,7 +1096,7 @@ internal class VehicleCommandsImpl(
     ) {
       vehicleCommandsApi.windowControl(
         vin,
-        WindowControlRequest(latitude, longitude, command.name.lowercase())
+        WindowControlRequest(latitude, longitude, command.name.lowercase()),
       )
     }
   }
@@ -1120,7 +1113,7 @@ internal class VehicleCommandsImpl(
 
   private suspend fun executeCommand(
     action: GeneratedMessageV3?,
-    apiCall: suspend VehicleCommandsApi.() -> CommandResponse
+    apiCall: suspend VehicleCommandsApi.() -> CommandResponse,
   ): Result<VehicleCommandResponse> {
     Log.d("Executing Command")
     if (action != null) {
@@ -1165,9 +1158,9 @@ internal class VehicleCommandsImpl(
     Log.d("Starting session for $domain if needed")
     handshakeMutex.withLock {
       val sessionInfo = sessionInfoRepository.get(vin, domain)
-      if (useCommandProtocol && sessionInfo == null) {
-        try {
-          return handshaker.performHandshake(vin, domain, sharedSecretFetcher).also {
+      return if (useCommandProtocol && sessionInfo == null) {
+        return try {
+          handshaker.performHandshake(vin, domain, sharedSecretFetcher).also {
             sessionInfoRepository.set(vin, domain, it)
           }
         } catch (httpException: HttpException) {
@@ -1177,6 +1170,7 @@ internal class VehicleCommandsImpl(
           } else {
             throw httpException
           }
+          null
         }
       } else {
         Log.d(
@@ -1185,7 +1179,6 @@ internal class VehicleCommandsImpl(
         sessionInfo
       }
     }
-    return null
   }
 
   private companion object {
