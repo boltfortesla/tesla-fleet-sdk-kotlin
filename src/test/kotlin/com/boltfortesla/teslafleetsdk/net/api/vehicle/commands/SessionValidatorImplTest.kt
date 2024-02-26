@@ -24,7 +24,7 @@ class SessionValidatorImplTest {
     SessionValidatorImpl(SessionInfoAuthenticatorImpl(TlvEncoderImpl(), HmacCalculatorImpl()))
 
   @Test
-  fun isSessionValid_responseHasNoSessionInfo_isTrue() {
+  fun isSessionValid_responseHasNoSessionInfo_isFalse() {
     val result =
       validator.isSessionValid(
         RESPONSE_MESSAGE.copy { clearSessionInfo() },
@@ -33,7 +33,7 @@ class SessionValidatorImplTest {
         VIN,
       )
 
-    assertThat(result).isTrue()
+    assertThat(result).isFalse()
   }
 
   @Test

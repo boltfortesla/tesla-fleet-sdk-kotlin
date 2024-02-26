@@ -98,6 +98,20 @@ object Responses {
     signedMessageStatus = messageStatus {
       signedMessageFault = MessageFault_E.MESSAGEFAULT_ERROR_BAD_PARAMETER
     }
+
+    sessionInfo =
+      sessionInfo {
+          counter = 6
+          clockTime = 3000
+          epoch = ByteString.copyFromUtf8("epoch")
+        }
+        .toByteString()
+
+    signatureData = signatureData {
+      sessionInfoTag = hMACSignatureData {
+        tag = ByteString.fromHex("140595e7f1e79b9efa24225d36174bda8ee05001e1d2ac6093812eb57bae2caa")
+      }
+    }
   }
 
   fun signedCommandJson(routableMessage: RoutableMessage): String {
