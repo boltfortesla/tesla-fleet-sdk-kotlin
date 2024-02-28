@@ -29,24 +29,26 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-  implementation 'com.boltfortesla:tesla-fleet-sdk-kotlin:1.0.0'
+  implementation('com.boltfortesla:tesla-fleet-sdk-kotlin:1.2.0')
 }
 ```
 
 ### Maven
 ```xml
-<repositories>
-  <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>  
-  </repository>
-</repositories>
-
-<dependency>
-  <groupId>com.boltfortesla</groupId>
-  <artifactId>tesla-fleet-sdk-kotlin</artifactId>
-  <version>1.0.0</version>
-</dependency>
+<project>
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>  
+    </repository>
+  </repositories>
+  
+  <dependency>
+    <groupId>com.boltfortesla</groupId>
+    <artifactId>tesla-fleet-sdk-kotlin</artifactId>
+    <version>1.2.0</version>
+  </dependency>
+</project>
 ```
 ## Contributing
 
@@ -85,7 +87,7 @@ Once you have an instace of `TeslaFleetApi`, you can make API calls. They are gr
 
 ```kotlin
 // This depends on the current User's account
-val region = Region.NA_APAC,
+val region = Region.NA_APAC
 // The oAuth Access Token for the User who's account will be used to make API Calls.
 // Make sure the Token is not expired. This SDK does not handle token refreshes.
 val accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
