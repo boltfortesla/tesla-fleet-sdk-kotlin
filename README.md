@@ -1,8 +1,13 @@
 
+# Project Title
+
+A brief description of what this project does and who it's for
+
+
 ![Logo](https://avatars.githubusercontent.com/u/160552401)
 
 
-# Kotlin Tesla Fleet SDK 
+# Kotlin Tesla Fleet SDK
 
 An implementation of the [Tesla Fleet API](https://developer.tesla.com/docs/fleet-api) in Kotlin.
 
@@ -82,6 +87,21 @@ val PUBLIC_KEY =
 val teslaFleetApi = TeslaFleetApi.newInstance(Pem(PUBLIC_KEY).byteArray())
 ```
 
+### Session Management
+As part of the Command Protocol, a Session must be established with a vehicle. Sessions are specific to Vehicle and a [domain](https://github.com/teslamotors/vehicle-command/blob/main/pkg/protocol/domains.go). These sessions are long lived, e.g. a session may persist until the vehicle is rebooted. In order to avoid excessive handshakes, you can backup and restore session info. This is useful if your usage of this library is not a long-running process (think a mobile app).
+
+**!!! WARNING !!!**  
+This data should be handled the same as credentials. While on its own is not enough information to interact with a Vehicle, it is sensitive information
+
+```kotlin
+// Returns a base64 encoded string of all the Sesssions that were established.
+val sessionInfo = fleetApi.saveSessionInfo()
+
+// ...
+// Loads the base64 string returned by "saveSessionInfo" into memory
+fleetApi.loadSessionInfo(sessionInfo)
+```
+
 ### Calling APIs
 Once you have an instace of `TeslaFleetApi`, you can make API calls. They are grouped into classes similarly to how they are at [developer.tesla.com](https://developer.tesla.com/). Methods and parameters are based on the official API documentation. See the API docs or the source for more information.
 
@@ -143,7 +163,7 @@ TeslaFleetApi.vehicleEndpoints(
 ```
 
 #### `VehicleCommands`
-Returns an API for executing commands on a Vehicle. 
+Returns an API for executing commands on a Vehicle.
 
 ##### `SharedSecretFetcher`
 As part of the [Command Protocol](https://github.com/teslamotors/vehicle-command/blob/main/pkg/protocol/protocol.md#key-agreement), a "Shared Secret" must be calcuated using the Tesla Developer Application's Client Private Key and the Vehicle's Public Key. Because the Private Key should be kept private, this may not be a value that you will have stored alongside your usage of this SDK, and should not be shared over the internet.
@@ -153,11 +173,11 @@ See the [Key Agreement](https://github.com/teslamotors/vehicle-command/blob/main
 ```kotlin
 val sharedSecretFetcher = { vehiclePublicKey ->
   /** A pseudocode example:
-    val ecdh = createECDH(curveName = "p256")
-    ecdh.setPrivateKey(YOUR_CLIENT_PRIVATE_KEY)
-    val sharedSecret = ecdh.computeSecretAsHex(vehiclePublicKey)
-    sharedSecret.sha1Hash().toHex()
-  */
+  val ecdh = createECDH(curveName = "p256")
+  ecdh.setPrivateKey(YOUR_CLIENT_PRIVATE_KEY)
+  val sharedSecret = ecdh.computeSecretAsHex(vehiclePublicKey)
+  sharedSecret.sha1Hash().toHex()
+   */
 }
 ```
 If you know _ahead of time_ that the vehicle does not support the Command Protocol, set `commandProtocolSupported `
