@@ -55,7 +55,7 @@ internal class TeslaFleetApiImpl(
     fleetApiEndpointsFactory.create(
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken),
+      clientBuilder.configure(accessToken),
     )
 
   override fun oAuth(
@@ -64,7 +64,7 @@ internal class TeslaFleetApiImpl(
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder,
   ): TeslaOauth =
-    teslaOauthFactory.create(region, retryConfig, clientBuilder.withAuthInterceptor(accessToken))
+    teslaOauthFactory.create(region, retryConfig, clientBuilder.configure(accessToken))
 
   override fun chargingEndpoints(
     region: Region,
@@ -75,7 +75,7 @@ internal class TeslaFleetApiImpl(
     chargingEndpointsFactory.create(
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken),
+      clientBuilder.configure(accessToken),
     )
 
   override fun energyEndpoints(
@@ -89,7 +89,7 @@ internal class TeslaFleetApiImpl(
       energySiteId,
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken),
+      clientBuilder.configure(accessToken),
     )
 
   override fun userEndpoints(
@@ -98,7 +98,7 @@ internal class TeslaFleetApiImpl(
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder,
   ): UserEndpoints =
-    userEndpointsFactory.create(region, retryConfig, clientBuilder.withAuthInterceptor(accessToken))
+    userEndpointsFactory.create(region, retryConfig, clientBuilder.configure(accessToken))
 
   override fun vehicleCommands(
     vin: String,
@@ -116,7 +116,7 @@ internal class TeslaFleetApiImpl(
       commandProtocolSupported,
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken),
+      clientBuilder.configure(accessToken),
     )
 
   override fun vehicleEndpoints(
@@ -130,7 +130,7 @@ internal class TeslaFleetApiImpl(
       vin,
       region,
       retryConfig,
-      clientBuilder.withAuthInterceptor(accessToken),
+      clientBuilder.configure(accessToken),
     )
 
   override fun saveSessionInfo(): String {
@@ -154,4 +154,7 @@ internal class TeslaFleetApiImpl(
 
   private fun OkHttpClient.Builder.withAuthInterceptor(accessToken: String) =
     build().newBuilder().addInterceptor(AuthenticationInterceptor(accessToken))
+
+  private fun OkHttpClient.Builder.configure(accessToken: String) =
+    this.withAuthInterceptor(accessToken).retryOnConnectionFailure(false)
 }
