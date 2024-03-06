@@ -1,17 +1,8 @@
-
-# Project Title
-
-A brief description of what this project does and who it's for
-
-
-![Logo](https://avatars.githubusercontent.com/u/160552401)
-
-
 # Kotlin Tesla Fleet SDK
 
 An implementation of the [Tesla Fleet API](https://developer.tesla.com/docs/fleet-api) in Kotlin.
 
-
+![Logo](https://avatars.githubusercontent.com/u/160552401)
 
 ## Features
 
