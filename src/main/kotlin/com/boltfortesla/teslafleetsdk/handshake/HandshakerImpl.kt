@@ -12,6 +12,7 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpoints
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.request.SignedCommandRequest
 import com.boltfortesla.teslafleetsdk.net.signedMessageFault
 import com.google.protobuf.ByteString
+import com.tesla.generated.signatures.Signatures
 import com.tesla.generated.signatures.Signatures.SessionInfo as TeslaSessionInfo
 import com.tesla.generated.signatures.signatureData
 import com.tesla.generated.universalmessage.UniversalMessage.Domain
@@ -84,6 +85,12 @@ internal class HandshakerImpl(
         "got handshake response: ${responseMessage.copy { signatureData = signatureData {  } }.toByteArray().toHexString()}"
       )
       val sessionInfo = TeslaSessionInfo.parseFrom(responseMessage.sessionInfo)
+      if (
+        sessionInfo.status ==
+          Signatures.Session_Info_Status.SESSION_INFO_STATUS_KEY_NOT_ON_WHITELIST
+      ) {
+        throw KeyNotPairedException()
+      }
       Log.d("fetching shared secret")
       val sharedSecret = sharedSecretFetcher.fetchSharedSecret(sessionInfo.publicKey.toByteArray())
       Log.d("fetched shared secret with length ${sharedSecret.size}")

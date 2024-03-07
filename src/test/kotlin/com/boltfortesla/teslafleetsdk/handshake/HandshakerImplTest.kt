@@ -22,7 +22,9 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.createVehicleEnd
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.ByteString
 import com.google.protobuf.kotlin.toByteString
+import com.tesla.generated.signatures.Signatures.Session_Info_Status
 import com.tesla.generated.signatures.hMACSignatureData
+import com.tesla.generated.signatures.sessionInfo
 import com.tesla.generated.signatures.signatureData
 import com.tesla.generated.universalmessage.UniversalMessage
 import com.tesla.generated.universalmessage.UniversalMessage.Domain
@@ -52,7 +54,7 @@ class HandshakerImplTest {
       vehicleEndpointsApi,
       SessionInfoAuthenticatorImpl(TlvEncoderImpl(), HmacCalculatorImpl()),
       fakeIdentifiers,
-      NetworkExecutorImpl(RetryConfig(), JitterFactorCalculatorImpl())
+      NetworkExecutorImpl(RetryConfig(), JitterFactorCalculatorImpl()),
     )
 
   @After
@@ -124,5 +126,28 @@ class HandshakerImplTest {
       }
     assertThat(exception.fault)
       .isEqualTo(UniversalMessage.MessageFault_E.MESSAGEFAULT_ERROR_BAD_PARAMETER)
+  }
+
+  @Test
+  fun performHandshake_keyNotOnWhitelist_throwsKeyNotPairedException() = runTest {
+    server.enqueue(
+      MockResponse()
+        .setResponseCode(200)
+        .setBody(
+          signedCommandJson(
+            HANDSHAKE_RESPONSE.copy {
+              sessionInfo =
+                sessionInfo {
+                    status = Session_Info_Status.SESSION_INFO_STATUS_KEY_NOT_ON_WHITELIST
+                  }
+                  .toByteString()
+            }
+          )
+        )
+    )
+
+    assertFailsWith<KeyNotPairedException> {
+      handshaker.performHandshake(VIN, Domain.DOMAIN_INFOTAINMENT) { SHARED_SECRET.decodeHex() }
+    }
   }
 }
