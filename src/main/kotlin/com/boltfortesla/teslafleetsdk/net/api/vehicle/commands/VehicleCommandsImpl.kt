@@ -849,8 +849,6 @@ internal class VehicleCommandsImpl(
               } else {
                 preconditioningTimes = preconditioningTimes { weekdays = void {} }
               }
-            } else if (preconditioningEnabled == false) {
-              preconditioningTimes = preconditioningTimes {}
             }
             if (offPeakChargingEnabled == true) {
               if (offPeakChargingWeekdaysOnly == false) {
@@ -858,8 +856,6 @@ internal class VehicleCommandsImpl(
               } else {
                 offPeakChargingTimes = offPeakChargingTimes { weekdays = void {} }
               }
-            } else if (offPeakChargingEnabled == false) {
-              offPeakChargingTimes = offPeakChargingTimes {}
             }
             endOffPeakTime?.let { offPeakHoursEndTime = endOffPeakTime }
           }

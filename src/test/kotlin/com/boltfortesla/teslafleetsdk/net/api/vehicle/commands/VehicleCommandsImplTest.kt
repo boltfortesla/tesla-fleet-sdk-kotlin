@@ -1213,12 +1213,27 @@ class VehicleCommandsImplTest {
           enabled = true
           departureTime = 120
           preconditioningTimes = preconditioningTimes { weekdays = void {} }
-          offPeakChargingTimes = offPeakChargingTimes {}
+          offPeakChargingTimes = offPeakChargingTimes { allWeek = void {} }
           offPeakHoursEndTime = 210
         }
       }
     ) {
-      enableScheduledDeparture(120, true, true, false, false, 210)
+      enableScheduledDeparture(120, true, true, true, false, 210)
+    }
+  }
+
+  @Test
+  fun enableScheduledDeparture_preconditioningOff_offPeakOff() {
+    testInfotainmentCommand(
+      vehicleAction {
+        scheduledDepartureAction = scheduledDepartureAction {
+          enabled = true
+          departureTime = 120
+          offPeakHoursEndTime = 210
+        }
+      }
+    ) {
+      enableScheduledDeparture(120, false, true, false, false, 210)
     }
   }
 
