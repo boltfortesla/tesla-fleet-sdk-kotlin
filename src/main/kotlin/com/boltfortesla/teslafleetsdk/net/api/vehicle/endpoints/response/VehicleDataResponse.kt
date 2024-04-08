@@ -147,7 +147,7 @@ data class VehicleDataResponse(
     @SerializedName("native_type") val nativeType: String,
     val power: Int,
     @SerializedName("shift_state") val shiftState: String?,
-    val speed: String?,
+    val speed: Int?,
     val timestamp: Long,
   )
 
@@ -309,6 +309,8 @@ data class VehicleDataResponse(
       @SerializedName("install_perc") val installPerc: Int,
       val status: String,
       val version: String,
+      @SerializedName("warning_time_remaining_ms") val warningTimeRemainingMs: Int?,
+      @SerializedName("scheduled_time_ms") val scheduledTimeMs: Int?,
     )
 
     data class SpeedLimitMode(
