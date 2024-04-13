@@ -21,7 +21,7 @@ data class VehicleDataResponse(
   @SerializedName("ble_autopair_enrolled") val bleAutopairEnrolled: Boolean,
   @SerializedName("charge_state") val chargeState: ChargeState,
   @SerializedName("climate_state") val climateState: ClimateState,
-  @SerializedName("drive_state") val driveState: DriveState,
+  @SerializedName("drive_state") val driveState: DriveState?,
   @SerializedName("gui_settings") val guiSettings: GuiSettings,
   @SerializedName("vehicle_config") val vehicleConfig: VehicleConfig,
   @SerializedName("vehicle_state") val vehicleState: VehicleState,
