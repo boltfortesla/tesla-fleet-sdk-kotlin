@@ -579,6 +579,20 @@ class VehicleCommandsImplTest {
   }
 
   @Test
+  fun mediaVolumeUp_nonCommandProtocol() {
+    testApiCall("/api/1/vehicles/${Constants.VIN}/command/media_volume_up") { mediaVolumeUp() }
+  }
+
+  @Test
+  fun mediaVolumeUp_commandProtocol() {
+    testInfotainmentCommand(
+      vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta = 1 } }
+    ) {
+      mediaVolumeUp()
+    }
+  }
+
+  @Test
   fun sendUrl_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/share",

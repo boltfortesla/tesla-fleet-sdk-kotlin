@@ -381,7 +381,7 @@ internal class VehicleCommandsImpl(
   override suspend fun mediaVolumeUp(): Result<VehicleCommandResponse> {
     return executeCommand(
       action {
-        vehicleAction = vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta + 1 } }
+        vehicleAction = vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta = 1 } }
       }
     ) {
       vehicleCommandsApi.increaseMediaVolume(vin)
