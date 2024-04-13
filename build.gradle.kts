@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.boltfortesla"
-version = "1.2.3"
+version = "1.2.4"
 
 java {
 	withSourcesJar()
