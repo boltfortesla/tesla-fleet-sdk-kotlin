@@ -314,7 +314,7 @@ data class VehicleDataResponse(
       val status: String,
       val version: String,
       @SerializedName("warning_time_remaining_ms") val warningTimeRemainingMs: Int?,
-      @SerializedName("scheduled_time_ms") val scheduledTimeMs: Int?,
+      @SerializedName("scheduled_time_ms") val scheduledTimeMs: Long?,
     )
 
     data class SpeedLimitMode(
