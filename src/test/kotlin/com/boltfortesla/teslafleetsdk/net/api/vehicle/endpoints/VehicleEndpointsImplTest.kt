@@ -374,7 +374,7 @@ class VehicleEndpointsImplTest {
               isActive = true
             ),
             OptionsResponse.OptionCode("\$PPSW", "PPSW", "Pearl White Multi-Coat", true),
-            OptionsResponse.OptionCode("\$W40B", displayName = "18’’ Aero Wheels", isActive = true),
+            OptionsResponse.OptionCode("\$W40B", displayName = "18\" Aero Wheels", isActive = true),
             OptionsResponse.OptionCode(
               "\$IPB0",
               displayName = "All Black Premium Interior",
@@ -778,8 +778,12 @@ class VehicleEndpointsImplTest {
               false
             ),
             VehicleDataResponse.DriveState(
+              "Home",
+              73,
               37.7765494,
               -122.4195418,
+              6.485299,
+              23.466667,
               0,
               1692137422,
               289,
