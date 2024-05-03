@@ -134,8 +134,12 @@ data class VehicleDataResponse(
   )
 
   data class DriveState(
+    @SerializedName("active_route_destination") val activeRouteDestination: String?,
+    @SerializedName("active_route_energy_at_arrival") val activeRouteEnergyAtArrival: Int?,
     @SerializedName("active_route_latitude") val activeRouteLatitude: Double,
     @SerializedName("active_route_longitude") val activeRouteLongitude: Double,
+    @SerializedName("active_route_miles_to_arrival") val activeRouteMilesToArrival: Double?,
+    @SerializedName("active_route_minutes_to_arrival") val activeRouteMinutesToArrival: Double?,
     @SerializedName("active_route_traffic_minutes_delay") val activeRouteTrafficMinutesDelay: Int,
     @SerializedName("gps_as_of") val gpsAsOf: Long,
     val heading: Int,
