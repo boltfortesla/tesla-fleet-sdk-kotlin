@@ -170,7 +170,7 @@ class VehicleCommandsImplTest {
 
   private val vehicleCommands =
     VehicleCommandsImpl(
-      vin = Constants.VIN,
+      vehicleTag = Constants.VIN,
       Pem(TestKeys.CLIENT_PUBLIC_KEY).byteArray(),
       sharedSecretFetcher = { Constants.SHARED_SECRET.decodeHex() },
       commandProtocolSupported = true,
@@ -190,7 +190,7 @@ class VehicleCommandsImplTest {
 
   private val commandProtocolUnsupportedVehicleCommands =
     VehicleCommandsImpl(
-      vin = Constants.VIN,
+      vehicleTag = Constants.VIN,
       Pem(TestKeys.CLIENT_PUBLIC_KEY).byteArray(),
       sharedSecretFetcher = { Constants.SHARED_SECRET.decodeHex() },
       commandProtocolSupported = false,

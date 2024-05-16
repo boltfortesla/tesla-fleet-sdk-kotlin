@@ -11,16 +11,16 @@ internal class VehicleEndpointsFactory(
   private val jitterFactorCalculator: JitterFactorCalculator,
 ) {
   /**
-   * Creates a [VehicleEndpoints] instance for the vehicle identified by [vin].
+   * Creates a [VehicleEndpoints] instance for the vehicle identified by [vehicleTag].
    *
-   * @param vin the VIN for the vehicle to be command
+   * @param vehicleTag the VIN or id field for the vehicle to make requests about
    * @param region the [Region] the API calls should be made against
    * @param retryConfig a [RetryConfig]
    * @param clientBuilder a pre-configured [OkHttpClient.Builder] that will be used when making
    *   network requests
    */
   fun create(
-    vin: String,
+    vehicleTag: String,
     region: Region,
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
@@ -28,7 +28,7 @@ internal class VehicleEndpointsFactory(
     val networkExecutor = NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
 
     return VehicleEndpointsImpl(
-      vin,
+      vehicleTag,
       createVehicleEndpointsApi(region.baseUrl, clientBuilder),
       networkExecutor
     )

@@ -118,7 +118,7 @@ class VehicleEndpointsImplTest {
   fun getEligibleSubscriptions() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(ELIGIBLE_SUBSCRIPTIONS_RESPONSE))
 
-    val response = vehicleEndpoints.getEligibleSubscriptions()
+    val response = vehicleEndpoints.getEligibleSubscriptions(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path)
@@ -145,7 +145,7 @@ class VehicleEndpointsImplTest {
   fun getEligibleUpgrades() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(ELIGIBLE_UPGRADES_RESPONSE))
 
-    val response = vehicleEndpoints.getEligibleUpgrades()
+    val response = vehicleEndpoints.getEligibleUpgrades(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path)
@@ -360,7 +360,7 @@ class VehicleEndpointsImplTest {
   fun getOptions() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(OPTIONS_RESPONSE))
 
-    val response = vehicleEndpoints.getOptions()
+    val response = vehicleEndpoints.getOptions(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path).isEqualTo("/api/1/dx/vehicles/options?vin=${Constants.VIN}")
@@ -374,7 +374,7 @@ class VehicleEndpointsImplTest {
               isActive = true
             ),
             OptionsResponse.OptionCode("\$PPSW", "PPSW", "Pearl White Multi-Coat", true),
-            OptionsResponse.OptionCode("\$W40B", displayName = "18’’ Aero Wheels", isActive = true),
+            OptionsResponse.OptionCode("\$W40B", displayName = "18\" Aero Wheels", isActive = true),
             OptionsResponse.OptionCode(
               "\$IPB0",
               displayName = "All Black Premium Interior",
@@ -778,8 +778,12 @@ class VehicleEndpointsImplTest {
               false
             ),
             VehicleDataResponse.DriveState(
+              "Home",
+              73,
               37.7765494,
               -122.4195418,
+              6.485299,
+              23.466667,
               0,
               1692137422,
               289,
@@ -906,7 +910,7 @@ class VehicleEndpointsImplTest {
               false,
               false,
               true,
-              VehicleDataResponse.VehicleState.SoftwareUpdate(0, 2700, 1, "", " "),
+              VehicleDataResponse.VehicleState.SoftwareUpdate(0, 2700, 1, "", " ", null, null),
               VehicleDataResponse.VehicleState.SpeedLimitMode(false, 85.0, 120.0, 50.0, false),
               false,
               5,
@@ -1006,7 +1010,7 @@ class VehicleEndpointsImplTest {
   fun getWarrantyDetails() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(WARRANTY_DETAILS_RESPONSE))
 
-    val response = vehicleEndpoints.getWarrantyDetails()
+    val response = vehicleEndpoints.getWarrantyDetails(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path).isEqualTo("/api/1/dx/warranty/details?vin=${Constants.VIN}")

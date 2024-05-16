@@ -25,9 +25,10 @@ internal class VehicleCommandsFactory(
   private val sessionInfoRepository: SessionInfoRepository
 ) {
   /**
-   * Creates a [VehicleCommands] instance for the vehicle identified by [vin].
+   * Creates a [VehicleCommands] instance for the vehicle identified by [vehicleTag].
    *
-   * @param vin the VIN for the vehicle to be command
+   * @param vin the VIN of the vehicle
+   * @param vehicleTag the VIN or id field for the vehicle to be command
    * @param clientPublicKey the Tesla Developer Application public key
    * @param region the [Region] the API calls should be made against
    * @param retryConfig a [RetryConfig]
@@ -38,6 +39,7 @@ internal class VehicleCommandsFactory(
    */
   fun create(
     vin: String,
+    vehicleTag: String,
     clientPublicKey: ByteArray,
     sharedSecretFetcher: SharedSecretFetcher,
     commandProtocolSupported: Boolean,
@@ -58,7 +60,7 @@ internal class VehicleCommandsFactory(
       )
 
     return VehicleCommandsImpl(
-      vin,
+      vehicleTag,
       clientPublicKey,
       sharedSecretFetcher,
       commandProtocolSupported,
@@ -67,7 +69,7 @@ internal class VehicleCommandsFactory(
       networkExecutor,
       SignedCommandSenderImpl(
         commandSigner,
-        VehicleEndpointsImpl(vin, endpointsApi, networkExecutor),
+        VehicleEndpointsImpl(vehicleTag, endpointsApi, networkExecutor),
         networkExecutor,
         SessionValidatorImpl(sessionInfoAuthenticator),
         sessionInfoRepository,

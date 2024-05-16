@@ -9,20 +9,20 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.request.SignedCo
 
 /** Implementation of [VehicleEndpoints]. */
 internal class VehicleEndpointsImpl(
-  private val vin: String,
+  private val vehicleTag: String,
   private val vehicleEndpointsApi: VehicleEndpointsApi,
   private val networkExecutor: NetworkExecutor
 ) : VehicleEndpoints {
   override suspend fun getDrivers() =
-    networkExecutor.execute { vehicleEndpointsApi.getDrivers(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.getDrivers(vehicleTag) }
 
   override suspend fun removeDrivers(userId: Int) =
-    networkExecutor.execute { vehicleEndpointsApi.removeDriver(vin, userId) }
+    networkExecutor.execute { vehicleEndpointsApi.removeDriver(vehicleTag, userId) }
 
-  override suspend fun getEligibleSubscriptions() =
+  override suspend fun getEligibleSubscriptions(vin: String) =
     networkExecutor.execute { vehicleEndpointsApi.getEligibleSubscriptions(vin) }
 
-  override suspend fun getEligibleUpgrades() =
+  override suspend fun getEligibleUpgrades(vin: String) =
     networkExecutor.execute { vehicleEndpointsApi.getEligibleUpgrades(vin) }
 
   override suspend fun getFleetStatus(vins: List<String>) =
@@ -52,47 +52,47 @@ internal class VehicleEndpointsImpl(
     }
 
   override suspend fun deleteFleetTelemetryConfig() =
-    networkExecutor.execute { vehicleEndpointsApi.deleteFleetTelemetryConfig(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.deleteFleetTelemetryConfig(vehicleTag) }
 
   override suspend fun getFleetTelemetryConfig() =
-    networkExecutor.execute { vehicleEndpointsApi.getFleetTelemetryConfig(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.getFleetTelemetryConfig(vehicleTag) }
 
   override suspend fun listVehicles(page: Int?, perPage: Int?) =
     networkExecutor.execute { vehicleEndpointsApi.listVehicles(page, perPage) }
 
   override suspend fun isMobileEnabled() =
-    networkExecutor.execute { vehicleEndpointsApi.mobileEnabled(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.mobileEnabled(vehicleTag) }
 
   override suspend fun getNearbyChargingSites(count: Int?, radius: Int?, detail: Boolean?) =
-    networkExecutor.execute { vehicleEndpointsApi.nearbyChargingSites(vin, count, radius, detail) }
+    networkExecutor.execute { vehicleEndpointsApi.nearbyChargingSites(vehicleTag, count, radius, detail) }
 
-  override suspend fun getOptions() =
+  override suspend fun getOptions(vin: String) =
     networkExecutor.execute { vehicleEndpointsApi.getOptions(vin) }
 
   override suspend fun getRecentAlerts() =
-    networkExecutor.execute { vehicleEndpointsApi.getRecentAlerts(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.getRecentAlerts(vehicleTag) }
 
   override suspend fun getReleaseNotes(staged: Boolean, language: Int) =
-    networkExecutor.execute { vehicleEndpointsApi.getReleaseNotes(vin, staged, language) }
+    networkExecutor.execute { vehicleEndpointsApi.getReleaseNotes(vehicleTag, staged, language) }
 
   override suspend fun getServiceData() =
-    networkExecutor.execute { vehicleEndpointsApi.getServiceData(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.getServiceData(vehicleTag) }
 
   override suspend fun shareInvites() =
-    networkExecutor.execute { vehicleEndpointsApi.getShareInvites(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.getShareInvites(vehicleTag) }
 
   override suspend fun createShareInvite() =
-    networkExecutor.execute { vehicleEndpointsApi.createShareInvite(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.createShareInvite(vehicleTag) }
 
   override suspend fun redeemShareInvite(code: String) =
     networkExecutor.execute { vehicleEndpointsApi.redeemShareInvite(RedeemInviteRequest(code)) }
 
   override suspend fun revokeShareInvites(id: String) =
-    networkExecutor.execute { vehicleEndpointsApi.revokeShareInvite(vin, id) }
+    networkExecutor.execute { vehicleEndpointsApi.revokeShareInvite(vehicleTag, id) }
 
   override suspend fun signedCommand(routableMessage: String) =
     networkExecutor.execute {
-      vehicleEndpointsApi.sendSignedCommand(vin, SignedCommandRequest(routableMessage))
+      vehicleEndpointsApi.sendSignedCommand(vehicleTag, SignedCommandRequest(routableMessage))
     }
 
   override suspend fun getSubscriptions(deviceToken: String, deviceType: String) =
@@ -102,11 +102,11 @@ internal class VehicleEndpointsImpl(
     networkExecutor.execute { vehicleEndpointsApi.setSubscriptions(deviceToken, deviceType) }
 
   override suspend fun getVehicle() =
-    networkExecutor.execute { vehicleEndpointsApi.getVehicle(vin) }
+    networkExecutor.execute { vehicleEndpointsApi.getVehicle(vehicleTag) }
 
   override suspend fun getVehicleData(endpoints: List<VehicleEndpoints.Endpoint>) =
     networkExecutor.execute {
-      vehicleEndpointsApi.getVehicleData(vin, endpoints.joinToString(";") { it.name.lowercase() })
+      vehicleEndpointsApi.getVehicleData(vehicleTag, endpoints.joinToString(";") { it.name.lowercase() })
     }
 
   override suspend fun getVehicleSubscriptions(deviceToken: String, deviceType: String) =
@@ -115,8 +115,8 @@ internal class VehicleEndpointsImpl(
   override suspend fun setVehicleSubscriptions(deviceToken: String, deviceType: String) =
     networkExecutor.execute { vehicleEndpointsApi.setVehicleSubscriptions(deviceToken, deviceType) }
 
-  override suspend fun wakeUp() = networkExecutor.execute { vehicleEndpointsApi.wakeUpVehicle(vin) }
+  override suspend fun wakeUp() = networkExecutor.execute { vehicleEndpointsApi.wakeUpVehicle(vehicleTag) }
 
-  override suspend fun getWarrantyDetails() =
+  override suspend fun getWarrantyDetails(vin: String) =
     networkExecutor.execute { vehicleEndpointsApi.getWarrantyDetails(vin) }
 }

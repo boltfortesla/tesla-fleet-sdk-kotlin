@@ -118,8 +118,12 @@
       "wiper_blade_heater": false
     },
     "drive_state": {
+      "active_route_destination": "Home",
+      "active_route_energy_at_arrival": 73,
       "active_route_latitude": 37.7765494,
       "active_route_longitude": -122.4195418,
+      "active_route_miles_to_arrival": 6.485299,
+      "active_route_minutes_to_arrival": 23.466667,
       "active_route_traffic_minutes_delay": 0,
       "gps_as_of": 1692137422,
       "heading": 289,

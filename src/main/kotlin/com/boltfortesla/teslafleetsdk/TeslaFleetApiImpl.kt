@@ -102,6 +102,7 @@ internal class TeslaFleetApiImpl(
 
   override fun vehicleCommands(
     vin: String,
+    vehicleTag: String,
     sharedSecretFetcher: SharedSecretFetcher,
     commandProtocolSupported: Boolean,
     region: Region,
@@ -111,6 +112,7 @@ internal class TeslaFleetApiImpl(
   ): VehicleCommands =
     vehicleCommandsFactory.create(
       vin,
+      vehicleTag,
       clientPublicKey,
       sharedSecretFetcher,
       commandProtocolSupported,
@@ -120,14 +122,14 @@ internal class TeslaFleetApiImpl(
     )
 
   override fun vehicleEndpoints(
-    vin: String,
+    vehicleTag: String,
     region: Region,
     accessToken: String,
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder,
   ): VehicleEndpoints =
     vehicleEndpointsFactory.create(
-      vin,
+      vehicleTag,
       region,
       retryConfig,
       clientBuilder.configure(accessToken),

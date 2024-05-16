@@ -29,9 +29,9 @@ interface VehicleEndpoints {
 
   suspend fun removeDrivers(userId: Int): Result<FleetApiResponse<String>>
 
-  suspend fun getEligibleSubscriptions(): Result<EligibleSubscriptionsResponse>
+  suspend fun getEligibleSubscriptions(vin: String): Result<EligibleSubscriptionsResponse>
 
-  suspend fun getEligibleUpgrades(): Result<EligibleUpgradesResponse>
+  suspend fun getEligibleUpgrades(vin: String): Result<EligibleUpgradesResponse>
 
   suspend fun getFleetStatus(vins: List<String>): Result<FleetApiResponse<FleetStatusResponse>>
 
@@ -62,7 +62,7 @@ interface VehicleEndpoints {
     detail: Boolean?
   ): Result<FleetApiResponse<NearbyChargingSitesResponse>>
 
-  suspend fun getOptions(): Result<OptionsResponse>
+  suspend fun getOptions(vin: String): Result<OptionsResponse>
 
   suspend fun getRecentAlerts(): Result<FleetApiResponse<RecentAlertsResponse>>
 
@@ -111,7 +111,7 @@ interface VehicleEndpoints {
 
   suspend fun wakeUp(): Result<FleetApiResponse<Vehicle>>
 
-  suspend fun getWarrantyDetails(): Result<WarrantyDetailsResponse>
+  suspend fun getWarrantyDetails(vin: String): Result<WarrantyDetailsResponse>
 
   enum class Endpoint {
     CHARGE_STATE,
