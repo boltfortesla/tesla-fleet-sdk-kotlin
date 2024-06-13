@@ -57,14 +57,17 @@ internal class NetworkRetrier(
   }
 
   private fun Result<*>.getRetryAfter(): Duration {
-    if(isSuccess) { return Duration.ZERO }
-
-    val exception = exceptionOrNull() as? HttpException
-    if(exception?.code() != RATE_LIMITED_CODE) {
+    if (isSuccess) {
       return Duration.ZERO
     }
 
-    return exception.response()?.headers()?.get(RETRY_AFTER_HEADER)?.toLongOrNull()?.seconds ?: Duration.ZERO
+    val exception = exceptionOrNull() as? HttpException
+    if (exception?.code() != RATE_LIMITED_CODE) {
+      return Duration.ZERO
+    }
+
+    return exception.response()?.headers()?.get(RETRY_AFTER_HEADER)?.toLongOrNull()?.seconds
+      ?: Duration.ZERO
   }
 
   companion object {
