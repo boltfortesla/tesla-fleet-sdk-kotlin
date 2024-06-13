@@ -2,8 +2,9 @@ package com.boltfortesla.teslafleetsdk.net
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
 import com.boltfortesla.teslafleetsdk.log.Log
-import java.time.Duration
 import kotlin.coroutines.coroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -23,28 +24,29 @@ import retrofit2.HttpException
  */
 internal class NetworkRetrier(
   private val retryConfig: RetryConfig,
-  private val jitterFactorCalculator: JitterFactorCalculator
+  private val jitterFactorCalculator: JitterFactorCalculator,
 ) {
   suspend fun <T> doWithRetries(
     action: suspend () -> Result<T>,
     isRetryable: (Result<T>) -> Boolean,
   ): Result<T> {
     var retryCount = 0
-    var currentDelay = retryConfig.initialBackoffDelayMs
+    var currentDelay = retryConfig.initialBackoffDelay
 
     while (coroutineContext.isActive) {
       Log.d("Making request")
       val result = action()
       Log.d("Request complete. Retrying if necessary")
-      if (isRetryable(result) && retryCount++ < retryConfig.maxRetries) {
-        val delay =
-          (result.calculateDelay(currentDelay) * jitterFactorCalculator.calculate()).toLong()
+
+      val retryAfter = result.getRetryAfter()
+      val retryableRateLimit = retryAfter <= retryConfig.maxRetryAfter
+      val delay = maxOf(currentDelay * jitterFactorCalculator.calculate(), retryAfter)
+
+      if (isRetryable(result) && retryableRateLimit && retryCount++ < retryConfig.maxRetries) {
         Log.d("Retrying in $delay ms. retryCount: $retryCount")
         delay(delay)
         currentDelay =
-          (currentDelay * retryConfig.backoffFactor)
-            .toLong()
-            .coerceAtMost(retryConfig.maxBackoffDelay)
+          (currentDelay * retryConfig.backoffFactor).coerceAtMost(retryConfig.maxBackoffDelay)
       } else {
         Log.d("Not retrying")
         return result
@@ -54,18 +56,18 @@ internal class NetworkRetrier(
     return Result.failure(CancellationException("Coroutine cancelled"))
   }
 
-  private fun Result<*>.calculateDelay(currentDelay: Long): Long {
-    onFailure {
-      if (it is HttpException && it.code() == RATE_LIMITED_CODE) {
-        val retryAfter =
-          Duration.ofSeconds(
-            it.response()?.headers()?.get(RETRY_AFTER_HEADER)?.toLongOrNull() ?: currentDelay
-          )
-        Log.d("Rate limited. Retrying in: $retryAfter")
-        return retryAfter.toMillis()
-      }
+  private fun Result<*>.getRetryAfter(): Duration {
+    if (isSuccess) {
+      return Duration.ZERO
     }
-    return currentDelay
+
+    val exception = exceptionOrNull() as? HttpException
+    if (exception?.code() != RATE_LIMITED_CODE) {
+      return Duration.ZERO
+    }
+
+    return exception.response()?.headers()?.get(RETRY_AFTER_HEADER)?.toLongOrNull()?.seconds
+      ?: Duration.ZERO
   }
 
   companion object {

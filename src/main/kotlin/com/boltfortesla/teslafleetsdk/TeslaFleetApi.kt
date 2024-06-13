@@ -24,6 +24,10 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommandsFa
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpoints
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpointsFactory
 import java.util.logging.Level
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import okhttp3.OkHttpClient
 
 /** Main entrypoint for the Fleet API. */
@@ -186,15 +190,19 @@ interface TeslaFleetApi {
    *
    * @param maxRetries the maximum number of times a network request will be retried. Defaults to
    *   [Int.MAX_VALUE]. In this case, the caller is expected to handle cancellation.
-   * @param initialBackoffDelayMs the initial delay between retries. Defaults to 200ms
+   * @param initialBackoffDelay the initial delay between retries. Defaults to 200ms
    * @param maxBackoffDelay the maximum delay between retries. Defaults to 2s.
    * @param backoffFactor the delay between retires is increased by this factor between attempts
+   * @param maxRetryAfter if Tesla returns an "retry-after" header with a 429 response that is less
+   *   than or equal to this value, the SDK will wait this amount of time before attempting another
+   *   request. Otherwise, the request will fail immediately.
    */
   data class RetryConfig(
     val maxRetries: Int = Int.MAX_VALUE,
-    val initialBackoffDelayMs: Long = 200L,
-    val maxBackoffDelay: Long = 2000L,
+    val initialBackoffDelay: Duration = 200.milliseconds,
+    val maxBackoffDelay: Duration = 2.seconds,
     val backoffFactor: Double = 1.5,
+    val maxRetryAfter: Duration = 24.hours,
   )
 
   enum class Region(val baseUrl: String, val authBaseUrl: String) {
