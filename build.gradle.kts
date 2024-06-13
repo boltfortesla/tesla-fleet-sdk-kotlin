@@ -29,7 +29,7 @@ ktfmt {
 
 dependencies {
   implementation("com.google.protobuf:protobuf-kotlin:3.25.2")
-  implementation("org.bouncycastle:bcprov-jdk18on:1.77")
+  implementation("org.bouncycastle:bcprov-jdk18on:1.78")
   implementation("com.squareup.retrofit2:retrofit:2.9.0")
   implementation("com.squareup.retrofit2:converter-gson:2.9.0")
   implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
