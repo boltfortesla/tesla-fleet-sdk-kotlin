@@ -193,12 +193,16 @@ interface TeslaFleetApi {
    * @param initialBackoffDelay the initial delay between retries. Defaults to 200ms
    * @param maxBackoffDelay the maximum delay between retries. Defaults to 2s.
    * @param backoffFactor the delay between retires is increased by this factor between attempts
+   * @param maxRetryAfter if Tesla returns an "retry-after" header with a 429 response that is less
+   *   than or equal to this value, the SDK will wait this amount of time before attempting another
+   *   request. Otherwise, the request will fail immediately.
    */
-  class RetryConfig(
+  data class RetryConfig(
     val maxRetries: Int = Int.MAX_VALUE,
     val initialBackoffDelay: Duration = 200.milliseconds,
     val maxBackoffDelay: Duration = 2.seconds,
     val backoffFactor: Double = 1.5,
+    val maxRetryAfter: Duration = 24.hours,
   )
 
   enum class Region(val baseUrl: String, val authBaseUrl: String) {

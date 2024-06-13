@@ -144,6 +144,36 @@ class NetworkRetrierTest {
   }
 
   @Test
+  fun doWithRetries_429_aboveMaxRateLimit_doesNotRetry() = runTest {
+    expectedResult =
+      Result.failure(
+        HttpException(
+          Response.error<Any>(
+            "".toResponseBody(),
+            okhttp3.Response.Builder() //
+              .body("".toResponseBody())
+              .code(429)
+              .message("Response.error()")
+              .protocol(Protocol.HTTP_1_1)
+              .addHeader("Retry-After", "1000")
+              .request(Request.Builder().url("http://localhost/").build())
+              .build(),
+          )
+        )
+      )
+    val networkRetrier =
+      NetworkRetrier(
+        RetryConfig(maxRetries = 5, maxRetryAfter = 999.seconds),
+        jitterFactorCalculator,
+      )
+
+    val result = networkRetrier.doWithRetries(fakeAction) { true }
+
+    assertThat(actionCount).isEqualTo(1)
+    assertThat(result).isEqualTo(expectedResult)
+  }
+
+  @Test
   fun doWithRetries_limitsDelayToMaxBackoffDelay() {
     val networkRetrier =
       NetworkRetrier(

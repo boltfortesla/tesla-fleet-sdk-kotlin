@@ -37,8 +37,12 @@ internal class NetworkRetrier(
       Log.d("Making request")
       val result = action()
       Log.d("Request complete. Retrying if necessary")
-      if (isRetryable(result) && retryCount++ < retryConfig.maxRetries) {
-        val delay = (result.calculateDelay(currentDelay) * jitterFactorCalculator.calculate())
+
+      val retryAfter = result.getRetryAfter()
+      val retryableRateLimit = retryAfter <= retryConfig.maxRetryAfter
+      val delay = maxOf(currentDelay * jitterFactorCalculator.calculate(), retryAfter)
+
+      if (isRetryable(result) && retryableRateLimit && retryCount++ < retryConfig.maxRetries) {
         Log.d("Retrying in $delay ms. retryCount: $retryCount")
         delay(delay)
         currentDelay =
@@ -52,18 +56,15 @@ internal class NetworkRetrier(
     return Result.failure(CancellationException("Coroutine cancelled"))
   }
 
-  private fun Result<*>.calculateDelay(currentDelay: Duration): Duration {
-    onFailure {
-      if (it is HttpException && it.code() == RATE_LIMITED_CODE) {
-        val retryAfter =
-          (it.response()?.headers()?.get(RETRY_AFTER_HEADER)?.toLongOrNull()?.seconds
-            ?: currentDelay)
+  private fun Result<*>.getRetryAfter(): Duration {
+    if(isSuccess) { return Duration.ZERO }
 
-        Log.d("Rate limited. Retrying in: $retryAfter")
-        return retryAfter
-      }
+    val exception = exceptionOrNull() as? HttpException
+    if(exception?.code() != RATE_LIMITED_CODE) {
+      return Duration.ZERO
     }
-    return currentDelay
+
+    return exception.response()?.headers()?.get(RETRY_AFTER_HEADER)?.toLongOrNull()?.seconds ?: Duration.ZERO
   }
 
   companion object {
