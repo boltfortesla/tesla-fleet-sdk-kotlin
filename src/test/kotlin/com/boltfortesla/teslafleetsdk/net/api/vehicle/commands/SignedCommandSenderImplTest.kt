@@ -19,6 +19,7 @@ import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.Pem
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoderImpl
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
+import com.boltfortesla.teslafleetsdk.net.NetworkExecutor.Companion.HTTP_TOO_MANY_REQUESTS
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
 import com.boltfortesla.teslafleetsdk.net.SignedMessagesFaultException
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandProtocolResponse.InfotainmentResponse
@@ -36,10 +37,12 @@ import com.tesla.generated.universalmessage.copy
 import com.tesla.generated.vcsec.Vcsec
 import com.tesla.generated.vcsec.Vcsec.RKEAction_E
 import com.tesla.generated.vcsec.unsignedMessage
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Test
+import retrofit2.HttpException
 
 class SignedCommandSenderImplTest {
   private val server = MockWebServer()
@@ -315,6 +318,44 @@ class SignedCommandSenderImplTest {
         )
       )
     assertThat(server.requestCount).isEqualTo(1)
+  }
+
+  @Test
+  fun fails_tooManyRequests_retryAfterHeaderOverMaxRetryAfter_doesNotRetry() = runTest {
+    sessionInfoRepository.set(Constants.VIN, Domain.DOMAIN_INFOTAINMENT, sessionInfo)
+    server.enqueue(
+      MockResponse().setResponseCode(HTTP_TOO_MANY_REQUESTS).setHeader("retry-after", 10)
+    )
+
+    val response =
+      createSignedCommandSender(RetryConfig(maxRetryAfter = 1.seconds))
+        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+
+    assertThat(server.requestCount).isEqualTo(1)
+    assertThat(response.isFailure).isTrue()
+    val exception = response.exceptionOrNull() as HttpException
+    assertThat(exception).isInstanceOf(UnrecoverableHttpException::class.java)
+    assertThat(exception.code()).isEqualTo(HTTP_TOO_MANY_REQUESTS)
+  }
+
+  @Test
+  fun fails_tooManyRequests_retryAfterHeaderUnderMaxRetryAfter_retries() = runTest {
+    sessionInfoRepository.set(Constants.VIN, Domain.DOMAIN_INFOTAINMENT, sessionInfo)
+    repeat(5) {
+      server.enqueue(
+        MockResponse().setResponseCode(HTTP_TOO_MANY_REQUESTS).setHeader("retry-after", 10)
+      )
+    }
+
+    val response =
+      createSignedCommandSender(RetryConfig(maxRetries = 4, maxRetryAfter = 15.seconds))
+        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+
+    assertThat(server.requestCount).isEqualTo(5)
+    assertThat(response.isFailure).isTrue()
+    val exception = response.exceptionOrNull() as HttpException
+    assertThat(exception).isInstanceOf(UnrecoverableHttpException::class.java)
+    assertThat(exception.code()).isEqualTo(HTTP_TOO_MANY_REQUESTS)
   }
 
   private fun createSignedCommandSender(

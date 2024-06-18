@@ -2,6 +2,8 @@ package com.boltfortesla.teslafleetsdk.net
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
 import com.boltfortesla.teslafleetsdk.log.Log
+import com.boltfortesla.teslafleetsdk.net.NetworkExecutor.Companion.HTTP_TOO_MANY_REQUESTS
+import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.UnrecoverableHttpException
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleTemporarilyUnavailableException
 import com.tesla.generated.universalmessage.UniversalMessage.MessageFault_E
 import java.io.IOException
@@ -40,6 +42,7 @@ internal class NetworkExecutorImpl(
         when (val exception = it.exceptionOrNull()) {
           is IOException,
           is VehicleTemporarilyUnavailableException -> true
+          is UnrecoverableHttpException -> false
           is HttpException -> RETRYABLE_STATUS_CODES.contains(exception.code())
           is SignedMessagesFaultException -> RETRYABLE_MESSAGE_FAULTS.contains(exception.fault)
           else -> false
@@ -53,7 +56,7 @@ internal class NetworkExecutorImpl(
      * A list of HTTP status codes that are considered retryable. Any other status code will not
      * result in a retry.
      */
-    val RETRYABLE_STATUS_CODES = listOf(408, 429, 503, 504)
+    val RETRYABLE_STATUS_CODES = listOf(408, HTTP_TOO_MANY_REQUESTS, 503, 504)
     val RETRYABLE_MESSAGE_FAULTS =
       listOf(
         MessageFault_E.MESSAGEFAULT_ERROR_BUSY,
