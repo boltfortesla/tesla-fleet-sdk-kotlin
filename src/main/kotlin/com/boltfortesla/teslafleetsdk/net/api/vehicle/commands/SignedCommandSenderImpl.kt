@@ -7,6 +7,7 @@ import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepository
 import com.boltfortesla.teslafleetsdk.log.Log
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutor
+import com.boltfortesla.teslafleetsdk.net.NetworkExecutor.Companion.HTTP_TOO_MANY_REQUESTS
 import com.boltfortesla.teslafleetsdk.net.SignedMessagesFaultException
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandProtocolResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandProtocolResponse.InfotainmentResponse
@@ -22,6 +23,7 @@ import com.tesla.generated.vcsec.Vcsec
 import com.tesla.generated.vcsec.Vcsec.UnsignedMessage
 import java.lang.IllegalArgumentException
 import java.util.Base64
+import retrofit2.HttpException
 
 /** Implementation of [SignedCommandSender] */
 internal class SignedCommandSenderImpl(
@@ -57,10 +59,11 @@ internal class SignedCommandSenderImpl(
         commandSigner.sign(vin, message, requestSessionInfo, domain, clientPublicKey)
 
       Log.d("Sending signed command to Fleet API")
-      val rawResponse =
-        vehicleEndpoints
-          .signedCommand(Base64.getEncoder().encodeToString(signedRequestMessage.toByteArray()))
-          .getOrNull()
+      val result =
+        vehicleEndpoints.signedCommand(
+          Base64.getEncoder().encodeToString(signedRequestMessage.toByteArray())
+        )
+      val rawResponse = result.getOrNull()
 
       val responseMessage =
         RoutableMessage.parseFrom(Base64.getDecoder().decode(rawResponse?.responseBase64 ?: ""))
@@ -73,6 +76,14 @@ internal class SignedCommandSenderImpl(
           sharedSecretFetcher,
         )
         throw SignedMessagesFaultException(it)
+      }
+
+      // Immediately rethrow a 429 as unrecoverable, because the response message is not parsable in
+      // this case
+      (result.exceptionOrNull() as? HttpException)?.let {
+        val response = it.response()
+        if (it.code() == HTTP_TOO_MANY_REQUESTS && response != null)
+          throw UnrecoverableHttpException(response)
       }
 
       when (responseMessage.fromDestination.domain) {

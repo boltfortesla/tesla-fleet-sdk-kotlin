@@ -2,6 +2,7 @@ package com.boltfortesla.teslafleetsdk.net
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.RetryConfig
 import com.boltfortesla.teslafleetsdk.log.Log
+import com.boltfortesla.teslafleetsdk.net.NetworkExecutor.Companion.HTTP_TOO_MANY_REQUESTS
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -16,8 +17,8 @@ import retrofit2.HttpException
  * The [RetryConfig] configures how retries are performed. Retries are backed off, using
  * [jitterFactorCalculator] to add jitter to the backoff
  *
- * Requests are only retried if they come back with a [RATE_LIMITED_CODE], or the caller determines
- * it is retryable (see [doWithRetries] isRetryable parameter).
+ * Requests are only retried if they come back with a [HTTP_TOO_MANY_REQUESTS], or the caller
+ * determines it is retryable (see [doWithRetries] isRetryable parameter).
  *
  * Requests are backed off according to [RetryConfig], however if a request comes back with a 429
  * (rate limited), the "Retry-After" header is used to determine when the request should be retried.
@@ -62,7 +63,7 @@ internal class NetworkRetrier(
     }
 
     val exception = exceptionOrNull() as? HttpException
-    if (exception?.code() != RATE_LIMITED_CODE) {
+    if (exception?.code() != HTTP_TOO_MANY_REQUESTS) {
       return Duration.ZERO
     }
 
@@ -71,7 +72,6 @@ internal class NetworkRetrier(
   }
 
   companion object {
-    private const val RATE_LIMITED_CODE = 429
     private const val RETRY_AFTER_HEADER = "Retry-After"
   }
 }

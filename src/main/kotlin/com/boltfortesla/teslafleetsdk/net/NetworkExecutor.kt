@@ -10,4 +10,8 @@ internal interface NetworkExecutor {
   suspend fun <T> execute(
     action: suspend () -> T,
   ): Result<T>
+
+  companion object {
+    const val HTTP_TOO_MANY_REQUESTS = 429
+  }
 }
