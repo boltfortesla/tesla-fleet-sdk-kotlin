@@ -133,10 +133,10 @@ class VehicleEndpointsImplTest {
               listOf(BillingOption("string", "string", "string", 0.0, 0.0, 0.0)),
               "string",
               "string",
-              "string"
+              "string",
             )
           ),
-          "string"
+          "string",
         )
       )
   }
@@ -161,9 +161,9 @@ class VehicleEndpointsImplTest {
               "\$FM3U",
               "PERF_FIRMWARE",
               "\$FM3B",
-              listOf(EligibleUpgradesResponse.EligibleOption.PricingOption(2000, 2000, "USD", true))
+              listOf(EligibleUpgradesResponse.EligibleOption.PricingOption(2000, 2000, "USD", true)),
             )
-          )
+          ),
         )
       )
   }
@@ -193,7 +193,7 @@ class VehicleEndpointsImplTest {
         "authority",
         mapOf("field" to 123, "field2" to 456),
         listOf("alert1", "alert2"),
-        12345
+        12345,
       )
 
     val request = server.takeRequest()
@@ -234,8 +234,8 @@ class VehicleEndpointsImplTest {
               "-----BEGIN CERTIFICATE-----\ncert\n-----END CERTIFICATE-----\n",
               1704067200,
               mapOf("DriveRail" to FieldConfig(1800), "BmsFullchargecomplete" to FieldConfig(1800)),
-              listOf("service")
-            )
+              listOf("service"),
+            ),
           )
         )
       )
@@ -272,7 +272,7 @@ class VehicleEndpointsImplTest {
               null,
               null,
               null,
-              null
+              null,
             )
           )
         )
@@ -313,7 +313,7 @@ class VehicleEndpointsImplTest {
                 "destination",
                 1.35024,
                 "restrooms,wifi,lodging",
-                id = 1
+                id = 1,
               ),
               NearbyChargingSitesResponse.ChargingStation(
                 Location(37.407771, -122.120076),
@@ -321,8 +321,8 @@ class VehicleEndpointsImplTest {
                 "destination",
                 1.534213,
                 "restrooms,restaurant,wifi,cafe,lodging",
-                id = 2
-              )
+                id = 2,
+              ),
             ),
             listOf(
               NearbyChargingSitesResponse.ChargingStation(
@@ -335,7 +335,7 @@ class VehicleEndpointsImplTest {
                 16,
                 false,
                 "",
-                id = 3
+                id = 3,
               ),
               NearbyChargingSitesResponse.ChargingStation(
                 Location(37.441734, -122.170202),
@@ -347,10 +347,10 @@ class VehicleEndpointsImplTest {
                 20,
                 false,
                 "",
-                id = 4
-              )
+                id = 4,
+              ),
             ),
-            1693588576552
+            1693588576552,
           )
         )
       )
@@ -371,26 +371,26 @@ class VehicleEndpointsImplTest {
             OptionsResponse.OptionCode(
               "\$MT315",
               displayName = "Long Range All-Wheel Drive",
-              isActive = true
+              isActive = true,
             ),
             OptionsResponse.OptionCode("\$PPSW", "PPSW", "Pearl White Multi-Coat", true),
             OptionsResponse.OptionCode("\$W40B", displayName = "18\" Aero Wheels", isActive = true),
             OptionsResponse.OptionCode(
               "\$IPB0",
               displayName = "All Black Premium Interior",
-              isActive = true
+              isActive = true,
             ),
             OptionsResponse.OptionCode("\$APBS", displayName = "Basic Autopilot", isActive = true),
             OptionsResponse.OptionCode(
               "\$APF2",
               displayName = "Full Self-Driving Capability",
-              isActive = true
+              isActive = true,
             ),
             OptionsResponse.OptionCode(
               "\$SC04",
               displayName = "Supercharger Network Access + Pay-as-you-go",
-              isActive = true
-            )
+              isActive = true,
+            ),
           )
         )
       )
@@ -413,7 +413,7 @@ class VehicleEndpointsImplTest {
                 "Name_Of_The_Alert",
                 "2021-03-19T22:01:15.101+00:00",
                 listOf("service-fix", "customer"),
-                "additional description text"
+                "additional description text",
               )
             )
           )
@@ -443,12 +443,12 @@ class VehicleEndpointsImplTest {
                 "release_notes_icon",
                 true,
                 "https://vehicle-files.teslamotors.com/release_notes/d0fa3e08a458696e6464a46c938ffc0a",
-                "https://vehicle-files.teslamotors.com/release_notes/9a122cff8916fffcb61cfd65a15c276f"
+                "https://vehicle-files.teslamotors.com/release_notes/9a122cff8916fffcb61cfd65a15c276f",
               )
             ),
             deployedVersion = "123",
             stagedVersion = null,
-            releaseNotesVersion = "456"
+            releaseNotesVersion = "456",
           )
         )
       )
@@ -502,7 +502,7 @@ class VehicleEndpointsImplTest {
               "",
               null,
               "TEST00000000VIN01",
-              "https://www.tesla.com/_rs/1/aqwl4JHU2q4aTeNROz8W9SpngoFvj-ReuDFIJs6-YOhA"
+              "https://www.tesla.com/_rs/1/aqwl4JHU2q4aTeNROz8W9SpngoFvj-ReuDFIJs6-YOhA",
             )
           )
         )
@@ -540,7 +540,7 @@ class VehicleEndpointsImplTest {
             "",
             null,
             "TEST00000000VIN01",
-            "https://www.tesla.com/_rs/1/aqwl4JHU2q4aTeNROz8W9SpngoFvj-ReuDFIJs6-YOhA"
+            "https://www.tesla.com/_rs/1/aqwl4JHU2q4aTeNROz8W9SpngoFvj-ReuDFIJs6-YOhA",
           )
         )
       )
@@ -641,7 +641,7 @@ class VehicleEndpointsImplTest {
             null,
             null,
             null,
-            null
+            null,
           )
         )
       )
@@ -733,7 +733,7 @@ class VehicleEndpointsImplTest {
               1692141038420,
               false,
               42,
-              null
+              null,
             ),
             VehicleDataResponse.ClimateState(
               true,
@@ -775,7 +775,7 @@ class VehicleEndpointsImplTest {
               true,
               1692141038419,
               false,
-              false
+              false,
             ),
             VehicleDataResponse.DriveState(
               "Home",
@@ -796,7 +796,7 @@ class VehicleEndpointsImplTest {
               1,
               null,
               null,
-              1692141038420
+              1692141038420,
             ),
             VehicleDataResponse.GuiSettings(
               false,
@@ -806,7 +806,7 @@ class VehicleEndpointsImplTest {
               "F",
               "Psi",
               false,
-              1692141038420
+              1692141038420,
             ),
             VehicleDataResponse.VehicleConfig(
               "NaPremium",
@@ -854,7 +854,7 @@ class VehicleEndpointsImplTest {
               -25200,
               true,
               true,
-              "Apollo19"
+              "Apollo19",
             ),
             VehicleDataResponse.VehicleState(
               true,
@@ -890,7 +890,7 @@ class VehicleEndpointsImplTest {
                 0,
                 "13",
                 "88.5 FM KQED",
-                "PBS Newshour"
+                "PBS Newshour",
               ),
               VehicleDataResponse.VehicleState.MediaState(true),
               true,
@@ -939,8 +939,8 @@ class VehicleEndpointsImplTest {
               "grADOFIN",
               0,
               false,
-              true
-            )
+              true,
+            ),
           )
         )
       )
@@ -1000,7 +1000,7 @@ class VehicleEndpointsImplTest {
             null,
             null,
             null,
-            null
+            null,
           )
         )
       )
@@ -1025,7 +1025,7 @@ class VehicleEndpointsImplTest {
               50000,
               "MI",
               null,
-              4
+              4,
             ),
             WarrantyDetailsResponse.Warranty(
               "BATTERY_WARRANTY",
@@ -1034,7 +1034,7 @@ class VehicleEndpointsImplTest {
               120000,
               "MI",
               null,
-              8
+              8,
             ),
             WarrantyDetailsResponse.Warranty(
               "DRIVEUNIT_WARRANTY",
@@ -1043,11 +1043,11 @@ class VehicleEndpointsImplTest {
               120000,
               "MI",
               null,
-              8
-            )
+              8,
+            ),
           ),
           emptyList(),
-          emptyList()
+          emptyList(),
         )
       )
   }

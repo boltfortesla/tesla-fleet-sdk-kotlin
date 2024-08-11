@@ -35,5 +35,5 @@ data class Components(
   @SerializedName("solar_value_enabled") val solarValueEnabled: Boolean,
   @SerializedName("set_islanding_mode_enabled") val setIslandingModeEnabled: Boolean,
   @SerializedName("battery_type") val batteryType: String,
-  val configurable: Boolean
+  val configurable: Boolean,
 )

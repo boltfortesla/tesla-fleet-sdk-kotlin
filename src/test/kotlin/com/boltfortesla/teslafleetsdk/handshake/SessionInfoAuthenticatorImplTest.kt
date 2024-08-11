@@ -21,7 +21,7 @@ class SessionInfoAuthenticatorImplTest {
       VIN,
       REQUEST_UUID.decodeHex(),
       HANDSHAKE_SESSION_INFO.decodeHex(),
-      HANDSHAKE_SESSION_INFO_TAG.decodeHex()
+      HANDSHAKE_SESSION_INFO_TAG.decodeHex(),
     )
   }
 
@@ -33,7 +33,7 @@ class SessionInfoAuthenticatorImplTest {
         VIN,
         REQUEST_UUID.decodeHex(),
         HANDSHAKE_SESSION_INFO.decodeHex(),
-        "ffffffffffffff".decodeHex()
+        "ffffffffffffff".decodeHex(),
       )
     }
   }
@@ -46,7 +46,7 @@ class SessionInfoAuthenticatorImplTest {
         "modified VIN",
         REQUEST_UUID.decodeHex(),
         HANDSHAKE_SESSION_INFO.decodeHex(),
-        HANDSHAKE_SESSION_INFO_TAG.decodeHex()
+        HANDSHAKE_SESSION_INFO_TAG.decodeHex(),
       )
     }
   }

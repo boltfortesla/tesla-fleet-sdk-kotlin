@@ -18,7 +18,7 @@ interface ChargingEndpoints {
     pageNumber: Int,
     pageSize: Int,
     sortBy: SortableField,
-    sortOrder: SortOrder
+    sortOrder: SortOrder,
   ): Result<ChargingHistoryResponse>
 
   suspend fun getChargingInvoice(id: String): Result<ResponseBody>
@@ -28,12 +28,12 @@ interface ChargingEndpoints {
     dateFrom: ZonedDateTime,
     dateTo: ZonedDateTime,
     limit: Int,
-    offset: Int
+    offset: Int,
   ): Result<ChargingSessionsResponse>
 
   enum class SortOrder {
     ASC,
-    DESC
+    DESC,
   }
 
   enum class SortableField(val field: String) {

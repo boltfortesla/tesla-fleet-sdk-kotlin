@@ -41,7 +41,7 @@ interface VehicleEndpoints {
     ca: String,
     fields: Map<String, Int>,
     alertTypes: List<String>,
-    expirationTimeSeconds: Long
+    expirationTimeSeconds: Long,
   ): Result<FleetApiResponse<FleetTelemetryModifyConfigResponse>>
 
   suspend fun deleteFleetTelemetryConfig():
@@ -51,7 +51,7 @@ interface VehicleEndpoints {
 
   suspend fun listVehicles(
     page: Int? = null,
-    perPage: Int? = null
+    perPage: Int? = null,
   ): Result<FleetApiResponse<List<Vehicle>>>
 
   suspend fun isMobileEnabled(): Result<FleetApiResponse<Boolean>>
@@ -59,7 +59,7 @@ interface VehicleEndpoints {
   suspend fun getNearbyChargingSites(
     count: Int?,
     radius: Int?,
-    detail: Boolean?
+    detail: Boolean?,
   ): Result<FleetApiResponse<NearbyChargingSitesResponse>>
 
   suspend fun getOptions(): Result<OptionsResponse>
@@ -68,7 +68,7 @@ interface VehicleEndpoints {
 
   suspend fun getReleaseNotes(
     staged: Boolean,
-    language: Int
+    language: Int,
   ): Result<FleetApiResponse<ReleaseNotesResponse>>
 
   suspend fun getServiceData(): Result<FleetApiResponse<ServiceDataResponse>>
@@ -85,12 +85,12 @@ interface VehicleEndpoints {
 
   suspend fun getSubscriptions(
     deviceToken: String,
-    deviceType: String
+    deviceType: String,
   ): Result<FleetApiResponse<List<Int>?>>
 
   suspend fun setSubscriptions(
     deviceToken: String,
-    deviceType: String
+    deviceType: String,
   ): Result<FleetApiResponse<List<Int>?>>
 
   suspend fun getVehicle(): Result<FleetApiResponse<Vehicle>>
@@ -101,12 +101,12 @@ interface VehicleEndpoints {
 
   suspend fun getVehicleSubscriptions(
     deviceToken: String,
-    deviceType: String
+    deviceType: String,
   ): Result<FleetApiResponse<List<Int>?>>
 
   suspend fun setVehicleSubscriptions(
     deviceToken: String,
-    deviceType: String
+    deviceType: String,
   ): Result<FleetApiResponse<List<Int>?>>
 
   suspend fun wakeUp(): Result<FleetApiResponse<Vehicle>>
@@ -122,6 +122,6 @@ interface VehicleEndpoints {
     LOCATION_DATA,
     VEHICLE_CONFIG,
     VEHICLE_STATE,
-    VEHICLE_DATA_COMBO
+    VEHICLE_DATA_COMBO,
   }
 }

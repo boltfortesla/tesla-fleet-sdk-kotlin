@@ -21,25 +21,25 @@ interface EnergyEndpoints {
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
     period: Period,
-    timeZone: String
+    timeZone: String,
   ): Result<FleetApiResponse<BackupHistoryResponse>>
 
   suspend fun getChargeHistory(
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
-    timeZone: String
+    timeZone: String,
   ): Result<FleetApiResponse<ChargeHistoryResponse>>
 
   suspend fun getEnergyHistory(
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
     period: Period,
-    timeZone: String
+    timeZone: String,
   ): Result<FleetApiResponse<EnergyHistoryResponse>>
 
   suspend fun setGridImportExport(
     disallowChargeFromGridWithSolarInstalled: Boolean,
-    customerPreferredExportRule: ExportRule
+    customerPreferredExportRule: ExportRule,
   ): Result<FleetApiResponse<EnergyCommandResponse>>
 
   suspend fun getLiveStatus(): Result<FleetApiResponse<LiveStatusResponse>>
@@ -63,17 +63,17 @@ interface EnergyEndpoints {
     WEEK,
     MONTH,
     YEAR,
-    LIFETIME
+    LIFETIME,
   }
 
   enum class ExportRule {
     BATTERY_OK,
     PV_ONLY,
-    NEVER
+    NEVER,
   }
 
   enum class OperationMode {
     AUTONOMOUS,
-    SELF_CONSUMPTION
+    SELF_CONSUMPTION,
   }
 }

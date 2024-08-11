@@ -7,9 +7,7 @@ import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
 import okhttp3.OkHttpClient
 
 /** Factory for [UserEndpoints]. */
-internal class UserEndpointsFactory(
-  private val jitterFactorCalculator: JitterFactorCalculator,
-) {
+internal class UserEndpointsFactory(private val jitterFactorCalculator: JitterFactorCalculator) {
   /**
    * Creates a [UserEndpoints] instance.
    *
@@ -21,11 +19,11 @@ internal class UserEndpointsFactory(
   fun create(
     region: Region,
     retryConfig: RetryConfig,
-    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): UserEndpoints {
     return UserEndpointsImpl(
       createUserApi(region.baseUrl, clientBuilder),
-      NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
+      NetworkExecutorImpl(retryConfig, jitterFactorCalculator),
     )
   }
 }

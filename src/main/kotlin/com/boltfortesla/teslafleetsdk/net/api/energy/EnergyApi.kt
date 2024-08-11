@@ -26,7 +26,7 @@ internal interface EnergyApi {
   @POST("/api/1/energy_sites/{energy_site_id}/backup")
   suspend fun backup(
     @Path(ENERGY_SITE_ID) energySiteId: Int,
-    @Body request: BackupRequest
+    @Body request: BackupRequest,
   ): FleetApiResponse<EnergyCommandResponse>
 
   @GET("/api/1/energy_sites/{energy_site_id}/calendar_history?kind=backup")
@@ -35,7 +35,7 @@ internal interface EnergyApi {
     @Query("start_date") startDate: String,
     @Query("end_date") endDate: String,
     @Query("period") period: String,
-    @Query("time_zone") timeZone: String
+    @Query("time_zone") timeZone: String,
   ): FleetApiResponse<BackupHistoryResponse>
 
   @GET("/api/1/energy_sites/{energy_site_id}/telemetry_history?kind=charge")
@@ -43,7 +43,7 @@ internal interface EnergyApi {
     @Path(ENERGY_SITE_ID) energySiteId: Int,
     @Query("start_date") startDate: String,
     @Query("end_date") endDate: String,
-    @Query("time_zone") timeZone: String
+    @Query("time_zone") timeZone: String,
   ): FleetApiResponse<ChargeHistoryResponse>
 
   @GET("/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy")
@@ -52,13 +52,13 @@ internal interface EnergyApi {
     @Query("start_date") startDate: String,
     @Query("end_date") endDate: String,
     @Query("period") period: String,
-    @Query("time_zone") timeZone: String
+    @Query("time_zone") timeZone: String,
   ): FleetApiResponse<EnergyHistoryResponse>
 
   @POST("/api/1/energy_sites/{energy_site_id}/grid_import_export")
   suspend fun gridImportExport(
     @Path(ENERGY_SITE_ID) energySiteId: Int,
-    @Body request: GridImportExportRequest
+    @Body request: GridImportExportRequest,
   ): FleetApiResponse<EnergyCommandResponse>
 
   @GET("/api/1/energy_sites/{energy_site_id}/live_status")
@@ -69,13 +69,13 @@ internal interface EnergyApi {
   @POST("/api/1/energy_sites/{energy_site_id}/off_grid_vehicle_charging_reserve")
   suspend fun offGridVehicleChargingReserve(
     @Path(ENERGY_SITE_ID) energySiteId: Int,
-    @Body request: OffGridVehicleChargingReserveRequest
+    @Body request: OffGridVehicleChargingReserveRequest,
   ): FleetApiResponse<EnergyCommandResponse>
 
   @POST("/api/1/energy_sites/{energy_site_id}/operation")
   suspend fun operation(
     @Path(ENERGY_SITE_ID) energySiteId: Int,
-    @Body request: OperationRequest
+    @Body request: OperationRequest,
   ): FleetApiResponse<EnergyCommandResponse>
 
   @GET("/api/1/energy_sites/{energy_site_id}/site_info")
@@ -94,5 +94,5 @@ internal interface EnergyApi {
 
 internal fun createEnergyApi(
   baseUrl: String = Region.NA_APAC.baseUrl,
-  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
 ) = ApiCreator.createApi<EnergyApi>(baseUrl, clientBuilder)

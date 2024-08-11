@@ -11,7 +11,7 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.request.SignedCo
 internal class VehicleEndpointsImpl(
   private val vin: String,
   private val vehicleEndpointsApi: VehicleEndpointsApi,
-  private val networkExecutor: NetworkExecutor
+  private val networkExecutor: NetworkExecutor,
 ) : VehicleEndpoints {
   override suspend fun getDrivers() =
     networkExecutor.execute { vehicleEndpointsApi.getDrivers(vin) }
@@ -34,7 +34,7 @@ internal class VehicleEndpointsImpl(
     ca: String,
     fields: Map<String, Int>,
     alertTypes: List<String>,
-    expirationTimeSeconds: Long
+    expirationTimeSeconds: Long,
   ) =
     networkExecutor.execute {
       vehicleEndpointsApi.createFleetTelemetryConfig(
@@ -46,7 +46,7 @@ internal class VehicleEndpointsImpl(
             expirationTimeSeconds,
             fields.mapValues { FieldConfig(it.value) },
             alertTypes,
-          )
+          ),
         )
       )
     }

@@ -6,7 +6,7 @@ data class NearbyChargingSitesResponse(
   @SerializedName("congestion_sync_time_utc_secs") val congestionSyncTimeUtcSecs: Long,
   @SerializedName("destination_charging") val destinationCharging: List<ChargingStation>,
   val superchargers: List<ChargingStation>,
-  val timestamp: Long
+  val timestamp: Long,
 ) {
   data class ChargingStation(
     val location: Location,

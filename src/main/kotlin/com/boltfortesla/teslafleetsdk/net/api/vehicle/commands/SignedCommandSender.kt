@@ -15,6 +15,6 @@ internal interface SignedCommandSender {
   suspend fun signAndSend(
     message: GeneratedMessageV3,
     clientPublicKey: ByteArray,
-    sharedSecretFetcher: SharedSecretFetcher
+    sharedSecretFetcher: SharedSecretFetcher,
   ): Result<CommandProtocolResponse>
 }

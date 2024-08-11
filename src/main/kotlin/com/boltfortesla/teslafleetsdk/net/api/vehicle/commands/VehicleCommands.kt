@@ -68,19 +68,19 @@ interface VehicleCommands {
   suspend fun sendUrl(
     url: String,
     locale: String,
-    timestampMs: String
+    timestampMs: String,
   ): Result<VehicleCommandResponse>
 
   suspend fun sendNavigationGps(
     latitude: Float,
     longitude: Float,
-    order: Int
+    order: Int,
   ): Result<VehicleCommandResponse>
 
   suspend fun sendNavigationDestination(
     destination: String,
     locale: String,
-    timestampMs: String
+    timestampMs: String,
   ): Result<VehicleCommandResponse>
 
   suspend fun sendNavigationSupercharger(id: Int, order: Int): Result<VehicleCommandResponse>
@@ -97,12 +97,12 @@ interface VehicleCommands {
 
   suspend fun setSeatCooler(
     seat: CoolerSeat,
-    level: SeatClimateLevel
+    level: SeatClimateLevel,
   ): Result<VehicleCommandResponse>
 
   suspend fun setSeatHeater(
     seat: HeaterSeat,
-    level: SeatClimateLevel
+    level: SeatClimateLevel,
   ): Result<VehicleCommandResponse>
 
   suspend fun remoteStart(): Result<VehicleCommandResponse>
@@ -155,7 +155,7 @@ interface VehicleCommands {
     preconditioningWeekdaysOnly: Boolean,
     offPeakChargingEnabled: Boolean,
     offPeakChargingWeekdaysOnly: Boolean,
-    endOffPeakTime: Int
+    endOffPeakTime: Int,
   ): Result<VehicleCommandResponse>
 
   suspend fun disableScheduledDeparture(): Result<VehicleCommandResponse>
@@ -166,12 +166,12 @@ interface VehicleCommands {
 
   suspend fun setTemperaturesF(
     driverTempF: Float,
-    passengerTempF: Float
+    passengerTempF: Float,
   ): Result<VehicleCommandResponse>
 
   suspend fun setTemperaturesC(
     driverTempC: Float,
-    passengerTempC: Float
+    passengerTempC: Float,
   ): Result<VehicleCommandResponse>
 
   suspend fun enableValetMode(pin: String): Result<VehicleCommandResponse>
@@ -201,20 +201,18 @@ interface VehicleCommands {
   suspend fun controlWindows(
     latitude: Float,
     longitude: Float,
-    command: WindowCommand
+    command: WindowCommand,
   ): Result<VehicleCommandResponse>
 
   suspend fun supportsCommandSigning(): Result<Boolean>
 
   enum class Trunk {
     FRONT,
-    REAR
+    REAR,
   }
 
   enum class HeaterSeat(val value: Int) {
-    FRONT_LEFT(
-      0,
-    ),
+    FRONT_LEFT(0),
     FRONT_RIGHT(1),
     REAR_LEFT(2),
     REAR_LEFT_BACK(3),
@@ -226,52 +224,43 @@ interface VehicleCommands {
   }
 
   enum class CoolerSeat(val value: Int, val position: HvacSeatCoolerPosition_E) {
-    FRONT_LEFT(
-      0,
-      HvacSeatCoolerPosition_E.HvacSeatCoolerPosition_FrontLeft,
-    ),
-    FRONT_RIGHT(
-      1,
-      HvacSeatCoolerPosition_E.HvacSeatCoolerPosition_FrontRight,
-    )
+    FRONT_LEFT(0, HvacSeatCoolerPosition_E.HvacSeatCoolerPosition_FrontLeft),
+    FRONT_RIGHT(1, HvacSeatCoolerPosition_E.HvacSeatCoolerPosition_FrontRight),
   }
 
   enum class AutoSeat(val value: Int, val position: AutoSeatPosition_E) {
     FRONT_LEFT(0, AutoSeatPosition_E.AutoSeatPosition_FrontLeft),
-    FRONT_RIGHT(
-      1,
-      AutoSeatPosition_E.AutoSeatPosition_FrontRight,
-    ),
+    FRONT_RIGHT(1, AutoSeatPosition_E.AutoSeatPosition_FrontRight),
   }
 
   enum class SeatClimateLevel(val value: Int, val coolerLevel: HvacSeatCoolerLevel_E) {
     OFF(0, HvacSeatCoolerLevel_E.HvacSeatCoolerLevel_Off),
     LOW(1, HvacSeatCoolerLevel_E.HvacSeatCoolerLevel_Low),
     MEDIUM(2, HvacSeatCoolerLevel_E.HvacSeatCoolerLevel_Med),
-    HIGH(3, HvacSeatCoolerLevel_E.HvacSeatCoolerLevel_High)
+    HIGH(3, HvacSeatCoolerLevel_E.HvacSeatCoolerLevel_High),
   }
 
   enum class ClimateKeeperMode(val value: Int, val action: ClimateKeeperAction_E) {
     OFF(0, ClimateKeeperAction_E.ClimateKeeperAction_Off),
     KEEP(1, ClimateKeeperAction_E.ClimateKeeperAction_On),
     DOG(2, ClimateKeeperAction_E.ClimateKeeperAction_Dog),
-    CAMP(3, ClimateKeeperAction_E.ClimateKeeperAction_Camp)
+    CAMP(3, ClimateKeeperAction_E.ClimateKeeperAction_Camp),
   }
 
   enum class CopTemperature(val value: Int, val copActivationTemp: CopActivationTemp) {
     LOW(0, CopActivationTemp.CopActivationTempLow),
     MEDIUM(1, CopActivationTemp.CopActivationTempMedium),
-    HIGH(2, CopActivationTemp.CopActivationTempHigh)
+    HIGH(2, CopActivationTemp.CopActivationTempHigh),
   }
 
   enum class SunroofState {
     OPEN,
     CLOSE,
-    VENT
+    VENT,
   }
 
   enum class WindowCommand {
     VENT,
-    CLOSE
+    CLOSE,
   }
 }

@@ -10,7 +10,7 @@ internal class TeslaOauthImpl(
 ) : TeslaOauth {
   override suspend fun refreshToken(
     clientId: String,
-    refreshToken: String
+    refreshToken: String,
   ): Result<RefreshTokenResponse> {
     return networkExecutor.execute { oauthApi.refreshToken(clientId, refreshToken) }
   }

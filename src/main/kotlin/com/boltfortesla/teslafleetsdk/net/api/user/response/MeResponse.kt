@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class MeResponse(
   val email: String,
   @SerializedName("full_name") val fullName: String,
-  @SerializedName("profile_image_url") val profileImageUrl: String
+  @SerializedName("profile_image_url") val profileImageUrl: String,
 )

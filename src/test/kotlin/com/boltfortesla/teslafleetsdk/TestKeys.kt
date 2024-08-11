@@ -103,7 +103,7 @@ object TestKeys {
         0x91u,
         0x05u,
         0xdcu,
-        0x6eu
+        0x6eu,
       )
       .toByteArray()
 }

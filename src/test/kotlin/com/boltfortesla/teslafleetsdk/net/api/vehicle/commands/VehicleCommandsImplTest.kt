@@ -132,7 +132,7 @@ class VehicleCommandsImplTest {
         override fun addAuthenticationData(
           message: RoutableMessage,
           metadata: ByteArray,
-          sharedSecret: ByteArray
+          sharedSecret: ByteArray,
         ): RoutableMessage {
           return message.copy {
             signatureData =
@@ -145,7 +145,7 @@ class VehicleCommandsImplTest {
       },
       tlvEncoder,
       publicKeyEncoder,
-      fakeIdentifiers
+      fakeIdentifiers,
     )
   private val handshaker =
     HandshakerImpl(
@@ -180,12 +180,12 @@ class VehicleCommandsImplTest {
         vehicleEndpointsApi,
         SessionInfoAuthenticatorImpl(tlvEncoder, hmacCalculator),
         fakeIdentifiers,
-        networkExecutor
+        networkExecutor,
       ),
       vehicleCommandsApi,
       networkExecutor,
       signedCommandSender,
-      sessionInfoRepository
+      sessionInfoRepository,
     )
 
   private val commandProtocolUnsupportedVehicleCommands =
@@ -200,12 +200,12 @@ class VehicleCommandsImplTest {
         vehicleEndpointsApi,
         sessionInfoAuthenticator,
         fakeIdentifiers,
-        networkExecutor
+        networkExecutor,
       ),
       vehicleCommandsApi,
       networkExecutor,
       signedCommandSender,
-      sessionInfoRepository
+      sessionInfoRepository,
     )
 
   @After
@@ -217,7 +217,7 @@ class VehicleCommandsImplTest {
   fun actuateTrunk_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/actuate_trunk",
-      "{\"which_trunk\":\"front\"}"
+      "{\"which_trunk\":\"front\"}",
     ) {
       actuateTrunk(Trunk.FRONT)
     }
@@ -398,7 +398,7 @@ class VehicleCommandsImplTest {
   fun adminClearPinToDrive_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/clear_pin_to_drive_admin",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       adminClearPinToDrive()
     }
@@ -432,7 +432,7 @@ class VehicleCommandsImplTest {
   fun eraseUserData_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/erase_user_data",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       eraseUserData()
     }
@@ -597,7 +597,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/share",
       "{\"type\":\"share_ext_content_raw\",\"value\":{\"android.intent.extra.TEXT\":\"https://youtube.com\"},\"locale\":\"en-US\",\"timestamp_ms\":\"12345\"}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       sendUrl("https://youtube.com", "en-US", "12345")
     }
@@ -608,7 +608,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/navigation_gps_request",
       "{\"lat\":30.0,\"lon\":-30.0,\"order\":0}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       sendNavigationGps(30.0f, -30.0f, 0)
     }
@@ -619,7 +619,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/navigation_request",
       "{\"type\":\"share_ext_content_raw\",\"value\":{\"android.intent.extra.TEXT\":\"value\"},\"locale\":\"locale\",\"timestamp_ms\":\"timestampMs\"}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       sendNavigationDestination("value", "locale", "timestampMs")
     }
@@ -630,7 +630,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/navigation_sc_request",
       "{\"id\":12345,\"order\":0}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       sendNavigationSupercharger(12345, 0)
     }
@@ -640,7 +640,7 @@ class VehicleCommandsImplTest {
   fun enableAutomaticSeatClimateControl_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_auto_seat_climate_request",
-      "{\"auto_seat_position\":0,\"auto_climate_on\":true}"
+      "{\"auto_seat_position\":0,\"auto_climate_on\":true}",
     ) {
       enableAutomaticSeatClimateControl(AutoSeat.FRONT_LEFT)
     }
@@ -667,7 +667,7 @@ class VehicleCommandsImplTest {
   fun disableAutomaticSeatClimateControl_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_auto_seat_climate_request",
-      "{\"auto_seat_position\":0,\"auto_climate_on\":false}"
+      "{\"auto_seat_position\":0,\"auto_climate_on\":false}",
     ) {
       disableAutomaticSeatClimateControl(AutoSeat.FRONT_LEFT)
     }
@@ -694,7 +694,7 @@ class VehicleCommandsImplTest {
   fun enableAutomaticSteeringWheelClimateControl_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_auto_steering_wheel_heat_climate_request",
-      "{\"on\":true}"
+      "{\"on\":true}",
     ) {
       enableAutomaticSteeringWheelClimateControl()
     }
@@ -704,7 +704,7 @@ class VehicleCommandsImplTest {
   fun disableAutomaticSteeringWheelClimateControl_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_auto_steering_wheel_heat_climate_request",
-      "{\"on\":false}"
+      "{\"on\":false}",
     ) {
       disableAutomaticSteeringWheelClimateControl()
     }
@@ -715,7 +715,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_boombox",
       "{\"sound\":1}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       remoteBoombox(1)
     }
@@ -725,7 +725,7 @@ class VehicleCommandsImplTest {
   fun setSeatCooler_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_seat_cooler_request",
-      "{\"seat_position\":0,\"seat_cooler_level\":3}"
+      "{\"seat_position\":0,\"seat_cooler_level\":3}",
     ) {
       setSeatCooler(CoolerSeat.FRONT_LEFT, SeatClimateLevel.HIGH)
     }
@@ -752,7 +752,7 @@ class VehicleCommandsImplTest {
   fun setSeatHeater_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_seat_heater_request",
-      "{\"seat_position\":0,\"level\":3}"
+      "{\"seat_position\":0,\"level\":3}",
     ) {
       setSeatHeater(HeaterSeat.FRONT_LEFT, SeatClimateLevel.HIGH)
     }
@@ -777,11 +777,7 @@ class VehicleCommandsImplTest {
 
   @Test
   fun remoteStart_nonCommandProtocol() {
-    testApiCall(
-      "/api/1/vehicles/${Constants.VIN}/command/remote_start_drive",
-    ) {
-      remoteStart()
-    }
+    testApiCall("/api/1/vehicles/${Constants.VIN}/command/remote_start_drive") { remoteStart() }
   }
 
   @Test
@@ -798,7 +794,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_steering_wheel_heat_level_request",
       "{\"level\":3}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       setSteeringWheelHeatLevel(SeatClimateLevel.HIGH)
     }
@@ -808,7 +804,7 @@ class VehicleCommandsImplTest {
   fun enableSteeringWheelHeater_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_steering_wheel_heater_request",
-      "{\"on\":true}"
+      "{\"on\":true}",
     ) {
       enableSteeringWheelHeater()
     }
@@ -829,7 +825,7 @@ class VehicleCommandsImplTest {
   fun disableSteeringWheelHeater_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/remote_steering_wheel_heater_request",
-      "{\"on\":false}"
+      "{\"on\":false}",
     ) {
       disableSteeringWheelHeater()
     }
@@ -880,7 +876,7 @@ class VehicleCommandsImplTest {
   fun scheduleSoftwareUpdate_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/schedule_software_update",
-      "{\"offset_sec\":1234}"
+      "{\"offset_sec\":1234}",
     ) {
       scheduleSoftwareUpdate(1234)
     }
@@ -903,7 +899,7 @@ class VehicleCommandsImplTest {
   fun enableBioweaponDefenseMode_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_bioweapon_mode",
-      "{\"on\":true,\"manual_override\":false}"
+      "{\"on\":true,\"manual_override\":false}",
     ) {
       enableBioweaponDefenseMode(false)
     }
@@ -927,7 +923,7 @@ class VehicleCommandsImplTest {
   fun disableBioweaponDefenseMode_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_bioweapon_mode",
-      "{\"on\":false,\"manual_override\":false}"
+      "{\"on\":false,\"manual_override\":false}",
     ) {
       disableBioweaponDefenseMode()
     }
@@ -946,7 +942,7 @@ class VehicleCommandsImplTest {
   fun enableCabinOverheatProtection_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_cabin_overheat_protection",
-      "{\"on\":true,\"fan_only\":true}"
+      "{\"on\":true,\"fan_only\":true}",
     ) {
       enableCabinOverheatProtection(true)
     }
@@ -970,7 +966,7 @@ class VehicleCommandsImplTest {
   fun disableCabinOverheatProtection_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_cabin_overheat_protection",
-      "{\"on\":false,\"fan_only\":true}"
+      "{\"on\":false,\"fan_only\":true}",
     ) {
       disableCabinOverheatProtection(true)
     }
@@ -1010,7 +1006,7 @@ class VehicleCommandsImplTest {
   fun setChargingAmps_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_charging_amps",
-      "{\"charging_amps\":32}"
+      "{\"charging_amps\":32}",
     ) {
       setChargingAmps(32)
     }
@@ -1029,7 +1025,7 @@ class VehicleCommandsImplTest {
   fun setClimateKeeperMode_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_climate_keeper_mode",
-      "{\"climate_keeper_mode\":3}"
+      "{\"climate_keeper_mode\":3}",
     ) {
       setClimateKeeperMode(ClimateKeeperMode.CAMP)
     }
@@ -1052,7 +1048,7 @@ class VehicleCommandsImplTest {
   fun setCabinOverheatProtectionTemperature_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_cop_temp",
-      "{\"cop_temp\":${CopTemperature.MEDIUM.value}}"
+      "{\"cop_temp\":${CopTemperature.MEDIUM.value}}",
     ) {
       setCabinOverheatProtectionTemperature(CopTemperature.MEDIUM)
     }
@@ -1075,7 +1071,7 @@ class VehicleCommandsImplTest {
   fun enablePinToDrive_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_pin_to_drive",
-      "{\"on\":true,\"password\":\"1234\"}"
+      "{\"on\":true,\"password\":\"1234\"}",
     ) {
       enablePinToDrive("1234")
     }
@@ -1099,7 +1095,7 @@ class VehicleCommandsImplTest {
   fun disablePinToDrive_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_pin_to_drive",
-      "{\"on\":false,\"password\":\"1234\"}"
+      "{\"on\":false,\"password\":\"1234\"}",
     ) {
       disablePinToDrive("1234")
     }
@@ -1123,7 +1119,7 @@ class VehicleCommandsImplTest {
   fun enableMaximumPreconditioning_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_preconditioning_max",
-      "{\"on\":true,\"manual_override\":true}"
+      "{\"on\":true,\"manual_override\":true}",
     ) {
       enableMaxPreconditioning(true)
     }
@@ -1144,7 +1140,7 @@ class VehicleCommandsImplTest {
   fun disableMaxPreconditioning_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_preconditioning_max",
-      "{\"on\":false,\"manual_override\":false}"
+      "{\"on\":false,\"manual_override\":false}",
     ) {
       disableMaxPreconditioning()
     }
@@ -1165,7 +1161,7 @@ class VehicleCommandsImplTest {
   fun enableScheduledCharging_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_scheduled_charging",
-      "{\"enable\":true,\"time\":120}"
+      "{\"enable\":true,\"time\":120}",
     ) {
       enableScheduledCharging(120)
     }
@@ -1189,7 +1185,7 @@ class VehicleCommandsImplTest {
   fun disableScheduledCharging_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_scheduled_charging",
-      "{\"enable\":false,\"time\":120}"
+      "{\"enable\":false,\"time\":120}",
     ) {
       disableScheduledCharging(120)
     }
@@ -1213,7 +1209,7 @@ class VehicleCommandsImplTest {
   fun enableScheduledDeparture_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_scheduled_departure",
-      "{\"enable\":true,\"departure_time\":120,\"preconditioning_enabled\":true,\"preconditioning_weekdays_only\":true,\"off_peak_charging_enabled\":true,\"off_peak_charging_weekdays_only\":false,\"end_off_peak_time\":210}"
+      "{\"enable\":true,\"departure_time\":120,\"preconditioning_enabled\":true,\"preconditioning_weekdays_only\":true,\"off_peak_charging_enabled\":true,\"off_peak_charging_weekdays_only\":false,\"end_off_peak_time\":210}",
     ) {
       enableScheduledDeparture(120, true, true, true, false, 210)
     }
@@ -1255,7 +1251,7 @@ class VehicleCommandsImplTest {
   fun disableScheduledDeparture_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_scheduled_departure",
-      "{\"enable\":false}"
+      "{\"enable\":false}",
     ) {
       disableScheduledDeparture()
     }
@@ -1310,7 +1306,7 @@ class VehicleCommandsImplTest {
   fun setTemperaturesF_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_temps",
-      "{\"driver_temp\":21.0,\"passenger_temp\":22.0}"
+      "{\"driver_temp\":21.0,\"passenger_temp\":22.0}",
     ) {
       setTemperaturesF(70f, 72f)
     }
@@ -1335,7 +1331,7 @@ class VehicleCommandsImplTest {
   fun setTemperaturesC_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_temps",
-      "{\"driver_temp\":19.0,\"passenger_temp\":20.0}"
+      "{\"driver_temp\":19.0,\"passenger_temp\":20.0}",
     ) {
       setTemperaturesC(19f, 20f)
     }
@@ -1399,7 +1395,7 @@ class VehicleCommandsImplTest {
   fun setVehicleName_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/set_vehicle_name",
-      "{\"vehicle_name\":\"Vehicle Name\"}"
+      "{\"vehicle_name\":\"Vehicle Name\"}",
     ) {
       setVehicleName("Vehicle Name")
     }
@@ -1418,7 +1414,7 @@ class VehicleCommandsImplTest {
   fun activateSpeedLimit_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/speed_limit_activate",
-      "{\"pin\":\"1234\"}"
+      "{\"pin\":\"1234\"}",
     ) {
       activateSpeedLimit("1234")
     }
@@ -1443,7 +1439,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/speed_limit_clear_pin",
       "{\"pin\":\"1234\"}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       clearSpeedLimitPin("1234")
     }
@@ -1464,7 +1460,7 @@ class VehicleCommandsImplTest {
   fun adminClearSpeedLimitPin_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/speed_limit_clear_pin_admin",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       adminClearSpeedLimitPin()
     }
@@ -1474,7 +1470,7 @@ class VehicleCommandsImplTest {
   fun deactivateSpeedLimit_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/speed_limit_deactivate",
-      "{\"pin\":\"1234\"}"
+      "{\"pin\":\"1234\"}",
     ) {
       deactivateSpeedLimit("1234")
     }
@@ -1498,7 +1494,7 @@ class VehicleCommandsImplTest {
   fun setSpeedLimit_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/speed_limit_set_limit",
-      "{\"limit_mph\":70.0}"
+      "{\"limit_mph\":70.0}",
     ) {
       setSpeedLimit(70.0)
     }
@@ -1517,7 +1513,7 @@ class VehicleCommandsImplTest {
   fun setSunroofState_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/sun_roof_control",
-      "{\"state\":\"vent\"}"
+      "{\"state\":\"vent\"}",
     ) {
       setSunroofState(SunroofState.VENT)
     }
@@ -1541,7 +1537,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/take_drivenote",
       "{\"note\":\"drive note\"}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       takeDrivenote("drive note")
     }
@@ -1551,7 +1547,7 @@ class VehicleCommandsImplTest {
   fun triggerHomelink_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/trigger_homelink",
-      "{\"lat\":30.0,\"lon\":-30.0}"
+      "{\"lat\":30.0,\"lon\":-30.0}",
     ) {
       triggerHomelink(30.0f, -30.0f)
     }
@@ -1578,7 +1574,7 @@ class VehicleCommandsImplTest {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/upcoming_calendar_entries",
       "{\"calendar_data\":\"calendar entries\"}",
-      commandProtocolSupported = false
+      commandProtocolSupported = false,
     ) {
       setUpcomingCalendarEntries("calendar entries")
     }
@@ -1588,7 +1584,7 @@ class VehicleCommandsImplTest {
   fun controlWindows_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/window_control",
-      "{\"lat\":30.0,\"lon\":-30.0,\"command\":\"close\"}"
+      "{\"lat\":30.0,\"lon\":-30.0,\"command\":\"close\"}",
     ) {
       controlWindows(30.0f, -30.0f, WindowCommand.CLOSE)
     }
@@ -1666,7 +1662,7 @@ class VehicleCommandsImplTest {
     expectedPath: String,
     expectedRequestBody: String = "",
     commandProtocolSupported: Boolean = true,
-    action: suspend VehicleCommands.() -> Unit
+    action: suspend VehicleCommands.() -> Unit,
   ) = runTest {
     if (commandProtocolSupported) server.enqueue(MockResponse().setResponseCode(422))
     server.enqueue(MockResponse().setResponseCode(200).setBody(SUCCESS_JSON_RESPONSE))
@@ -1686,19 +1682,19 @@ class VehicleCommandsImplTest {
 
   private fun testInfotainmentCommand(
     expectedAction: VehicleAction,
-    action: suspend VehicleCommands.() -> Unit
+    action: suspend VehicleCommands.() -> Unit,
   ) {
     testCommand(
       action { vehicleAction = expectedAction },
       INFOTAINMENT_COMMAND_RESPONSE,
       Domain.DOMAIN_INFOTAINMENT,
-      action
+      action,
     )
   }
 
   private fun testVehicleSecurityCommand(
     expectedMessage: UnsignedMessage,
-    action: suspend VehicleCommands.() -> Unit
+    action: suspend VehicleCommands.() -> Unit,
   ) {
     testCommand(expectedMessage, SECURITY_COMMAND_RESPONSE, Domain.DOMAIN_VEHICLE_SECURITY, action)
   }
@@ -1707,7 +1703,7 @@ class VehicleCommandsImplTest {
     expectedBytesMessage: GeneratedMessageV3,
     response: RoutableMessage,
     domain: Domain,
-    action: suspend VehicleCommands.() -> Unit
+    action: suspend VehicleCommands.() -> Unit,
   ) = runTest {
     server.enqueue(
       MockResponse().setBody(signedCommandJson(Responses.HANDSHAKE_RESPONSE)).setResponseCode(200)

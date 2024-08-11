@@ -52,7 +52,7 @@ class FleetApiEndpointsImplTest {
           null,
           null,
           null,
-          "off"
+          "off",
         ),
         EnergySite(
           429124,
@@ -63,8 +63,8 @@ class FleetApiEndpointsImplTest {
           35425,
           39362,
           90,
-          1000
-        )
+          1000,
+        ),
       )
   }
 }

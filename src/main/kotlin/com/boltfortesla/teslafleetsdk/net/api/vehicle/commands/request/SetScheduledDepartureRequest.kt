@@ -9,5 +9,5 @@ internal data class SetScheduledDepartureRequest(
   @SerializedName("preconditioning_weekdays_only") val preconditioningWeekdaysOnly: Boolean?,
   @SerializedName("off_peak_charging_enabled") val offPeakChargingEnabled: Boolean?,
   @SerializedName("off_peak_charging_weekdays_only") val offPeakChargingWeekdaysOnly: Boolean?,
-  @SerializedName("end_off_peak_time") val endOffPeakTime: Int?
+  @SerializedName("end_off_peak_time") val endOffPeakTime: Int?,
 )

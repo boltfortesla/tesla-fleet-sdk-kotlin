@@ -7,9 +7,7 @@ import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
 import okhttp3.OkHttpClient
 
 /** Factory for [TeslaOauth]. */
-internal class TeslaOauthFactory(
-  private val jitterFactorCalculator: JitterFactorCalculator,
-) {
+internal class TeslaOauthFactory(private val jitterFactorCalculator: JitterFactorCalculator) {
   /**
    * Creates a [TeslaOauth] instance.
    *
@@ -21,11 +19,11 @@ internal class TeslaOauthFactory(
   fun create(
     region: Region,
     retryConfig: RetryConfig,
-    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): TeslaOauth {
     return TeslaOauthImpl(
       createOauthApi(region.authBaseUrl, clientBuilder),
-      NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
+      NetworkExecutorImpl(retryConfig, jitterFactorCalculator),
     )
   }
 }

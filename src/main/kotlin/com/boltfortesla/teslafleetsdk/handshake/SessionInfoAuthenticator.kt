@@ -16,7 +16,7 @@ internal interface SessionInfoAuthenticator {
     vin: String,
     requestUuid: ByteArray,
     sessionInfo: ByteArray,
-    sessionInfoTag: ByteArray
+    sessionInfoTag: ByteArray,
   )
 
   /** Exception thrown when the session info response fails to authenticate. */

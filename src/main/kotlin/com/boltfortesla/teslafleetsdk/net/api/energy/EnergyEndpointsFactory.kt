@@ -8,9 +8,7 @@ import com.boltfortesla.teslafleetsdk.net.api.FleetApiEndpoints
 import okhttp3.OkHttpClient
 
 /** Factory for [EnergyEndpoints]. */
-internal class EnergyEndpointsFactory(
-  private val jitterFactorCalculator: JitterFactorCalculator,
-) {
+internal class EnergyEndpointsFactory(private val jitterFactorCalculator: JitterFactorCalculator) {
   /**
    * Creates a [EnergyEndpoints] instance.
    *
@@ -25,12 +23,12 @@ internal class EnergyEndpointsFactory(
     energySiteId: Int,
     region: Region,
     retryConfig: RetryConfig,
-    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): EnergyEndpoints {
     return EnergyEndpointsImpl(
       energySiteId,
       createEnergyApi(region.baseUrl, clientBuilder),
-      NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
+      NetworkExecutorImpl(retryConfig, jitterFactorCalculator),
     )
   }
 }

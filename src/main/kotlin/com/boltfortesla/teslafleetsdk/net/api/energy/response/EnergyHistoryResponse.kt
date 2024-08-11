@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 /** Response for getEnergyHistory */
 data class EnergyHistoryResponse(
   val period: String,
-  @SerializedName("time_series") val timeSeries: List<TimeSeriesEntry>
+  @SerializedName("time_series") val timeSeries: List<TimeSeriesEntry>,
 ) {
   data class TimeSeriesEntry(
     val timestamp: String,
@@ -27,6 +27,6 @@ data class EnergyHistoryResponse(
     @SerializedName("consumer_energy_imported_from_battery")
     val consumerEnergyImportedFromBattery: Int,
     @SerializedName("consumer_energy_imported_from_generator")
-    val consumerEnergyImportedFromGenerator: Int
+    val consumerEnergyImportedFromGenerator: Int,
   )
 }

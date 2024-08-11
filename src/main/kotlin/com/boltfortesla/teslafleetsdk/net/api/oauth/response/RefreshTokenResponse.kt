@@ -9,5 +9,5 @@ data class RefreshTokenResponse(
   @SerializedName("expires_in") val expiresIn: Int,
   @SerializedName("refresh_token") val refreshToken: String,
   @SerializedName("id_token") val idToken: String,
-  val state: String
+  val state: String,
 )

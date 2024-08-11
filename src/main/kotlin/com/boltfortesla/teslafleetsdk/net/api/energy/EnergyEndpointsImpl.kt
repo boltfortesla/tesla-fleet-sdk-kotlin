@@ -23,7 +23,7 @@ internal class EnergyEndpointsImpl(
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
     period: Period,
-    timeZone: String
+    timeZone: String,
   ) =
     networkExecutor.execute {
       energyApi.backupHistory(
@@ -38,14 +38,14 @@ internal class EnergyEndpointsImpl(
   override suspend fun getChargeHistory(
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
-    timeZone: String
+    timeZone: String,
   ) =
     networkExecutor.execute {
       energyApi.chargeHistory(
         energySiteId,
         startDate.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
         endDate.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-        timeZone
+        timeZone,
       )
     }
 
@@ -53,7 +53,7 @@ internal class EnergyEndpointsImpl(
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
     period: Period,
-    timeZone: String
+    timeZone: String,
   ) =
     networkExecutor.execute {
       energyApi.energyHistory(
@@ -67,15 +67,15 @@ internal class EnergyEndpointsImpl(
 
   override suspend fun setGridImportExport(
     disallowChargeFromGridWithSolarInstalled: Boolean,
-    customerPreferredExportRule: EnergyEndpoints.ExportRule
+    customerPreferredExportRule: EnergyEndpoints.ExportRule,
   ) =
     networkExecutor.execute {
       energyApi.gridImportExport(
         energySiteId,
         GridImportExportRequest(
           disallowChargeFromGridWithSolarInstalled,
-          customerPreferredExportRule.name.lowercase()
-        )
+          customerPreferredExportRule.name.lowercase(),
+        ),
       )
     }
 
@@ -86,7 +86,7 @@ internal class EnergyEndpointsImpl(
     networkExecutor.execute {
       energyApi.offGridVehicleChargingReserve(
         energySiteId,
-        OffGridVehicleChargingReserveRequest(offGridVehicleChargingReservePercent)
+        OffGridVehicleChargingReserveRequest(offGridVehicleChargingReservePercent),
       )
     }
 

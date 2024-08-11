@@ -37,7 +37,7 @@ class CommandSignerImplTest {
         action {},
         SessionInfo(Constants.EPOCH.decodeHex(), TIMER_START, 7, SHARED_SECRET.decodeHex()),
         Domain.DOMAIN_INFOTAINMENT,
-        Base64.getDecoder().decode(Pem(TestKeys.CLIENT_PUBLIC_KEY).base64())
+        Base64.getDecoder().decode(Pem(TestKeys.CLIENT_PUBLIC_KEY).base64()),
       )
 
     assertThat(signedMessage)

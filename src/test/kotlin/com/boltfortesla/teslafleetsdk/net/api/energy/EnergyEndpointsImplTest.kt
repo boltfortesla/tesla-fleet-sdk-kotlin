@@ -70,7 +70,7 @@ class EnergyEndpointsImplTest {
         ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-8))),
         ZonedDateTime.of(2023, 1, 2, 8, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-8))),
         EnergyEndpoints.Period.DAY,
-        "America/Los_Angeles"
+        "America/Los_Angeles",
       )
 
     val request = server.takeRequest()
@@ -84,9 +84,9 @@ class EnergyEndpointsImplTest {
           BackupHistoryResponse(
             listOf(
               Event("2023-01-01T01:00:00-08:00", 3600),
-              Event("2023-01-02T08:00:00-08:00", 7200)
+              Event("2023-01-02T08:00:00-08:00", 7200),
             ),
-            2
+            2,
           )
         )
       )
@@ -100,7 +100,7 @@ class EnergyEndpointsImplTest {
       energyEndpoints.getChargeHistory(
         ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-8))),
         ZonedDateTime.of(2023, 1, 2, 8, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-8))),
-        "America/Los_Angeles"
+        "America/Los_Angeles",
       )
 
     val request = server.takeRequest()
@@ -127,7 +127,7 @@ class EnergyEndpointsImplTest {
         ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-8))),
         ZonedDateTime.of(2023, 1, 2, 8, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-8))),
         EnergyEndpoints.Period.DAY,
-        "America/Los_Angeles"
+        "America/Los_Angeles",
       )
 
     val request = server.takeRequest()
@@ -158,9 +158,9 @@ class EnergyEndpointsImplTest {
                 441,
                 10480,
                 10011,
-                0
+                0,
               )
-            )
+            ),
           )
         )
       )
@@ -173,7 +173,7 @@ class EnergyEndpointsImplTest {
     val response =
       energyEndpoints.setGridImportExport(
         disallowChargeFromGridWithSolarInstalled = true,
-        ExportRule.BATTERY_OK
+        ExportRule.BATTERY_OK,
       )
 
     val request = server.takeRequest()
@@ -209,7 +209,7 @@ class EnergyEndpointsImplTest {
             2569,
             "on_grid",
             false,
-            "2023-01-01T00:00:00-08:00"
+            "2023-01-01T00:00:00-08:00",
           )
         )
       )
@@ -273,7 +273,7 @@ class EnergyEndpointsImplTest {
               true,
               true,
               "ac_powerwall",
-              true
+              true,
             ),
             "23.12.11 452c76cb",
             3,
@@ -281,7 +281,7 @@ class EnergyEndpointsImplTest {
             40500,
             "America/Los_Angeles",
             1000000000,
-            -11.726
+            -11.726,
           )
         )
       )

@@ -27,5 +27,5 @@ internal interface UserApi {
 
 internal fun createUserApi(
   baseUrl: String = Region.NA_APAC.baseUrl,
-  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
 ) = ApiCreator.createApi<UserApi>(baseUrl, clientBuilder)

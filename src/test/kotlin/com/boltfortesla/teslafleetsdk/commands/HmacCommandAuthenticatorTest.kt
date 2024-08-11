@@ -31,7 +31,7 @@ class HmacCommandAuthenticatorTest {
           }
         },
         metadata = byteArrayOf(0, 1, 2, 3),
-        sharedSecret = byteArrayOf(3, 4, 5, 6)
+        sharedSecret = byteArrayOf(3, 4, 5, 6),
       )
 
     assertThat(authenticatedMessage)
@@ -44,7 +44,7 @@ class HmacCommandAuthenticatorTest {
               tag = ByteString.fromHex(expectedResultTag)
             }
           }
-        },
+        }
       )
   }
 }

@@ -22,7 +22,7 @@ internal class VehicleCommandsFactory(
   private val publicKeyEncoder: PublicKeyEncoder,
   private val sessionInfoAuthenticator: SessionInfoAuthenticator,
   private val identifiers: Identifiers,
-  private val sessionInfoRepository: SessionInfoRepository
+  private val sessionInfoRepository: SessionInfoRepository,
 ) {
   /**
    * Creates a [VehicleCommands] instance for the vehicle identified by [vin].

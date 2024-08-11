@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient
 
 /** Factory for [ChargingEndpoints]. */
 internal class ChargingEndpointsFactory(
-  private val jitterFactorCalculator: JitterFactorCalculator,
+  private val jitterFactorCalculator: JitterFactorCalculator
 ) {
   /**
    * Creates a [ChargingEndpoints] instance.
@@ -21,11 +21,11 @@ internal class ChargingEndpointsFactory(
   fun create(
     region: Region,
     retryConfig: RetryConfig,
-    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): ChargingEndpoints {
     return ChargingEndpointsImpl(
       createChargingApi(region.baseUrl, clientBuilder),
-      NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
+      NetworkExecutorImpl(retryConfig, jitterFactorCalculator),
     )
   }
 }

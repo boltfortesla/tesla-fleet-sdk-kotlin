@@ -66,7 +66,7 @@ internal class HandshakerImpl(
           val response =
             vehicleEndpointsApi.sendSignedCommand(
               vin,
-              SignedCommandRequest(Base64.getEncoder().encodeToString(message.toByteArray()))
+              SignedCommandRequest(Base64.getEncoder().encodeToString(message.toByteArray())),
             )
           val routableMessage =
             RoutableMessage.parseFrom(Base64.getDecoder().decode(response.responseBase64))
@@ -100,7 +100,7 @@ internal class HandshakerImpl(
         vin,
         handshakeUuid,
         sessionInfo.toByteArray(),
-        responseMessage.signatureData.sessionInfoTag.tag.toByteArray()
+        responseMessage.signatureData.sessionInfoTag.tag.toByteArray(),
       )
 
       return SessionInfo(

@@ -10,7 +10,7 @@ data class ChargeHistoryResponse(
 data class ChargeHistory(
   @SerializedName("charge_start_time") val chargeStartTime: ChargeStartTime,
   @SerializedName("charge_duration") val chargeDuration: ChargeDuration,
-  @SerializedName("energy_added_wh") val totalEvents: Long
+  @SerializedName("energy_added_wh") val totalEvents: Long,
 ) {
   data class ChargeStartTime(val seconds: Long)
 

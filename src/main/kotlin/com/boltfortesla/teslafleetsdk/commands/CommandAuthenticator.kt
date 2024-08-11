@@ -18,6 +18,6 @@ internal interface CommandAuthenticator {
   fun addAuthenticationData(
     message: RoutableMessage,
     metadata: ByteArray,
-    sharedSecret: ByteArray
+    sharedSecret: ByteArray,
   ): RoutableMessage
 }
