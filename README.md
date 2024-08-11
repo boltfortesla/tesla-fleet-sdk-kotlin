@@ -25,7 +25,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-  implementation('com.boltfortesla:tesla-fleet-sdk-kotlin:2.0.1')
+  implementation('com.boltfortesla:tesla-fleet-sdk-kotlin:3.0.0')
 }
 ```
 
@@ -42,7 +42,7 @@ dependencies {
   <dependency>
     <groupId>com.boltfortesla</groupId>
     <artifactId>tesla-fleet-sdk-kotlin</artifactId>
-    <version>2.0.1</version>
+    <version>3.0.0</version>
   </dependency>
 </project>
 ```

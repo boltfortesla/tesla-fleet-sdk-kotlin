@@ -21,6 +21,6 @@ class AuthenticationInterceptor(private val authToken: String) : Interceptor {
     const val AUTH_VALUE = "Bearer %s"
 
     const val USER_AGENT_KEY = "user-agent"
-    const val USER_AGENT_VALUE = "TeslaFleetSdk/2.0.1"
+    const val USER_AGENT_VALUE = "TeslaFleetSdk/3.0.0"
   }
 }
