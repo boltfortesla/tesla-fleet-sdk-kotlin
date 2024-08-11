@@ -72,6 +72,7 @@ import com.tesla.generated.carserver.server.chargingStartStopAction
 import com.tesla.generated.carserver.server.drivingClearSpeedLimitPinAction
 import com.tesla.generated.carserver.server.drivingSetSpeedLimitAction
 import com.tesla.generated.carserver.server.drivingSpeedLimitAction
+import com.tesla.generated.carserver.server.eraseUserDataAction
 import com.tesla.generated.carserver.server.hvacAutoAction
 import com.tesla.generated.carserver.server.hvacBioweaponModeAction
 import com.tesla.generated.carserver.server.hvacClimateKeeperAction
@@ -285,9 +286,16 @@ internal class VehicleCommandsImpl(
     }
   }
 
-  override suspend fun eraseUserData(): Result<VehicleCommandResponse> {
-    // Does not require Command Protocol
-    return executeCommand(action = null) { vehicleCommandsApi.eraseUserData(vin) }
+  /**
+   * erases user data created while in Guest Mode. This command has no effect unless the vehicle is
+   * currently in Guest Mode.
+   */
+  override suspend fun eraseGuestData(): Result<VehicleCommandResponse> {
+    return executeCommand(
+      action { vehicleAction = vehicleAction { eraseUserDataAction = eraseUserDataAction {} } }
+    ) {
+      vehicleCommandsApi.eraseUserData(vin)
+    }
   }
 
   override suspend fun flashLights(): Result<VehicleCommandResponse> {

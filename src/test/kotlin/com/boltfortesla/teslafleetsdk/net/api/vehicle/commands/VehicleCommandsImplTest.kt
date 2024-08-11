@@ -54,6 +54,7 @@ import com.tesla.generated.carserver.server.chargingStartStopAction
 import com.tesla.generated.carserver.server.drivingClearSpeedLimitPinAction
 import com.tesla.generated.carserver.server.drivingSetSpeedLimitAction
 import com.tesla.generated.carserver.server.drivingSpeedLimitAction
+import com.tesla.generated.carserver.server.eraseUserDataAction
 import com.tesla.generated.carserver.server.hvacBioweaponModeAction
 import com.tesla.generated.carserver.server.hvacClimateKeeperAction
 import com.tesla.generated.carserver.server.hvacSeatCoolerActions
@@ -429,12 +430,19 @@ class VehicleCommandsImplTest {
   }
 
   @Test
-  fun eraseUserData_nonCommandProtocol() {
+  fun eraseGuestData_commandProtocol() {
+    testInfotainmentCommand(vehicleAction { eraseUserDataAction = eraseUserDataAction {} }) {
+      eraseGuestData()
+    }
+  }
+
+  @Test
+  fun eraseGuestData_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/erase_user_data",
       commandProtocolSupported = false,
     ) {
-      eraseUserData()
+      eraseGuestData()
     }
   }
 

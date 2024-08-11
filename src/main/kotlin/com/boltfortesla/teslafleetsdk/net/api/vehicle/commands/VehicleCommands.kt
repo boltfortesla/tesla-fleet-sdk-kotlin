@@ -41,7 +41,7 @@ interface VehicleCommands {
 
   suspend fun unlockDoors(): Result<VehicleCommandResponse>
 
-  suspend fun eraseUserData(): Result<VehicleCommandResponse>
+  suspend fun eraseGuestData(): Result<VehicleCommandResponse>
 
   suspend fun flashLights(): Result<VehicleCommandResponse>
 
