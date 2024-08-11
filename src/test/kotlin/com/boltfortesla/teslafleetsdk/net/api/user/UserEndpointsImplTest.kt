@@ -63,7 +63,7 @@ class UserEndpointsImplTest {
         FleetApiResponse(
           FeatureConfigResponse(
             Signaling(true, false, false),
-            FeatureConfigResponse.AuthRejection(enabled = true, minVersion = 4)
+            FeatureConfigResponse.AuthRejection(enabled = true, minVersion = 4),
           )
         )
       )
@@ -84,7 +84,7 @@ class UserEndpointsImplTest {
           MeResponse(
             "test-user@tesla.com",
             "Testy McTesterson",
-            "https://vehicle-files.prd.usw2.vn.cloud.tesla.com/profile_images/f98c87cd7bebc06069b89b33f9ec634c195520f75b6e63ea89f0b7c61449c689.jpg"
+            "https://vehicle-files.prd.usw2.vn.cloud.tesla.com/profile_images/f98c87cd7bebc06069b89b33f9ec634c195520f75b6e63ea89f0b7c61449c689.jpg",
           )
         )
       )
@@ -113,7 +113,7 @@ class UserEndpointsImplTest {
               "US",
               "en_US",
               "APBS,DV2W,IBB1,PMNG,PRM30,SC04,MDL3,W41B,MT322,CPF0,RSF1,CW03",
-              false
+              false,
             )
           )
         )

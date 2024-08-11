@@ -14,7 +14,7 @@ class FakeCommandAuthenticator : CommandAuthenticator {
   override fun addAuthenticationData(
     message: UniversalMessage.RoutableMessage,
     metadata: ByteArray,
-    sharedSecret: ByteArray
+    sharedSecret: ByteArray,
   ): UniversalMessage.RoutableMessage {
     authenticatedMessage = message
     this.metadata = metadata

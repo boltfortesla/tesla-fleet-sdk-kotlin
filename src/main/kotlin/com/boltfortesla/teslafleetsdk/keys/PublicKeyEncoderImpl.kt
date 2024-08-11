@@ -20,7 +20,7 @@ internal class PublicKeyEncoderImpl : PublicKeyEncoder {
     val array = toByteArray()
     return if (array[0].toInt() == 0) {
       ByteArray(array.size - 1).apply {
-        System.arraycopy(array, /* srcPos = */ 1, /* dest= */ this, /* destPos = */ 0, this.size)
+        System.arraycopy(array, /* srcPos= */ 1, /* dest= */ this, /* destPos= */ 0, this.size)
       }
     } else {
       array

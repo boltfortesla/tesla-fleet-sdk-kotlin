@@ -12,6 +12,6 @@ internal interface Handshaker {
   suspend fun performHandshake(
     vin: String,
     domain: Domain,
-    sharedSecretFetcher: SharedSecretFetcher
+    sharedSecretFetcher: SharedSecretFetcher,
   ): SessionInfo
 }

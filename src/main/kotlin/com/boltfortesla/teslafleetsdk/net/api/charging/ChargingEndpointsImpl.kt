@@ -18,7 +18,7 @@ internal class ChargingEndpointsImpl(
     pageNumber: Int,
     pageSize: Int,
     sortBy: SortableField,
-    sortOrder: SortOrder
+    sortOrder: SortOrder,
   ) =
     networkExecutor.execute {
       chargingApi.chargingHistory(
@@ -28,7 +28,7 @@ internal class ChargingEndpointsImpl(
         pageNumber,
         pageSize,
         sortBy.field,
-        sortOrder.name
+        sortOrder.name,
       )
     }
 
@@ -40,7 +40,7 @@ internal class ChargingEndpointsImpl(
     dateFrom: ZonedDateTime,
     dateTo: ZonedDateTime,
     limit: Int,
-    offset: Int
+    offset: Int,
   ) =
     networkExecutor.execute {
       chargingApi.chargingSessions(
@@ -48,7 +48,7 @@ internal class ChargingEndpointsImpl(
         dateFrom.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
         dateTo.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
         limit,
-        offset
+        offset,
       )
     }
 }

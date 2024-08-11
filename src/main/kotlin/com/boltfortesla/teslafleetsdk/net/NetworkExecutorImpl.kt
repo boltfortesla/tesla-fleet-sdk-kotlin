@@ -15,26 +15,22 @@ import retrofit2.HttpException
 /** Implementation of [NetworkExecutor] */
 internal class NetworkExecutorImpl(
   private val retryConfig: RetryConfig,
-  private val jitterFactorCalculator: JitterFactorCalculator
+  private val jitterFactorCalculator: JitterFactorCalculator,
 ) : NetworkExecutor {
-  override suspend fun <T> execute(
-    action: suspend () -> T,
-  ): Result<T> {
-    return NetworkRetrier(retryConfig, jitterFactorCalculator).doWithRetries(
-      {
-        if (!coroutineContext.isActive) {
-          Log.d("Coroutine not active, not executing request")
-          Result.failure(CancellationException("coroutine not active"))
-        } else {
-          try {
-            Result.success(action()).also { Log.d("Request succeeded") }
-          } catch (throwable: Throwable) {
-            Log.e("Request failed", throwable)
-            Result.failure(throwable)
-          }
+  override suspend fun <T> execute(action: suspend () -> T): Result<T> {
+    return NetworkRetrier(retryConfig, jitterFactorCalculator).doWithRetries({
+      if (!coroutineContext.isActive) {
+        Log.d("Coroutine not active, not executing request")
+        Result.failure(CancellationException("coroutine not active"))
+      } else {
+        try {
+          Result.success(action()).also { Log.d("Request succeeded") }
+        } catch (throwable: Throwable) {
+          Log.e("Request failed", throwable)
+          Result.failure(throwable)
         }
-      },
-    ) {
+      }
+    }) {
       if (it.isSuccess) {
         false
       } else {

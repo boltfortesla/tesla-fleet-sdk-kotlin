@@ -7,9 +7,7 @@ internal interface NetworkExecutor {
    *
    * Returns a [Result] containing the response object, or an exception on failure.
    */
-  suspend fun <T> execute(
-    action: suspend () -> T,
-  ): Result<T>
+  suspend fun <T> execute(action: suspend () -> T): Result<T>
 
   companion object {
     const val HTTP_TOO_MANY_REQUESTS = 429

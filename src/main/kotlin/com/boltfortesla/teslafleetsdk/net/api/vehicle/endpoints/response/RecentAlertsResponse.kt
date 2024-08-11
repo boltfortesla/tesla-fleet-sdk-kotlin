@@ -7,6 +7,6 @@ data class RecentAlertsResponse(@SerializedName("recent_alerts") val alerts: Lis
     val name: String,
     val time: String,
     val audience: List<String>,
-    @SerializedName("user_text") val userText: String
+    @SerializedName("user_text") val userText: String,
   )
 }

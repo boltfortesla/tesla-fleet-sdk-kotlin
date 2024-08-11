@@ -16,13 +16,13 @@ internal class HmacCommandAuthenticator(private val hmacCalculator: HmacCalculat
   override fun addAuthenticationData(
     message: RoutableMessage,
     metadata: ByteArray,
-    sharedSecret: ByteArray
+    sharedSecret: ByteArray,
   ): RoutableMessage {
     val key = hmacCalculator.calculateSha256Hmac(sharedSecret, DATA.toByteArray())
     val tag =
       hmacCalculator.calculateSha256Hmac(
         key,
-        metadata + message.protobufMessageAsBytes.toByteArray()
+        metadata + message.protobufMessageAsBytes.toByteArray(),
       )
 
     Log.d("calculated hmac tag has length ${tag.size}")

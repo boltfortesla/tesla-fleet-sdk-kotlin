@@ -38,5 +38,5 @@ internal interface ChargingApi {
 
 internal fun createChargingApi(
   baseUrl: String = Region.NA_APAC.baseUrl,
-  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
 ) = ApiCreator.createApi<ChargingApi>(baseUrl, clientBuilder)

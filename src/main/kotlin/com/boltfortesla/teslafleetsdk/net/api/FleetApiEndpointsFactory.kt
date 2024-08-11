@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient
 
 /** Factory for [FleetApiEndpoints]. */
 internal class FleetApiEndpointsFactory(
-  private val jitterFactorCalculator: JitterFactorCalculator,
+  private val jitterFactorCalculator: JitterFactorCalculator
 ) {
   /**
    * Creates a [FleetApiEndpoints] instance.
@@ -21,11 +21,11 @@ internal class FleetApiEndpointsFactory(
   fun create(
     region: Region,
     retryConfig: RetryConfig,
-    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+    clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): FleetApiEndpoints {
     return FleetApiEndpointsImpl(
       createFleetApi(region.authBaseUrl, clientBuilder),
-      NetworkExecutorImpl(retryConfig, jitterFactorCalculator)
+      NetworkExecutorImpl(retryConfig, jitterFactorCalculator),
     )
   }
 }

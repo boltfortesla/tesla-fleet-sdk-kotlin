@@ -12,7 +12,7 @@ import java.security.MessageDigest
 /** Implementation of [SessionInfoAuthenticator] */
 internal class SessionInfoAuthenticatorImpl(
   private val tlvEncoder: TlvEncoder,
-  private val hmacCalculator: HmacCalculator
+  private val hmacCalculator: HmacCalculator,
 ) : SessionInfoAuthenticator {
   override fun authenticate(
     sharedSecret: ByteArray,
@@ -31,14 +31,14 @@ internal class SessionInfoAuthenticatorImpl(
           Tag.TAG_PERSONALIZATION_VALUE to vin.toByteArray(),
           Tag.TAG_CHALLENGE_VALUE to requestUuid,
         ),
-        suffix = 0xff.toByte()
+        suffix = 0xff.toByte(),
       )
     Log.d("metadataTLV ${metadata.toHexString()}")
     // Constant time comparison!
     val digestsMatch =
       MessageDigest.isEqual(
         sessionInfoTag,
-        hmacCalculator.calculateSha256Hmac(sessionInfoKey, metadata + sessionInfo)
+        hmacCalculator.calculateSha256Hmac(sessionInfoKey, metadata + sessionInfo),
       )
     if (!digestsMatch) {
       Log.d("Session info failed to authenticate, digests do not match")

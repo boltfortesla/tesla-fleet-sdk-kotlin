@@ -5,6 +5,6 @@ data class OptionsResponse(val codes: List<OptionCode>) {
     val code: String,
     val colorCode: String? = null,
     val displayName: String,
-    val isActive: Boolean
+    val isActive: Boolean,
   )
 }

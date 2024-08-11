@@ -50,13 +50,13 @@ internal interface VehicleCommandsApi {
   @POST("/api/1/vehicles/{vehicle_tag}/command/actuate_trunk")
   suspend fun actuateTrunk(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: ActuateTrunkRequest
+    @Body request: ActuateTrunkRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/adjust_volume")
   suspend fun adjustVolume(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: AdjustVolumeRequest
+    @Body request: AdjustVolumeRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/auto_conditioning_start")
@@ -104,7 +104,7 @@ internal interface VehicleCommandsApi {
   @POST("/api/1/vehicles/{vehicle_tag}/command/guest_mode")
   suspend fun setGuestMode(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: GuestModeRequest
+    @Body request: GuestModeRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/honk_horn")
@@ -134,55 +134,55 @@ internal interface VehicleCommandsApi {
   @POST("/api/1/vehicles/{vehicle_tag}/command/share")
   suspend fun shareUrl(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: ShareRequest
+    @Body request: ShareRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/navigation_gps_request")
   suspend fun startNavigationToCoordinates(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: NavigationGpsRequest
+    @Body request: NavigationGpsRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/navigation_request")
   suspend fun sendNavigationLocation(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: ShareRequest
+    @Body request: ShareRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/navigation_sc_request")
   suspend fun startNavigationToSupercharger(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: NavigationSuperchargerRequest
+    @Body request: NavigationSuperchargerRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_auto_seat_climate_request")
   suspend fun setAutoSeatClimate(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: RemoteAutoSeatClimateRequest
+    @Body request: RemoteAutoSeatClimateRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_auto_steering_wheel_heat_climate_request")
   suspend fun setAutoSteeringWheelHeat(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: RemoteAutoSteeringWheelHeatClimateRequest
+    @Body request: RemoteAutoSteeringWheelHeatClimateRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_boombox")
   suspend fun playBoomboxSound(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: RemoteBoomboxRequest
+    @Body request: RemoteBoomboxRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_seat_cooler_request")
   suspend fun setSeatCooler(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: RemoteSeatCoolerRequest
+    @Body request: RemoteSeatCoolerRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_seat_heater_request")
   suspend fun setSeatHeater(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: RemoteSeatHeaterRequest
+    @Body request: RemoteSeatHeaterRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_start_drive")
@@ -191,13 +191,13 @@ internal interface VehicleCommandsApi {
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_steering_wheel_heat_level_request")
   suspend fun setSteeringWheelHeatLevel(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: RemoteSteeringWheelHeatLevelRequest
+    @Body request: RemoteSteeringWheelHeatLevelRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/remote_steering_wheel_heater_request")
   suspend fun setSteeringWheelHeater(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: RemoteSteeringWheelHeaterRequest
+    @Body request: RemoteSteeringWheelHeaterRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/reset_pin_to_drive_pin")
@@ -209,103 +209,103 @@ internal interface VehicleCommandsApi {
   @POST("/api/1/vehicles/{vehicle_tag}/command/schedule_software_update")
   suspend fun scheduleSoftwareUpdate(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: ScheduleSoftwareUpdateRequest
+    @Body request: ScheduleSoftwareUpdateRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_bioweapon_mode")
   suspend fun setBioweaponMode(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetBioweaponModeRequest
+    @Body request: SetBioweaponModeRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_cabin_overheat_protection")
   suspend fun setCabinOverheatProtection(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetCabinOverheatProtectionRequest
+    @Body request: SetCabinOverheatProtectionRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_charge_limit")
   suspend fun setChargeLimit(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetChargeLimitRequest
+    @Body request: SetChargeLimitRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_charging_amps")
   suspend fun setChargingAmps(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetChargingAmpsRequest
+    @Body request: SetChargingAmpsRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_climate_keeper_mode")
   suspend fun setClimateKeeperMode(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetClimateKeeperModeRequest
+    @Body request: SetClimateKeeperModeRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_cop_temp")
   suspend fun setCopTemp(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetCopTempRequest
+    @Body request: SetCopTempRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_pin_to_drive")
   suspend fun setPinToDrive(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetPinToDriveRequest
+    @Body request: SetPinToDriveRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_preconditioning_max")
   suspend fun setPreconditioningMax(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetPreconditioningMaxRequest
+    @Body request: SetPreconditioningMaxRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_scheduled_charging")
   suspend fun setScheduledCharging(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetScheduledChargingRequest
+    @Body request: SetScheduledChargingRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_scheduled_departure")
   suspend fun setScheduledDeparture(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetScheduledDepartureRequest
+    @Body request: SetScheduledDepartureRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_sentry_mode")
   suspend fun setSentryMode(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetSentryModeRequest
+    @Body request: SetSentryModeRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_temps")
   suspend fun setTemps(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetTempsRequest
+    @Body request: SetTempsRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_valet_mode")
   suspend fun setValetMode(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetValetModeRequest
+    @Body request: SetValetModeRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/set_vehicle_name")
   suspend fun setVehicleName(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SetVehicleNameRequest
+    @Body request: SetVehicleNameRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/speed_limit_activate")
   suspend fun speedLimitActivate(
     @Path("vehicle_tag") vehicleTag: String,
-    @Body request: SpeedLimitActivateRequest
+    @Body request: SpeedLimitActivateRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/speed_limit_clear_pin")
   suspend fun speedLimitClearPin(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SpeedLimitClearPinRequest
+    @Body request: SpeedLimitClearPinRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/speed_limit_clear_pin_admin")
@@ -314,43 +314,43 @@ internal interface VehicleCommandsApi {
   @POST("/api/1/vehicles/{vehicle_tag}/command/speed_limit_deactivate")
   suspend fun speedLimitDeactivate(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SpeedLimitDeactivateRequest
+    @Body request: SpeedLimitDeactivateRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/speed_limit_set_limit")
   suspend fun speedLimitSetLimit(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SpeedLimitSetLimitRequest
+    @Body request: SpeedLimitSetLimitRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/sun_roof_control")
   suspend fun sunRoofControl(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SunRoofControlRequest
+    @Body request: SunRoofControlRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/take_drivenote")
   suspend fun takeDrivenote(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: TakeDrivenoteRequest
+    @Body request: TakeDrivenoteRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/trigger_homelink")
   suspend fun triggerHomelink(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: TriggerHomelinkRequest
+    @Body request: TriggerHomelinkRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/upcoming_calendar_entries")
   suspend fun upcomingCalendarEntries(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: UpcomingCalendarEntriesRequest
+    @Body request: UpcomingCalendarEntriesRequest,
   ): CommandResponse
 
   @POST("/api/1/vehicles/{vehicle_tag}/command/window_control")
   suspend fun windowControl(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: WindowControlRequest
+    @Body request: WindowControlRequest,
   ): CommandResponse
 
   companion object {
@@ -360,5 +360,5 @@ internal interface VehicleCommandsApi {
 
 internal fun createVehicleCommandsApi(
   baseUrl: String = Region.NA_APAC.baseUrl,
-  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
 ) = ApiCreator.createApi<VehicleCommandsApi>(baseUrl, clientBuilder)

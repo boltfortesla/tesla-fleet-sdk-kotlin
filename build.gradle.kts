@@ -5,9 +5,9 @@ repositories {
 
 plugins {
   id("java-library")
-  id("org.jetbrains.kotlin.jvm") version "1.9.22"
+  id("org.jetbrains.kotlin.jvm") version "2.0.10"
   id("com.google.protobuf") version "0.9.4"
-  id("com.ncorti.ktfmt.gradle") version "0.17.0"
+  id("com.ncorti.ktfmt.gradle") version "0.19.0"
   id("maven-publish")
 }
 
@@ -28,24 +28,24 @@ ktfmt {
 }
 
 dependencies {
-  implementation("com.google.protobuf:protobuf-kotlin:3.25.2")
-  implementation("org.bouncycastle:bcprov-jdk18on:1.78")
-  implementation("com.squareup.retrofit2:retrofit:2.9.0")
-  implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-  implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
-  implementation("com.google.code.gson:gson:2.10.1")
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC2")
+  implementation("com.google.protobuf:protobuf-kotlin:3.25.4")
+  implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
+  implementation("com.squareup.retrofit2:retrofit:2.11.0")
+  implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+  implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
+  implementation("com.google.code.gson:gson:2.11.0")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
   implementation("com.squareup.okio:okio:1.17.6")
   testImplementation("junit:junit:4.13.2")
-  testImplementation("com.google.truth:truth:1.3.0")
+  testImplementation("com.google.truth:truth:1.4.4")
   testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC2")
-  testImplementation("org.json:json:20231013")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+  testImplementation("org.json:json:20240303")
   testImplementation(kotlin("test"))
 }
 
 protobuf {
-  protoc { artifact = "com.google.protobuf:protoc:3.25.2" }
+  protoc { artifact = "com.google.protobuf:protoc:3.25.4" }
 
   generateProtoTasks {
     all().forEach { task ->

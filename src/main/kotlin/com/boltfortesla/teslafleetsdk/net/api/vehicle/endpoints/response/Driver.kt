@@ -10,7 +10,7 @@ data class Driver(
   @SerializedName("driver_last_name") val driverLastName: String,
   @SerializedName("granular_access") val granularAccess: GranularAccess,
   @SerializedName("active_pubkeys") val activePubkeys: List<String>,
-  @SerializedName("public_key") val publicKey: String
+  @SerializedName("public_key") val publicKey: String,
 ) {
   data class GranularAccess(@SerializedName("hide_private") val hidePrivate: Boolean)
 }

@@ -26,9 +26,7 @@ data class VehicleDataResponse(
   @SerializedName("vehicle_config") val vehicleConfig: VehicleConfig,
   @SerializedName("vehicle_state") val vehicleState: VehicleState,
 ) {
-  data class GranularAccess(
-    @SerializedName("hide_private") val hidePrivate: Boolean,
-  )
+  data class GranularAccess(@SerializedName("hide_private") val hidePrivate: Boolean)
 
   data class ChargeState(
     @SerializedName("battery_heater_on") val batteryHeaterOn: Boolean,
@@ -85,7 +83,7 @@ data class VehicleDataResponse(
     val timestamp: Long,
     @SerializedName("trip_charging") val tripCharging: Boolean,
     @SerializedName("usable_battery_level") val usableBatteryLevel: Int,
-    @SerializedName("user_charge_enable_request") val userChargeEnableRequest: String?
+    @SerializedName("user_charge_enable_request") val userChargeEnableRequest: String?,
   )
 
   data class ClimateState(
@@ -130,7 +128,7 @@ data class VehicleDataResponse(
     val supportsFanOnlyCabinOverheatProtection: Boolean,
     val timestamp: Long,
     @SerializedName("wiper_blade_heater") val wiperBladeHeater: Boolean,
-    @SerializedName("smart_preconditioning") val smartPreconditioning: Boolean
+    @SerializedName("smart_preconditioning") val smartPreconditioning: Boolean,
   )
 
   data class DriveState(

@@ -14,11 +14,11 @@ internal interface OauthApi {
   suspend fun refreshToken(
     @Field("client_id") clientId: String,
     @Field("refresh_token") refreshToken: String,
-    @Field("grant_type") grantType: String = "refresh_token"
+    @Field("grant_type") grantType: String = "refresh_token",
   ): RefreshTokenResponse
 }
 
 internal fun createOauthApi(
   baseUrl: String = "https://auth.tesla.com",
-  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
 ) = ApiCreator.createApi<OauthApi>(baseUrl, clientBuilder)

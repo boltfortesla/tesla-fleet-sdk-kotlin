@@ -7,7 +7,7 @@ data class ChargingSessionsResponse(
   val data: List<ChargingSession>,
   @SerializedName("status_code") val statusCode: Int,
   @SerializedName("status_message") val statusMessage: String,
-  val timestamp: Timestamp
+  val timestamp: Timestamp,
 ) {
   data class Timestamp(@SerializedName("time.Time") val time: String)
 
@@ -27,7 +27,7 @@ data class ChargingSessionsResponse(
 
   data class ChargingPeriod(
     val dimensions: List<Dimension>,
-    @SerializedName("start_date_time") val startDateTime: String
+    @SerializedName("start_date_time") val startDateTime: String,
   ) {
     data class Dimension(val type: String, val volume: Int)
   }
@@ -37,12 +37,12 @@ data class ChargingSessionsResponse(
   data class Tariff(val currency: String, val elements: List<TariffElement>) {
     data class TariffElement(
       @SerializedName("price_components") val priceComponents: List<PriceComponent>,
-      val restrictions: Map<String, Any>
+      val restrictions: Map<String, Any>,
     ) {
       data class PriceComponent(
         val price: Int,
         @SerializedName("step_size") val stepSize: Int,
-        val type: String
+        val type: String,
       )
 
       override fun equals(other: Any?): Boolean {
@@ -68,6 +68,6 @@ data class ChargingSessionsResponse(
   data class TotalCost(
     @SerializedName("excl_vat") val excludingVat: Int,
     @SerializedName("incl_vat") val includingVat: Int,
-    val vat: Int
+    val vat: Int,
   )
 }

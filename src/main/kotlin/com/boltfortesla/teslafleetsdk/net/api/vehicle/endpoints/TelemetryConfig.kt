@@ -7,7 +7,7 @@ data class TelemetryConfig(
   val ca: String,
   val exp: Long,
   val fields: Map<String, FieldConfig>,
-  @SerializedName("alert_types") val alertTypes: List<String>
+  @SerializedName("alert_types") val alertTypes: List<String>,
 ) {
   data class FieldConfig(@SerializedName("interval_seconds") val intervalSeconds: Int)
 }

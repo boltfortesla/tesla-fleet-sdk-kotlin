@@ -14,7 +14,7 @@ class HmacCalculatorImplTest {
     val hmac =
       hmacCalculator.calculateSha256Hmac(
         key = SHARED_SECRET.decodeHex(),
-        data = "session info".toByteArray()
+        data = "session info".toByteArray(),
       )
 
     assertThat(hmac).isEqualTo(HANDSHAKE_HMAC.decodeHex())

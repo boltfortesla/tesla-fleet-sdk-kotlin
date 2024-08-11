@@ -15,7 +15,7 @@ class TlvEncoderImplTest {
     val tlv =
       encoder.encodeTlv(
         mapOf(0 to byteArrayOf(6.toByte()), 2 to VIN.toByteArray(), 6 to REQUEST_UUID.decodeHex()),
-        0xff.toByte()
+        0xff.toByte(),
       )
 
     assertThat(tlv).isEqualTo(HANDSHAKE_TLV.decodeHex())

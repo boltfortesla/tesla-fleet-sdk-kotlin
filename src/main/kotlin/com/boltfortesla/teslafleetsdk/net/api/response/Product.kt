@@ -23,7 +23,7 @@ sealed interface Product {
     @SerializedName("api_version") val apiVersion: String?,
     @SerializedName("backseat_token") val backseatToken: String?,
     @SerializedName("backseat_token_updated_at") val backseatTokenUpdatedAt: String?,
-    @SerializedName("command_signing") val commandSigning: String?
+    @SerializedName("command_signing") val commandSigning: String?,
   ) : Product {
     data class GranularAccess(@SerializedName("hide_private") val hidePrivate: Boolean)
   }

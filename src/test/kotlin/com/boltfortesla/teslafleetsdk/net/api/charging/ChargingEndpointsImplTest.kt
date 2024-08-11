@@ -62,7 +62,7 @@ class ChargingEndpointsImplTest {
             43,
             45,
             0,
-            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7))
+            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7)),
           ),
         endTime =
           ZonedDateTime.of(
@@ -73,12 +73,12 @@ class ChargingEndpointsImplTest {
             43,
             45,
             0,
-            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7))
+            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7)),
           ),
         pageNumber = 0,
         pageSize = 5,
         sortBy = SortableField.VIN,
-        sortOrder = SortOrder.ASC
+        sortOrder = SortOrder.ASC,
       )
 
     val request = server.takeRequest()
@@ -123,7 +123,7 @@ class ChargingEndpointsImplTest {
                   18.4,
                   "kwh",
                   true,
-                  "PAID"
+                  "PAID",
                 ),
                 Fee(
                   87654321,
@@ -149,15 +149,15 @@ class ChargingEndpointsImplTest {
                   0.0,
                   "min",
                   true,
-                  "PAID"
-                )
+                  "PAID",
+                ),
               ),
               "IMMEDIATE",
               invoices = listOf(Invoice("ABC-123NN-US.pdf", "abc-123-efg", "IMMEDIATE")),
-              "TSLA"
-            ),
+              "TSLA",
+            )
           ),
-          0
+          0,
         )
       )
   }
@@ -192,7 +192,7 @@ class ChargingEndpointsImplTest {
             43,
             45,
             0,
-            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7))
+            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7)),
           ),
         dateTo =
           ZonedDateTime.of(
@@ -203,10 +203,10 @@ class ChargingEndpointsImplTest {
             43,
             45,
             0,
-            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7))
+            ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-7)),
           ),
         limit = 5,
-        offset = 0
+        offset = 0,
       )
 
     val request = server.takeRequest()
@@ -232,18 +232,18 @@ class ChargingEndpointsImplTest {
                     listOf(PriceComponent(0, 0, "ENERGY")),
                     mapOf("additionalProp1" to JsonObject()),
                   )
-                )
+                ),
               ),
               ChargingSessionsResponse.TotalCost(0, 0, 0),
               0,
               0,
-              "string"
+              "string",
             )
           ),
           0,
           "string",
-          Timestamp("string")
-        ),
+          Timestamp("string"),
+        )
       )
   }
 }

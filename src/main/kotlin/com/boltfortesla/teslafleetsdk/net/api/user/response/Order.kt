@@ -11,5 +11,5 @@ data class Order(
   val countryCode: String,
   val locale: String,
   val mktOptions: String,
-  val isB2b: Boolean
+  val isB2b: Boolean,
 )

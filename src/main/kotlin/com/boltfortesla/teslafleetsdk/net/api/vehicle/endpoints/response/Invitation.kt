@@ -22,5 +22,5 @@ data class Invitation(
   @SerializedName("share_user_id_s") val shareUserIdS: String,
   @SerializedName("borrowing_key_hash") val borrowingKeyHash: String?,
   val vin: String,
-  @SerializedName("share_link") val shareLink: String
+  @SerializedName("share_link") val shareLink: String,
 )

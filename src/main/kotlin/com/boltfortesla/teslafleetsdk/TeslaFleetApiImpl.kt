@@ -52,11 +52,7 @@ internal class TeslaFleetApiImpl(
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder,
   ): FleetApiEndpoints =
-    fleetApiEndpointsFactory.create(
-      region,
-      retryConfig,
-      clientBuilder.configure(accessToken),
-    )
+    fleetApiEndpointsFactory.create(region, retryConfig, clientBuilder.configure(accessToken))
 
   override fun oAuth(
     region: Region,
@@ -72,11 +68,7 @@ internal class TeslaFleetApiImpl(
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder,
   ): ChargingEndpoints =
-    chargingEndpointsFactory.create(
-      region,
-      retryConfig,
-      clientBuilder.configure(accessToken),
-    )
+    chargingEndpointsFactory.create(region, retryConfig, clientBuilder.configure(accessToken))
 
   override fun energyEndpoints(
     energySiteId: Int,
@@ -126,12 +118,7 @@ internal class TeslaFleetApiImpl(
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder,
   ): VehicleEndpoints =
-    vehicleEndpointsFactory.create(
-      vin,
-      region,
-      retryConfig,
-      clientBuilder.configure(accessToken),
-    )
+    vehicleEndpointsFactory.create(vin, region, retryConfig, clientBuilder.configure(accessToken))
 
   override fun saveSessionInfo(): String {
     Log.d("Saving session info")

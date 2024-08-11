@@ -44,7 +44,7 @@ class TeslaOauthImplTest {
           3600,
           "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
           "idToken",
-          "state"
+          "state",
         )
       )
   }

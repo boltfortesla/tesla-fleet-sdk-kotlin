@@ -49,9 +49,9 @@ internal class CommandSignerImpl(
           Tag.TAG_EPOCH_VALUE to sessionInfo.epoch,
           Tag.TAG_EXPIRES_AT_VALUE to
             ByteBuffer.allocate(Int.SIZE_BYTES).putInt(expirationTime).array(),
-          Tag.TAG_COUNTER_VALUE to ByteBuffer.allocate(Int.SIZE_BYTES).putInt(counter).array()
+          Tag.TAG_COUNTER_VALUE to ByteBuffer.allocate(Int.SIZE_BYTES).putInt(counter).array(),
         ),
-        0xff.toByte()
+        0xff.toByte(),
       )
     Log.d("metadataTLV: ${metadata.toHexString()}")
 
@@ -77,7 +77,7 @@ internal class CommandSignerImpl(
     return commandAuthenticator.addAuthenticationData(
       signedMessage,
       metadata,
-      sessionInfo.sharedSecret
+      sessionInfo.sharedSecret,
     )
   }
 

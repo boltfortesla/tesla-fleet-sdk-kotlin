@@ -40,7 +40,7 @@ internal interface VehicleEndpointsApi {
   @DELETE("/api/1/vehicles/{vehicle_tag}/drivers")
   suspend fun removeDriver(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Query("share_user_id") userId: Int
+    @Query("share_user_id") userId: Int,
   ): FleetApiResponse<String>
 
   @GET("/api/1/dx/vehicles/subscriptions/eligibility")
@@ -70,7 +70,7 @@ internal interface VehicleEndpointsApi {
   @GET("/api/1/vehicles")
   suspend fun listVehicles(
     @Query("page") page: Int?,
-    @Query("per_page") perPage: Int?
+    @Query("per_page") perPage: Int?,
   ): FleetApiResponse<List<Vehicle>>
 
   @GET("/api/1/vehicles/{vehicle_tag}/mobile_enabled")
@@ -81,7 +81,7 @@ internal interface VehicleEndpointsApi {
     @Path(VEHICLE_TAG) vehicleTag: String,
     @Query("count") count: Int?,
     @Query("radius") radius: Int?,
-    @Query("detail") detail: Boolean?
+    @Query("detail") detail: Boolean?,
   ): FleetApiResponse<NearbyChargingSitesResponse>
 
   @GET("/api/1/dx/vehicles/options")
@@ -96,7 +96,7 @@ internal interface VehicleEndpointsApi {
   suspend fun getReleaseNotes(
     @Path(VEHICLE_TAG) vehicleTag: String,
     @Query("staged") staged: Boolean,
-    @Query("language") language: Int
+    @Query("language") language: Int,
   ): FleetApiResponse<ReleaseNotesResponse>
 
   @GET("/api/1/vehicles/{vehicle_tag}/service_data")
@@ -120,25 +120,25 @@ internal interface VehicleEndpointsApi {
   @POST("/api/1/vehicles/{vehicle_tag}/invitations/{id}/revoke")
   suspend fun revokeShareInvite(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Path("id") id: String
+    @Path("id") id: String,
   ): FleetApiResponse<Boolean?>
 
   @POST("/api/1/vehicles/{vehicle_tag}/signed_command")
   suspend fun sendSignedCommand(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Body request: SignedCommandRequest
+    @Body request: SignedCommandRequest,
   ): SignedCommandResponse
 
   @GET("/api/1/subscriptions")
   suspend fun getSubscriptions(
     @Query("device_token") deviceToken: String,
-    @Query("device_type") deviceType: String
+    @Query("device_type") deviceType: String,
   ): FleetApiResponse<List<Int>?>
 
   @POST("/api/1/subscriptions")
   suspend fun setSubscriptions(
     @Query("device_token") deviceToken: String,
-    @Query("device_type") deviceType: String
+    @Query("device_type") deviceType: String,
   ): FleetApiResponse<List<Int>?>
 
   @GET("/api/1/vehicles/{vehicle_tag}")
@@ -147,19 +147,19 @@ internal interface VehicleEndpointsApi {
   @GET("/api/1/vehicles/{vehicle_tag}/vehicle_data")
   suspend fun getVehicleData(
     @Path(VEHICLE_TAG) vehicleTag: String,
-    @Query("endpoints") endpoints: String
+    @Query("endpoints") endpoints: String,
   ): FleetApiResponse<VehicleDataResponse>
 
   @GET("/api/1/vehicle_subscriptions")
   suspend fun getVehicleSubscriptions(
     @Query("device_token") deviceToken: String,
-    @Query("device_type") deviceType: String
+    @Query("device_type") deviceType: String,
   ): FleetApiResponse<List<Int>?>
 
   @POST("/api/1/vehicle_subscriptions")
   suspend fun setVehicleSubscriptions(
     @Query("device_token") deviceToken: String,
-    @Query("device_type") deviceType: String
+    @Query("device_type") deviceType: String,
   ): FleetApiResponse<List<Int>?>
 
   @POST("/api/1/vehicles/{vehicle_tag}/wake_up")
@@ -175,5 +175,5 @@ internal interface VehicleEndpointsApi {
 
 internal fun createVehicleEndpointsApi(
   baseUrl: String = Region.NA_APAC.baseUrl,
-  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+  clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
 ) = ApiCreator.createApi<VehicleEndpointsApi>(baseUrl, clientBuilder)
