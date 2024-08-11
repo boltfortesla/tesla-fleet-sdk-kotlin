@@ -27,6 +27,7 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.C
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.HeaterSeat
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.SeatClimateLevel
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.SunroofState
+import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.TonneauAction
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.Trunk
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.WindowCommand
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpointsImpl
@@ -244,6 +245,59 @@ class VehicleCommandsImplTest {
       "{\"which_trunk\":\"front\"}",
     ) {
       actuateTrunk(Trunk.FRONT)
+    }
+  }
+
+  @Test
+  fun controlTonneau_open_commandProtocol() {
+    testVehicleSecurityCommand(
+      unsignedMessage {
+        closureMoveRequest = closureMoveRequest {
+          tonneau = Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_OPEN
+        }
+      }
+    ) {
+      controlTonneau(TonneauAction.OPEN)
+    }
+  }
+
+  @Test
+  fun controlTonneau_close_commandProtocol() {
+    testVehicleSecurityCommand(
+      unsignedMessage {
+        closureMoveRequest = closureMoveRequest {
+          tonneau = Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_CLOSE
+        }
+      }
+    ) {
+      controlTonneau(TonneauAction.CLOSE)
+    }
+  }
+
+  @Test
+  fun controlTonneau_stop_commandProtocol() {
+    testVehicleSecurityCommand(
+      unsignedMessage {
+        closureMoveRequest = closureMoveRequest {
+          tonneau = Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_STOP
+        }
+      }
+    ) {
+      controlTonneau(TonneauAction.STOP)
+    }
+  }
+
+  @Test
+  fun controlTonneau_nonCommandProtocol() {
+    server.enqueue(MockResponse().setResponseCode(422))
+    runTest {
+      val result = vehicleCommands.controlTonneau(TonneauAction.CLOSE)
+
+      with(result.exceptionOrNull()!!) {
+        assertThat(this).isInstanceOf(UnsupportedOperationException::class.java)
+        assertThat(this.message)
+          .isEqualTo("Controlling the tonneau is only supported by the command protocol")
+      }
     }
   }
 

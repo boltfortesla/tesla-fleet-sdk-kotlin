@@ -112,6 +112,7 @@ import com.tesla.generated.vcsec.Vcsec
 import com.tesla.generated.vcsec.Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_CLOSE
 import com.tesla.generated.vcsec.Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_MOVE
 import com.tesla.generated.vcsec.Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_OPEN
+import com.tesla.generated.vcsec.Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_STOP
 import com.tesla.generated.vcsec.Vcsec.RKEAction_E.RKE_ACTION_LOCK
 import com.tesla.generated.vcsec.Vcsec.RKEAction_E.RKE_ACTION_REMOTE_DRIVE
 import com.tesla.generated.vcsec.Vcsec.RKEAction_E.RKE_ACTION_UNLOCK
@@ -154,6 +155,27 @@ internal class VehicleCommandsImpl(
       }
     ) {
       vehicleCommandsApi.actuateTrunk(vin, ActuateTrunkRequest(trunk.name.lowercase()))
+    }
+  }
+
+  override suspend fun controlTonneau(
+    action: VehicleCommands.TonneauAction
+  ): Result<VehicleCommandResponse> {
+    return executeCommand(
+      unsignedMessage {
+        closureMoveRequest = closureMoveRequest {
+          tonneau =
+            when (action) {
+              VehicleCommands.TonneauAction.OPEN -> CLOSURE_MOVE_TYPE_OPEN
+              VehicleCommands.TonneauAction.CLOSE -> CLOSURE_MOVE_TYPE_CLOSE
+              VehicleCommands.TonneauAction.STOP -> CLOSURE_MOVE_TYPE_STOP
+            }
+        }
+      }
+    ) {
+      throw UnsupportedOperationException(
+        "Controlling the tonneau is only supported by the command protocol"
+      )
     }
   }
 
