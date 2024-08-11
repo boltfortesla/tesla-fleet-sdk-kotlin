@@ -15,6 +15,9 @@ import com.tesla.generated.carserver.vehicle.Vehicle.ClimateState.CopActivationT
 interface VehicleCommands {
   suspend fun actuateTrunk(trunk: Trunk): Result<VehicleCommandResponse>
 
+  /** Control opens a Cybetruck's tonneau. Has no effect on other vehicles. */
+  suspend fun controlTonneau(action: TonneauAction): Result<VehicleCommandResponse>
+
   suspend fun adjustVolume(volume: Float): Result<VehicleCommandResponse>
 
   suspend fun startAutoConditioning(): Result<VehicleCommandResponse>
@@ -41,7 +44,7 @@ interface VehicleCommands {
 
   suspend fun unlockDoors(): Result<VehicleCommandResponse>
 
-  suspend fun eraseUserData(): Result<VehicleCommandResponse>
+  suspend fun eraseGuestData(): Result<VehicleCommandResponse>
 
   suspend fun flashLights(): Result<VehicleCommandResponse>
 
@@ -209,6 +212,12 @@ interface VehicleCommands {
   enum class Trunk {
     FRONT,
     REAR,
+  }
+
+  enum class TonneauAction {
+    OPEN,
+    CLOSE,
+    STOP,
   }
 
   enum class HeaterSeat(val value: Int) {

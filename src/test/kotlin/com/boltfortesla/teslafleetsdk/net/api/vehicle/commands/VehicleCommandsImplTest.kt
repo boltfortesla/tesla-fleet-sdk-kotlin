@@ -27,6 +27,7 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.C
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.HeaterSeat
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.SeatClimateLevel
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.SunroofState
+import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.TonneauAction
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.Trunk
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommands.WindowCommand
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpointsImpl
@@ -54,6 +55,7 @@ import com.tesla.generated.carserver.server.chargingStartStopAction
 import com.tesla.generated.carserver.server.drivingClearSpeedLimitPinAction
 import com.tesla.generated.carserver.server.drivingSetSpeedLimitAction
 import com.tesla.generated.carserver.server.drivingSpeedLimitAction
+import com.tesla.generated.carserver.server.eraseUserDataAction
 import com.tesla.generated.carserver.server.hvacBioweaponModeAction
 import com.tesla.generated.carserver.server.hvacClimateKeeperAction
 import com.tesla.generated.carserver.server.hvacSeatCoolerActions
@@ -247,6 +249,59 @@ class VehicleCommandsImplTest {
   }
 
   @Test
+  fun controlTonneau_open_commandProtocol() {
+    testVehicleSecurityCommand(
+      unsignedMessage {
+        closureMoveRequest = closureMoveRequest {
+          tonneau = Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_OPEN
+        }
+      }
+    ) {
+      controlTonneau(TonneauAction.OPEN)
+    }
+  }
+
+  @Test
+  fun controlTonneau_close_commandProtocol() {
+    testVehicleSecurityCommand(
+      unsignedMessage {
+        closureMoveRequest = closureMoveRequest {
+          tonneau = Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_CLOSE
+        }
+      }
+    ) {
+      controlTonneau(TonneauAction.CLOSE)
+    }
+  }
+
+  @Test
+  fun controlTonneau_stop_commandProtocol() {
+    testVehicleSecurityCommand(
+      unsignedMessage {
+        closureMoveRequest = closureMoveRequest {
+          tonneau = Vcsec.ClosureMoveType_E.CLOSURE_MOVE_TYPE_STOP
+        }
+      }
+    ) {
+      controlTonneau(TonneauAction.STOP)
+    }
+  }
+
+  @Test
+  fun controlTonneau_nonCommandProtocol() {
+    server.enqueue(MockResponse().setResponseCode(422))
+    runTest {
+      val result = vehicleCommands.controlTonneau(TonneauAction.CLOSE)
+
+      with(result.exceptionOrNull()!!) {
+        assertThat(this).isInstanceOf(UnsupportedOperationException::class.java)
+        assertThat(this.message)
+          .isEqualTo("Controlling the tonneau is only supported by the command protocol")
+      }
+    }
+  }
+
+  @Test
   fun adjustVolume_nonCommandProtocol() {
     testApiCall("/api/1/vehicles/${Constants.VIN}/command/adjust_volume", "{\"volume\":5.0}") {
       adjustVolume(5f)
@@ -429,12 +484,19 @@ class VehicleCommandsImplTest {
   }
 
   @Test
-  fun eraseUserData_nonCommandProtocol() {
+  fun eraseGuestData_commandProtocol() {
+    testInfotainmentCommand(vehicleAction { eraseUserDataAction = eraseUserDataAction {} }) {
+      eraseGuestData()
+    }
+  }
+
+  @Test
+  fun eraseGuestData_nonCommandProtocol() {
     testApiCall(
       "/api/1/vehicles/${Constants.VIN}/command/erase_user_data",
       commandProtocolSupported = false,
     ) {
-      eraseUserData()
+      eraseGuestData()
     }
   }
 
@@ -1593,15 +1655,7 @@ class VehicleCommandsImplTest {
   @Test
   fun controlWindows_commandProtocol() {
     testInfotainmentCommand(
-      vehicleAction {
-        vehicleControlWindowAction = vehicleControlWindowAction {
-          location = latLong {
-            latitude = 30f
-            longitude = -30f
-          }
-          vent = void {}
-        }
-      }
+      vehicleAction { vehicleControlWindowAction = vehicleControlWindowAction { vent = void {} } }
     ) {
       controlWindows(30.0f, -30.0f, WindowCommand.VENT)
     }
