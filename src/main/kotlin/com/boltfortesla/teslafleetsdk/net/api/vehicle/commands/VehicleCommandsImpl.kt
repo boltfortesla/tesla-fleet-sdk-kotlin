@@ -1078,10 +1078,6 @@ internal class VehicleCommandsImpl(
       action {
         vehicleAction = vehicleAction {
           vehicleControlWindowAction = vehicleControlWindowAction {
-            location = latLong {
-              this.latitude = latitude
-              this.longitude = longitude
-            }
             when (command) {
               WindowCommand.VENT -> vent = void {}
               WindowCommand.CLOSE -> close = void {}

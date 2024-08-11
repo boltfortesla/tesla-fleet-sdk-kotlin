@@ -1593,15 +1593,7 @@ class VehicleCommandsImplTest {
   @Test
   fun controlWindows_commandProtocol() {
     testInfotainmentCommand(
-      vehicleAction {
-        vehicleControlWindowAction = vehicleControlWindowAction {
-          location = latLong {
-            latitude = 30f
-            longitude = -30f
-          }
-          vent = void {}
-        }
-      }
+      vehicleAction { vehicleControlWindowAction = vehicleControlWindowAction { vent = void {} } }
     ) {
       controlWindows(30.0f, -30.0f, WindowCommand.VENT)
     }
