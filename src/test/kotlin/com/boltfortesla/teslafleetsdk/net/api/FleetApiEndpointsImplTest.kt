@@ -1,6 +1,7 @@
 package com.boltfortesla.teslafleetsdk.net.api
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi
+import com.boltfortesla.teslafleetsdk.fixtures.Constants
 import com.boltfortesla.teslafleetsdk.fixtures.Responses.PRODUCTS_RESPONSE
 import com.boltfortesla.teslafleetsdk.net.JitterFactorCalculatorImpl
 import com.boltfortesla.teslafleetsdk.net.NetworkExecutorImpl
@@ -37,7 +38,7 @@ class FleetApiEndpointsImplTest {
           100021,
           429511308124,
           99999,
-          "5YJ3000000NEXUS01",
+          Constants.VIN,
           null,
           "OWNER",
           "Owned",

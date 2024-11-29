@@ -14,6 +14,7 @@ import com.boltfortesla.teslafleetsdk.fixtures.Responses.SECURITY_COMMAND_RESPON
 import com.boltfortesla.teslafleetsdk.fixtures.Responses.signedCommandJson
 import com.boltfortesla.teslafleetsdk.fixtures.fakes.FakeIdentifiers
 import com.boltfortesla.teslafleetsdk.handshake.HandshakerImpl
+import com.boltfortesla.teslafleetsdk.handshake.KeyNotPairedException
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoAuthenticatorImpl
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepositoryImpl
 import com.boltfortesla.teslafleetsdk.keys.Pem
@@ -159,10 +160,13 @@ class VehicleCommandsImplTest {
       networkExecutor,
     )
 
+  private val vehicleEndpoints =
+    VehicleEndpointsImpl(Constants.VIN, vehicleEndpointsApi, networkExecutor)
+
   private val signedCommandSender =
     SignedCommandSenderImpl(
       commandSigner,
-      VehicleEndpointsImpl(Constants.VIN, vehicleEndpointsApi, networkExecutor),
+      vehicleEndpoints,
       networkExecutor,
       SessionValidatorImpl(sessionInfoAuthenticator),
       sessionInfoRepository,
@@ -188,6 +192,7 @@ class VehicleCommandsImplTest {
       networkExecutor,
       signedCommandSender,
       sessionInfoRepository,
+      vehicleEndpoints,
     )
 
   private val commandProtocolUnsupportedVehicleCommands =
@@ -208,6 +213,7 @@ class VehicleCommandsImplTest {
       networkExecutor,
       signedCommandSender,
       sessionInfoRepository,
+      vehicleEndpoints,
     )
 
   @After
@@ -1666,9 +1672,11 @@ class VehicleCommandsImplTest {
     server.enqueue(
       MockResponse().setBody(signedCommandJson(Responses.HANDSHAKE_RESPONSE)).setResponseCode(200)
     )
+    server.enqueue(MockResponse().setBody(Responses.FLEET_STATUS_RESPONSE).setResponseCode(200))
     server.enqueue(
       MockResponse().setResponseCode(200).setBody(signedCommandJson(INFOTAINMENT_COMMAND_RESPONSE))
     )
+    server.enqueue(MockResponse().setBody(Responses.FLEET_STATUS_RESPONSE).setResponseCode(200))
     server.enqueue(
       MockResponse().setResponseCode(200).setBody(signedCommandJson(INFOTAINMENT_COMMAND_RESPONSE))
     )
@@ -1677,8 +1685,16 @@ class VehicleCommandsImplTest {
     vehicleCommands.flashLights()
 
     // Handshake, then two flash lights
-    assertThat(server.requestCount).isEqualTo(3)
-    repeat(3) { assertThat(server.takeRequest().requestUrl.toString()).endsWith("/signed_command") }
+    assertThat(server.requestCount).isEqualTo(5)
+    val paths = (1..5).map { server.takeRequest().requestUrl.toString().substringAfterLast("/") }
+    assertThat(paths)
+      .containsExactly(
+        "signed_command",
+        "fleet_status",
+        "signed_command",
+        "fleet_status",
+        "signed_command",
+      )
   }
 
   @Test
@@ -1686,18 +1702,22 @@ class VehicleCommandsImplTest {
     server.enqueue(
       MockResponse().setBody(signedCommandJson(Responses.HANDSHAKE_RESPONSE)).setResponseCode(200)
     )
+    server.enqueue(MockResponse().setBody(Responses.FLEET_STATUS_RESPONSE).setResponseCode(200))
     server.enqueue(
       MockResponse().setResponseCode(200).setBody(signedCommandJson(INFOTAINMENT_COMMAND_RESPONSE))
     )
     server.enqueue(
       MockResponse().setBody(signedCommandJson(Responses.HANDSHAKE_RESPONSE)).setResponseCode(200)
     )
+    server.enqueue(MockResponse().setBody(Responses.FLEET_STATUS_RESPONSE).setResponseCode(200))
     server.enqueue(
       MockResponse().setResponseCode(200).setBody(signedCommandJson(SECURITY_COMMAND_RESPONSE))
     )
+    server.enqueue(MockResponse().setBody(Responses.FLEET_STATUS_RESPONSE).setResponseCode(200))
     server.enqueue(
       MockResponse().setResponseCode(200).setBody(signedCommandJson(INFOTAINMENT_COMMAND_RESPONSE))
     )
+    server.enqueue(MockResponse().setBody(Responses.FLEET_STATUS_RESPONSE).setResponseCode(200))
     server.enqueue(
       MockResponse().setResponseCode(200).setBody(signedCommandJson(SECURITY_COMMAND_RESPONSE))
     )
@@ -1708,8 +1728,35 @@ class VehicleCommandsImplTest {
     vehicleCommands.unlockDoors()
 
     // Handshake, then two flash lights + two unlock doors
-    assertThat(server.requestCount).isEqualTo(6)
-    repeat(6) { assertThat(server.takeRequest().requestUrl.toString()).endsWith("/signed_command") }
+    assertThat(server.requestCount).isEqualTo(10)
+    val paths = (1..10).map { server.takeRequest().requestUrl.toString().substringAfterLast("/") }
+    assertThat(paths)
+      .containsExactly(
+        "signed_command",
+        "fleet_status",
+        "signed_command",
+        "signed_command",
+        "fleet_status",
+        "signed_command",
+        "fleet_status",
+        "signed_command",
+        "fleet_status",
+        "signed_command",
+      )
+  }
+
+  @Test
+  fun vinUnpaired_returnsKeyNotPairedException() = runTest {
+    server.enqueue(
+      MockResponse().setBody(signedCommandJson(Responses.HANDSHAKE_RESPONSE)).setResponseCode(200)
+    )
+    server.enqueue(
+      MockResponse().setBody(Responses.FLEET_STATUS_KEY_NOT_PAIRED_RESPONSE).setResponseCode(200)
+    )
+
+    val result = vehicleCommands.flashLights()
+
+    assertThat(result.exceptionOrNull()).isInstanceOf(KeyNotPairedException::class.java)
   }
 
   private fun testApiCall(
@@ -1762,6 +1809,7 @@ class VehicleCommandsImplTest {
     server.enqueue(
       MockResponse().setBody(signedCommandJson(Responses.HANDSHAKE_RESPONSE)).setResponseCode(200)
     )
+    server.enqueue(MockResponse().setBody(Responses.FLEET_STATUS_RESPONSE).setResponseCode(200))
     server.enqueue(MockResponse().setResponseCode(200).setBody(signedCommandJson(response)))
 
     vehicleCommands.action()
@@ -1773,6 +1821,11 @@ class VehicleCommandsImplTest {
           .decode(JSONObject(handshakeRequest.body.readUtf8()).get("routable_message") as String)
       )
     assertThat(handshakeMessage.toDestination.domain).isEqualTo(domain)
+
+    val fleetStatusRequest = server.takeRequest()
+    val fleetStatusRequestBody = JSONObject(fleetStatusRequest.body.readUtf8())
+    assertThat(fleetStatusRequest.path).isEqualTo("/api/1/vehicles/fleet_status")
+    assertThat(fleetStatusRequestBody.getJSONArray("vins")).containsExactly(Constants.VIN)
 
     val request = server.takeRequest()
     val requestBody = JSONObject(request.body.readUtf8())

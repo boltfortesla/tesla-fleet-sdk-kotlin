@@ -146,6 +146,9 @@ object Responses {
   }
   val ELIGIBLE_UPGRADES_RESPONSE by lazy { readResourceFile("eligible_upgrades_response.json") }
   val FLEET_STATUS_RESPONSE by lazy { readResourceFile("fleet_status_response.json") }
+  val FLEET_STATUS_KEY_NOT_PAIRED_RESPONSE by lazy {
+    readResourceFile("fleet_status_key_not_paired_response.json")
+  }
   val FLEET_TELEMETRY_CONFIG_MODIFY_RESPONSE by lazy {
     readResourceFile("fleet_telemetry_config_modify_response.json")
   }
