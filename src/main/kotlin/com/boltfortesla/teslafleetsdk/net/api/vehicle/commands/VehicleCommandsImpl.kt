@@ -2,6 +2,7 @@ package com.boltfortesla.teslafleetsdk.net.api.vehicle.commands
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.SharedSecretFetcher
 import com.boltfortesla.teslafleetsdk.handshake.Handshaker
+import com.boltfortesla.teslafleetsdk.handshake.KeyNotPairedException
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
 import com.boltfortesla.teslafleetsdk.handshake.SessionInfoRepository
 import com.boltfortesla.teslafleetsdk.log.Log
@@ -55,6 +56,7 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.request.UpcomingC
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.request.WindowControlRequest
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandResponse
+import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpoints
 import com.google.protobuf.GeneratedMessageV3
 import com.tesla.generated.carserver.common.latLong
 import com.tesla.generated.carserver.common.offPeakChargingTimes
@@ -139,6 +141,7 @@ internal class VehicleCommandsImpl(
   private val networkExecutor: NetworkExecutor,
   private val signedCommandSender: SignedCommandSender,
   private val sessionInfoRepository: SessionInfoRepository,
+  private val vehicleEndpoints: VehicleEndpoints,
 ) : VehicleCommands {
   private val handshakeMutex = Mutex()
   private var useCommandProtocol = commandProtocolSupported
@@ -1124,6 +1127,10 @@ internal class VehicleCommandsImpl(
   }
 
   override suspend fun supportsCommandSigning(): Result<Boolean> {
+    val fleetStatus = vehicleEndpoints.getFleetStatus(listOf(vin))
+    Log.i(
+      "vehicleCommandProtocolRequired: ${fleetStatus.getOrNull()?.response?.vehicleInfo?.get(vin)?.vehicleCommandProtocolRequired}"
+    )
     try {
       ensureSessionStarted(Domain.DOMAIN_INFOTAINMENT)
     } catch (e: Exception) {
@@ -1151,6 +1158,13 @@ internal class VehicleCommandsImpl(
       try {
         val sessionInfo = ensureSessionStarted(domain)
         if (sessionInfo != null && useCommandProtocol) {
+          val fleetStatus = vehicleEndpoints.getFleetStatus(listOf(vin))
+          val pairedVins = fleetStatus.getOrNull()?.response?.keyPairedVins ?: emptyList()
+          if (!pairedVins.contains(vin)) {
+            val ex = KeyNotPairedException()
+            Log.e("Fleet key is not present on vehicle", ex)
+            return Result.failure(ex)
+          }
           Log.d("Signing command and sending via command protocol")
           return signedCommandSender.signAndSend(action, clientPublicKey, sharedSecretFetcher)
         }

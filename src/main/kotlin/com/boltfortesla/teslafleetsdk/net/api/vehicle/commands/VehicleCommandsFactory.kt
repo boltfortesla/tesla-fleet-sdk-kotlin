@@ -57,6 +57,7 @@ internal class VehicleCommandsFactory(
         networkExecutor,
       )
 
+    val vehicleEndpoints = VehicleEndpointsImpl(vin, endpointsApi, networkExecutor)
     return VehicleCommandsImpl(
       vin,
       clientPublicKey,
@@ -67,7 +68,7 @@ internal class VehicleCommandsFactory(
       networkExecutor,
       SignedCommandSenderImpl(
         commandSigner,
-        VehicleEndpointsImpl(vin, endpointsApi, networkExecutor),
+        vehicleEndpoints,
         networkExecutor,
         SessionValidatorImpl(sessionInfoAuthenticator),
         sessionInfoRepository,
@@ -75,6 +76,7 @@ internal class VehicleCommandsFactory(
         vin,
       ),
       sessionInfoRepository,
+      vehicleEndpoints,
     )
   }
 }

@@ -1,9 +1,9 @@
 {
   "response": {
-    "key_paired_vins": [
+    "key_paired_vins": [],
+    "unpaired_vins": [
       "5YJ30123456789ABC"
     ],
-    "unpaired_vins": [],
     "vehicle_info": {
       "5YJ30123456789ABC": {
         "firmware_version": "123.4",

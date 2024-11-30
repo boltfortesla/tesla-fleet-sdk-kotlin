@@ -39,6 +39,7 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.Eligibl
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.EligibleSubscriptionsResponse.Eligible.BillingOption
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.EligibleUpgradesResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.FleetStatusResponse
+import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.FleetStatusResponse.VehicleInfo
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.FleetTelemetryModifyConfigResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.FleetTelemetryResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.response.Invitation
@@ -177,7 +178,15 @@ class VehicleEndpointsImplTest {
     val request = server.takeRequest()
     assertThat(request.path).isEqualTo("/api/1/vehicles/fleet_status")
     assertThat(response.getOrNull())
-      .isEqualTo(FleetApiResponse(FleetStatusResponse(emptyList(), listOf("5YJ3000000NEXUS01"))))
+      .isEqualTo(
+        FleetApiResponse(
+          FleetStatusResponse(
+            listOf(Constants.VIN),
+            emptyList(),
+            mapOf(Constants.VIN to VehicleInfo("123.4", true)),
+          )
+        )
+      )
   }
 
   @Test
