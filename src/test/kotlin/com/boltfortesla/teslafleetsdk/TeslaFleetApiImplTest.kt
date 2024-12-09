@@ -19,6 +19,7 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.VehicleCommandsFa
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpointsFactory
 import com.google.common.truth.Truth.assertThat
 import com.tesla.generated.universalmessage.UniversalMessage.Domain
+import kotlin.time.Duration.Companion.seconds
 import org.junit.Test
 
 class TeslaFleetApiImplTest {
@@ -39,6 +40,7 @@ class TeslaFleetApiImplTest {
           tlvEncoder,
           publicKeyEncoder,
           identifiers,
+          30.seconds,
         ),
         jitterFactorCalculator,
         publicKeyEncoder,

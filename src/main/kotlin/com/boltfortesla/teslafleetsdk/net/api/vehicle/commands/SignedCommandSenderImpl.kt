@@ -121,7 +121,7 @@ internal class SignedCommandSenderImpl(
     domain: Domain,
     sharedSecretFetcher: SharedSecretFetcher,
   ) {
-    Log.d("Recovering session after signed message afult")
+    Log.d("Recovering session after signed message fault")
     val responseSessionInfo = Signatures.SessionInfo.parseFrom(responseMessage.sessionInfo)
     val sessionIsValid =
       sessionValidator.isSessionValid(

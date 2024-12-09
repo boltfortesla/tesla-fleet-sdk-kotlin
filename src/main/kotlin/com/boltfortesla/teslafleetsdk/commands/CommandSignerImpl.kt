@@ -17,7 +17,7 @@ import com.tesla.generated.universalmessage.UniversalMessage.Domain
 import com.tesla.generated.universalmessage.destination
 import com.tesla.generated.universalmessage.routableMessage
 import java.nio.ByteBuffer
-import java.time.Duration
+import kotlin.time.Duration
 
 /** Implementation of [CommandSigner] */
 internal class CommandSignerImpl(
@@ -26,6 +26,7 @@ internal class CommandSignerImpl(
   private val tlvEncoder: TlvEncoder,
   private val publicKeyEncoder: PublicKeyEncoder,
   private val identifiers: Identifiers,
+  private val commandExpiration: Duration,
 ) : CommandSigner {
   override fun sign(
     vin: String,
@@ -36,7 +37,7 @@ internal class CommandSignerImpl(
   ): UniversalMessage.RoutableMessage {
     val currentTimeSeconds = (System.currentTimeMillis() / 1000).toInt()
     val zeroTime = currentTimeSeconds - sessionInfo.clockTime
-    val expirationTime = currentTimeSeconds + COMMAND_EXPIRATION.seconds.toInt() - zeroTime
+    val expirationTime = currentTimeSeconds + commandExpiration.inWholeSeconds.toInt() - zeroTime
     val counter = sessionInfo.counter
 
     val metadata =
@@ -79,9 +80,5 @@ internal class CommandSignerImpl(
       metadata,
       sessionInfo.sharedSecret,
     )
-  }
-
-  private companion object {
-    private val COMMAND_EXPIRATION = Duration.ofSeconds(15)
   }
 }
