@@ -230,6 +230,8 @@ interface TeslaFleetApi {
      *
      * @param clientPublicKey the Public Key of a Tesla Developer Application @commandExpiration how
      *   long a signed message should be considered valid for execution.
+     * @param commandExpiration how long signed signed commands should be valid for execution.
+     *   Defaults to 30 seconds.
      * @param logger a [Logger], to intercept log messages
      */
     fun newInstance(
