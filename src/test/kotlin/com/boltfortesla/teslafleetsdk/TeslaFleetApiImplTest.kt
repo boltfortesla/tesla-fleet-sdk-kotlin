@@ -40,7 +40,7 @@ class TeslaFleetApiImplTest {
           tlvEncoder,
           publicKeyEncoder,
           identifiers,
-          30.seconds,
+          commandExpiration = 15.seconds,
         ),
         jitterFactorCalculator,
         publicKeyEncoder,

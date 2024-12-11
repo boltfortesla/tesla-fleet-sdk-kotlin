@@ -58,6 +58,7 @@ class SignedCommandSenderImplTest {
       tlvEncoder,
       publicKeyEncoder,
       fakeIdentifiers,
+      commandExpiration = 15.seconds,
     )
   private val sessionInfo =
     SessionInfo(

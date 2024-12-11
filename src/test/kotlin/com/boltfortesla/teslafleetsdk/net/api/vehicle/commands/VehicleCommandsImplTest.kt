@@ -107,6 +107,7 @@ import com.tesla.generated.vcsec.Vcsec.UnsignedMessage
 import com.tesla.generated.vcsec.closureMoveRequest
 import com.tesla.generated.vcsec.unsignedMessage
 import java.util.Base64
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -149,6 +150,7 @@ class VehicleCommandsImplTest {
       tlvEncoder,
       publicKeyEncoder,
       fakeIdentifiers,
+      commandExpiration = 15.seconds,
     )
   private val handshaker =
     HandshakerImpl(
