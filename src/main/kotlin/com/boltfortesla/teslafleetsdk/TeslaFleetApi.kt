@@ -208,8 +208,10 @@ interface TeslaFleetApi {
   enum class Region(val baseUrl: String, val authBaseUrl: String) {
     /** North America and Asia/Pacific */
     NA_APAC("https://fleet-api.prd.na.vn.cloud.tesla.com", "https://auth.tesla.com"),
+
     /** Europe, Middle East, Africa. */
     EMEA("https://fleet-api.prd.eu.vn.cloud.tesla.com", "https://auth.tesla.com"),
+
     /** China */
     CHINA("https://fleet-api.prd.cn.vn.cloud.tesla.cn", "https://auth.tesla.cn");
 
@@ -226,10 +228,17 @@ interface TeslaFleetApi {
     /**
      * Returns a new instance of the [TeslaFleetApi]
      *
-     * @param clientPublicKey the Public Key of a Tesla Developer Application
+     * @param clientPublicKey the Public Key of a Tesla Developer Application @commandExpiration how
+     *   long a signed message should be considered valid for execution.
+     * @param commandExpiration how long signed signed commands should be valid for execution.
+     *   Defaults to 30 seconds.
      * @param logger a [Logger], to intercept log messages
      */
-    fun newInstance(clientPublicKey: ByteArray, logger: Logger? = null): TeslaFleetApi {
+    fun newInstance(
+      clientPublicKey: ByteArray,
+      commandExpiration: Duration = DEFAULT_COMMAND_EXPIRATION,
+      logger: Logger? = null,
+    ): TeslaFleetApi {
       val publicKeyEncoder = PublicKeyEncoderImpl()
       val tlvEncoder = TlvEncoderImpl()
       val hmacCalculator = HmacCalculatorImpl()
@@ -247,6 +256,7 @@ interface TeslaFleetApi {
             tlvEncoder,
             publicKeyEncoder,
             identifiers,
+            commandExpiration,
           ),
           jitterFactorCalculator,
           publicKeyEncoder,
@@ -263,5 +273,7 @@ interface TeslaFleetApi {
         sessionInfoRepository,
       )
     }
+
+    private val DEFAULT_COMMAND_EXPIRATION = 30.seconds
   }
 }

@@ -20,6 +20,7 @@ import com.tesla.generated.universalmessage.UniversalMessage.Domain
 import com.tesla.generated.universalmessage.destination
 import com.tesla.generated.universalmessage.routableMessage
 import java.util.Base64
+import kotlin.time.Duration.Companion.seconds
 import org.junit.Test
 
 class CommandSignerImplTest {
@@ -27,7 +28,13 @@ class CommandSignerImplTest {
   private val commandAuthenticator = HmacCommandAuthenticator(HmacCalculatorImpl())
   private val publicKeyEncoder = PublicKeyEncoderImpl()
   private val commandSigner =
-    CommandSignerImpl(commandAuthenticator, TlvEncoderImpl(), publicKeyEncoder, identifiers)
+    CommandSignerImpl(
+      commandAuthenticator,
+      TlvEncoderImpl(),
+      publicKeyEncoder,
+      identifiers,
+      commandExpiration = 15.seconds,
+    )
 
   @Test
   fun sign_returnsSignedMessage() {
