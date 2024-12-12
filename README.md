@@ -17,15 +17,13 @@ An implementation of the [Tesla Fleet API](https://developer.tesla.com/docs/flee
 ### Gradle
 ```kts
 dependencyResolutionManagement {
-  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     mavenCentral()
-    maven("https://jitpack.io")
   }
 }
 
 dependencies {
-  implementation('com.boltfortesla:tesla-fleet-sdk-kotlin:3.0.0')
+  implementation('com.boltfortesla:tesla-fleet-sdk-kotlin:3.1.1')
 }
 ```
 
@@ -34,15 +32,15 @@ dependencies {
 <project>
   <repositories>
     <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>  
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2</url>  
     </repository>
   </repositories>
   
   <dependency>
     <groupId>com.boltfortesla</groupId>
     <artifactId>tesla-fleet-sdk-kotlin</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.1</version>
   </dependency>
 </project>
 ```
