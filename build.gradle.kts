@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 repositories {
   mavenCentral()
   maven(url = "https://plugins.gradle.org/m2/")
@@ -8,16 +10,12 @@ plugins {
   id("org.jetbrains.kotlin.jvm") version "2.0.10"
   id("com.google.protobuf") version "0.9.4"
   id("com.ncorti.ktfmt.gradle") version "0.19.0"
-  id("maven-publish")
+  id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
+val VERSION = "3.1.1"
 group = "com.boltfortesla"
-version = "3.1.1"
-
-java {
-	withSourcesJar()
-	withJavadocJar()
-}
+version = VERSION
 
 tasks.named("ktfmtCheckMain") {
     dependsOn("generateProto")
@@ -56,10 +54,36 @@ protobuf {
   }
 }
 
-publishing {
-  publications {
-    create<MavenPublication>("teslafleetsdk") {
-      from(components["java"])
+mavenPublishing {
+  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+
+  signAllPublications()
+
+  coordinates("com.boltfortesla", "tesla-fleet-sdk-kotlin", VERSION)
+
+  pom {
+    name.set("Kotling Tesla Fleet SDK")
+    description.set("An implementation of the Tesla Fleet API in Kotlin.")
+    inceptionYear.set("2024")
+    url.set("https://github.com/boltfortesla/tesla-fleet-sdk-kotlin")
+    licenses {
+      license {
+        name.set("AGPL-3.0 license")
+        url.set("https://www.gnu.org/licenses/agpl-3.0.en.html")
+        distribution.set("https://www.gnu.org/licenses/agpl-3.0.en.html")
+      }
+    }
+    developers {
+      developer {
+        id.set("jonahwh")
+        name.set("Jonah Hirsch")
+        url.set("https://github.com/jonahwh/")
+      }
+    }
+    scm {
+      url.set("https://github.com/boltfortesla/tesla-fleet-sdk-kotlin/")
+      connection.set("scm:git:git://github.com/boltfortesla/tesla-fleet-sdk-kotlin.git")
+      developerConnection.set("scm:git:ssh://git@github.com/boltfortesla/tesla-fleet-sdk-kotlin.git")
     }
   }
 }
