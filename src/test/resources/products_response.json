@@ -1,39 +1,42 @@
-[
-  {
-    "id": 100021,
-    "user_id": 429511308124,
-    "vehicle_id": 99999,
-    "vin": "5YJ30123456789ABC",
-    "color": null,
-    "access_type": "OWNER",
-    "display_name": "Owned",
-    "option_codes": "TEST0,COUS",
-    "cached_data": null,
-    "granular_access": {
-      "hide_private": false
+{
+  "response": [
+    {
+      "id": 100021,
+      "user_id": 429511308124,
+      "vehicle_id": 99999,
+      "vin": "5YJ30123456789ABC",
+      "color": null,
+      "access_type": "OWNER",
+      "display_name": "Owned",
+      "option_codes": "TEST0,COUS",
+      "cached_data": null,
+      "mobile_access_disabled": false,
+      "granular_access": {
+        "hide_private": false
+      },
+      "state": null,
+      "in_service": false,
+      "id_s": "100021",
+      "calendar_enabled": false,
+      "api_version": null,
+      "backseat_token": null,
+      "backseat_token_updated_at": null,
+      "ble_autopair_enrolled": false,
+      "device_type": "vehicle",
+      "command_signing": "off",
+      "release_notes_supported": true
     },
-    "tokens": [
-      "4f993c5b9e2b937b",
-      "7a3153b1bbb48a96"
-    ],
-    "state": null,
-    "in_service": false,
-    "id_s": "100021",
-    "calendar_enabled": false,
-    "api_version": null,
-    "backseat_token": null,
-    "backseat_token_updated_at": null,
-    "command_signing": "off"
-  },
-  {
-    "energy_site_id": 429124,
-    "resource_type": "battery",
-    "site_name": "My Home",
-    "id": "STE12345678-12345",
-    "gateway_id": "1112345-00-E--TG0123456789",
-    "energy_left": 35425,
-    "total_pack_energy": 39362,
-    "percentage_charged": 90,
-    "battery_power": 1000
-  }
-]
+    {
+      "energy_site_id": 429124,
+      "resource_type": "battery",
+      "site_name": "My Home",
+      "id": "STE12345678-12345",
+      "gateway_id": "1112345-00-E--TG0123456789",
+      "energy_left": 35425,
+      "total_pack_energy": 39362,
+      "percentage_charged": 90,
+      "battery_power": 1000
+    }
+  ],
+  "count": 1
+}

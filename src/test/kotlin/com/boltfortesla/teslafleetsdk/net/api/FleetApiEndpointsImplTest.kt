@@ -32,7 +32,7 @@ class FleetApiEndpointsImplTest {
     val request = server.takeRequest()
     assertThat(request.path).isEqualTo("/api/1/products")
     assertThat(request.body.readUtf8()).isEmpty()
-    assertThat(response.getOrNull())
+    assertThat(response.getOrNull()!!.response)
       .containsExactly(
         Vehicle(
           100021,
@@ -45,7 +45,7 @@ class FleetApiEndpointsImplTest {
           "TEST0,COUS",
           null,
           GranularAccess(false),
-          listOf("4f993c5b9e2b937b", "7a3153b1bbb48a96"),
+          tokens = null,
           null,
           false,
           "100021",
