@@ -24,7 +24,7 @@ internal class FleetApiEndpointsFactory(
     clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): FleetApiEndpoints {
     return FleetApiEndpointsImpl(
-      createFleetApi(region.authBaseUrl, clientBuilder),
+      createFleetApi(region.baseUrl, clientBuilder),
       NetworkExecutorImpl(retryConfig, jitterFactorCalculator),
     )
   }

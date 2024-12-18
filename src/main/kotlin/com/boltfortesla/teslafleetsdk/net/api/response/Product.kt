@@ -15,7 +15,7 @@ sealed interface Product {
     @SerializedName("option_codes") val optionCodes: String?,
     @SerializedName("cached_data") val cachedData: String?,
     @SerializedName("granular_access") val granularAccess: GranularAccess,
-    val tokens: List<String>,
+    val tokens: List<String>?,
     val state: String?,
     @SerializedName("in_service") val inService: Boolean,
     @SerializedName("id_s") val idString: String,

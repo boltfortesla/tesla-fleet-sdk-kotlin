@@ -7,7 +7,7 @@ import retrofit2.http.GET
 
 /** Retrofit API Declaration for Vehicle Commands */
 internal interface FleetApi {
-  @GET("api/1/products") suspend fun products(): List<Product>
+  @GET("api/1/products") suspend fun products(): FleetApiResponse<List<Product>>
 }
 
 internal fun createFleetApi(
