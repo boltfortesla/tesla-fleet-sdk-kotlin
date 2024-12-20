@@ -19,6 +19,6 @@ internal interface OauthApi {
 }
 
 internal fun createOauthApi(
-  baseUrl: String = "https://auth.tesla.com",
+  baseUrl: String = "https://fleet-auth.prd.vn.cloud.tesla.com",
   clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
 ) = ApiCreator.createApi<OauthApi>(baseUrl, clientBuilder)
