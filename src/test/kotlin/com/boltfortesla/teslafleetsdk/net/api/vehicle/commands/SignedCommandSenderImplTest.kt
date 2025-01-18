@@ -93,7 +93,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender()
-        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          ACTION,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(response)
       .isEqualTo(
@@ -118,7 +123,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender()
-        .signAndSend(UNSIGNED_MESSAGE, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_VEHICLE_SECURITY,
+          UNSIGNED_MESSAGE,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(response)
       .isEqualTo(
@@ -137,7 +147,12 @@ class SignedCommandSenderImplTest {
   fun execute_noSession_throwsIllegalStateException() = runTest {
     val result =
       createSignedCommandSender(RetryConfig(maxRetries = 0))
-        .signAndSend(UNSIGNED_MESSAGE, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          UNSIGNED_MESSAGE,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     val exception = result.exceptionOrNull()!!
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
@@ -155,7 +170,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender()
-        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          ACTION,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(server.requestCount).isEqualTo(1)
     assertThat(response.isFailure).isTrue()
@@ -181,7 +201,12 @@ class SignedCommandSenderImplTest {
 
       val response =
         createSignedCommandSender(RetryConfig(maxRetries = 1))
-          .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+          .signAndSend(
+            Domain.DOMAIN_INFOTAINMENT,
+            ACTION,
+            TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+            sharedSecretFetcher,
+          )
 
       assertThat(server.requestCount).isEqualTo(2)
       val updatedSessionInfo =
@@ -213,7 +238,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender(RetryConfig(maxRetries = 1))
-        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          ACTION,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(server.requestCount).isEqualTo(2)
     val updatedSessionInfo = sessionInfoRepository.get(Constants.VIN, Domain.DOMAIN_INFOTAINMENT)!!
@@ -257,7 +287,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender(RetryConfig(maxRetries = 1))
-        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          ACTION,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(server.requestCount).isEqualTo(3)
     assertThat(sessionInfoRepository.get(Constants.VIN, Domain.DOMAIN_INFOTAINMENT)!!.counter)
@@ -280,7 +315,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender(RetryConfig(maxRetries = 1))
-        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          ACTION,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(response)
       .isEqualTo(
@@ -306,7 +346,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender(RetryConfig(maxRetries = 0))
-        .signAndSend(UNSIGNED_MESSAGE, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_VEHICLE_SECURITY,
+          UNSIGNED_MESSAGE,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(response)
       .isEqualTo(
@@ -330,7 +375,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender(RetryConfig(maxRetryAfter = 1.seconds))
-        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          ACTION,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(server.requestCount).isEqualTo(1)
     assertThat(response.isFailure).isTrue()
@@ -350,7 +400,12 @@ class SignedCommandSenderImplTest {
 
     val response =
       createSignedCommandSender(RetryConfig(maxRetries = 4, maxRetryAfter = 15.seconds))
-        .signAndSend(ACTION, TestKeys.CLIENT_PUBLIC_KEY_BYTES, sharedSecretFetcher)
+        .signAndSend(
+          Domain.DOMAIN_INFOTAINMENT,
+          ACTION,
+          TestKeys.CLIENT_PUBLIC_KEY_BYTES,
+          sharedSecretFetcher,
+        )
 
     assertThat(server.requestCount).isEqualTo(5)
     assertThat(response.isFailure).isTrue()
@@ -375,14 +430,15 @@ class SignedCommandSenderImplTest {
   }
 
   companion object {
-    private val ACTION = action {
-      vehicleAction = vehicleAction {
-        vehicleControlFlashLightsAction = vehicleControlFlashLightsAction {}
-      }
-    }
+    private val ACTION =
+      action {
+          vehicleAction = vehicleAction {
+            vehicleControlFlashLightsAction = vehicleControlFlashLightsAction {}
+          }
+        }
+        .toByteString()
 
-    private val UNSIGNED_MESSAGE = unsignedMessage {
-      rKEAction = RKEAction_E.RKE_ACTION_REMOTE_DRIVE
-    }
+    private val UNSIGNED_MESSAGE =
+      unsignedMessage { rKEAction = RKEAction_E.RKE_ACTION_REMOTE_DRIVE }.toByteString()
   }
 }

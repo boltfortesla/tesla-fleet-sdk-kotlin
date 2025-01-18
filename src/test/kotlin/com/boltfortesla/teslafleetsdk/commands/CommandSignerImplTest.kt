@@ -41,7 +41,7 @@ class CommandSignerImplTest {
     val signedMessage =
       commandSigner.sign(
         Constants.VIN,
-        action {},
+        action {}.toByteString(),
         SessionInfo(Constants.EPOCH.decodeHex(), TIMER_START, 7, SHARED_SECRET.decodeHex()),
         Domain.DOMAIN_INFOTAINMENT,
         Base64.getDecoder().decode(Pem(TestKeys.CLIENT_PUBLIC_KEY).base64()),
