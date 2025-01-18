@@ -14,14 +14,12 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleC
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandProtocolResponse.VehicleSecurityResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpoints
 import com.boltfortesla.teslafleetsdk.net.signedMessageFault
-import com.google.protobuf.GeneratedMessageV3
+import com.google.protobuf.ByteString
 import com.tesla.generated.carserver.server.CarServer
 import com.tesla.generated.signatures.Signatures
 import com.tesla.generated.universalmessage.UniversalMessage.Domain
 import com.tesla.generated.universalmessage.UniversalMessage.RoutableMessage
 import com.tesla.generated.vcsec.Vcsec
-import com.tesla.generated.vcsec.Vcsec.UnsignedMessage
-import java.lang.IllegalArgumentException
 import java.util.Base64
 import retrofit2.HttpException
 
@@ -36,20 +34,11 @@ internal class SignedCommandSenderImpl(
   private val vin: String,
 ) : SignedCommandSender {
   override suspend fun signAndSend(
-    message: GeneratedMessageV3,
+    domain: Domain,
+    message: ByteString,
     clientPublicKey: ByteArray,
     sharedSecretFetcher: SharedSecretFetcher,
   ): Result<CommandProtocolResponse> {
-    val domain =
-      when (message) {
-        is UnsignedMessage -> Domain.DOMAIN_VEHICLE_SECURITY
-        is CarServer.Action -> Domain.DOMAIN_INFOTAINMENT
-        else ->
-          throw IllegalArgumentException(
-            "Unexpected message type: ${message::class.simpleName}. Expected an UnsignedMessage or CarServer.Action"
-          )
-      }
-
     return networkExecutor.execute {
       sessionInfoRepository.incrementCounter(vin, domain)
       val requestSessionInfo =
@@ -168,9 +157,11 @@ internal class SignedCommandSenderImpl(
         securityMessage.commandStatus.operationStatus ==
           Vcsec.OperationStatus_E.OPERATIONSTATUS_ERROR
       }
+
       is InfotainmentResponse -> {
         response.actionStatus.result == CarServer.OperationStatus_E.OPERATIONSTATUS_ERROR
       }
+
       else -> false
     }
   }

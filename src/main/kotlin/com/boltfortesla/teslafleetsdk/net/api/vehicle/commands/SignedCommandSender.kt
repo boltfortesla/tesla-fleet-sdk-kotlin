@@ -2,7 +2,8 @@ package com.boltfortesla.teslafleetsdk.net.api.vehicle.commands
 
 import com.boltfortesla.teslafleetsdk.TeslaFleetApi.SharedSecretFetcher
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandProtocolResponse
-import com.google.protobuf.GeneratedMessageV3
+import com.google.protobuf.ByteString
+import com.tesla.generated.universalmessage.UniversalMessage.Domain
 
 /** Signs and sends Command Protocol messages */
 internal interface SignedCommandSender {
@@ -13,7 +14,8 @@ internal interface SignedCommandSender {
    * Returns a [Result] containing a [CommandProtocolResponse]
    */
   suspend fun signAndSend(
-    message: GeneratedMessageV3,
+    domain: Domain,
+    message: ByteString,
     clientPublicKey: ByteArray,
     sharedSecretFetcher: SharedSecretFetcher,
   ): Result<CommandProtocolResponse>

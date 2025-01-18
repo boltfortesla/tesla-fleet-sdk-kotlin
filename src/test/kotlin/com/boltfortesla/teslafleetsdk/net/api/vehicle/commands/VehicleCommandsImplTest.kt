@@ -35,7 +35,6 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpoints
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.createVehicleEndpointsApi
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.ByteString
-import com.google.protobuf.GeneratedMessageV3
 import com.tesla.generated.carserver.common.latLong
 import com.tesla.generated.carserver.common.offPeakChargingTimes
 import com.tesla.generated.carserver.common.preconditioningTimes
@@ -1788,7 +1787,7 @@ class VehicleCommandsImplTest {
     action: suspend VehicleCommands.() -> Unit,
   ) {
     testCommand(
-      action { vehicleAction = expectedAction },
+      action { vehicleAction = expectedAction }.toByteString(),
       INFOTAINMENT_COMMAND_RESPONSE,
       Domain.DOMAIN_INFOTAINMENT,
       action,
@@ -1799,11 +1798,16 @@ class VehicleCommandsImplTest {
     expectedMessage: UnsignedMessage,
     action: suspend VehicleCommands.() -> Unit,
   ) {
-    testCommand(expectedMessage, SECURITY_COMMAND_RESPONSE, Domain.DOMAIN_VEHICLE_SECURITY, action)
+    testCommand(
+      expectedMessage.toByteString(),
+      SECURITY_COMMAND_RESPONSE,
+      Domain.DOMAIN_VEHICLE_SECURITY,
+      action,
+    )
   }
 
   private fun testCommand(
-    expectedBytesMessage: GeneratedMessageV3,
+    expectedBytesMessage: ByteString,
     response: RoutableMessage,
     domain: Domain,
     action: suspend VehicleCommands.() -> Unit,
@@ -1842,7 +1846,7 @@ class VehicleCommandsImplTest {
       fromDestination = destination {
         routingAddress = ByteString.copyFrom(fakeIdentifiers.routingAddress)
       }
-      protobufMessageAsBytes = expectedBytesMessage.toByteString()
+      protobufMessageAsBytes = expectedBytesMessage
       signatureData = signatureData {
         signerIdentity = keyIdentity {
           publicKey = ByteString.fromHex(TestKeys.ENCODED_CLIENT_PUBLIC_KEY_HEX)

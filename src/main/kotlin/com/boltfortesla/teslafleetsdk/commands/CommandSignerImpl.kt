@@ -7,7 +7,6 @@ import com.boltfortesla.teslafleetsdk.handshake.SessionInfo
 import com.boltfortesla.teslafleetsdk.keys.PublicKeyEncoder
 import com.boltfortesla.teslafleetsdk.log.Log
 import com.google.protobuf.ByteString
-import com.google.protobuf.GeneratedMessageV3
 import com.tesla.generated.signatures.Signatures.Tag
 import com.tesla.generated.signatures.hMACPersonalizedSignatureData
 import com.tesla.generated.signatures.keyIdentity
@@ -30,7 +29,7 @@ internal class CommandSignerImpl(
 ) : CommandSigner {
   override fun sign(
     vin: String,
-    message: GeneratedMessageV3,
+    message: ByteString,
     sessionInfo: SessionInfo,
     domain: Domain,
     clientPublicKey: ByteArray,
@@ -61,7 +60,7 @@ internal class CommandSignerImpl(
       fromDestination = destination {
         routingAddress = ByteString.copyFrom(identifiers.randomRoutingAddress())
       }
-      protobufMessageAsBytes = message.toByteString()
+      protobufMessageAsBytes = message
       uuid = ByteString.copyFrom(identifiers.randomUuid())
       signatureData = signatureData {
         signerIdentity = keyIdentity {

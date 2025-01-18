@@ -57,7 +57,6 @@ import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.request.WindowCon
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.commands.response.VehicleCommandResponse.CommandResponse
 import com.boltfortesla.teslafleetsdk.net.api.vehicle.endpoints.VehicleEndpoints
-import com.google.protobuf.GeneratedMessageV3
 import com.tesla.generated.carserver.common.latLong
 import com.tesla.generated.carserver.common.offPeakChargingTimes
 import com.tesla.generated.carserver.common.preconditioningTimes
@@ -296,7 +295,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun adminClearPinToDrive(): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) { vehicleCommandsApi.clearPinToDriveAdmin(vin) }
+    return sendApiCall { vehicleCommandsApi.clearPinToDriveAdmin(vin) }
   }
 
   override suspend fun lockDoors(): Result<VehicleCommandResponse> {
@@ -427,7 +426,7 @@ internal class VehicleCommandsImpl(
     timestampMs: String,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) {
+    return sendApiCall {
       vehicleCommandsApi.shareUrl(
         vin,
         ShareRequest(value = Value(url), locale = locale, timestampMs = timestampMs),
@@ -441,7 +440,7 @@ internal class VehicleCommandsImpl(
     order: Int,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) {
+    return sendApiCall {
       vehicleCommandsApi.startNavigationToCoordinates(
         vin,
         NavigationGpsRequest(latitude, longitude, order),
@@ -455,7 +454,7 @@ internal class VehicleCommandsImpl(
     timestampMs: String,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) {
+    return sendApiCall {
       vehicleCommandsApi.sendNavigationLocation(
         vin,
         ShareRequest(value = Value(destination), locale = locale, timestampMs = timestampMs),
@@ -468,7 +467,7 @@ internal class VehicleCommandsImpl(
     order: Int,
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) {
+    return sendApiCall {
       vehicleCommandsApi.startNavigationToSupercharger(
         vin,
         NavigationSuperchargerRequest(id, order),
@@ -531,9 +530,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun remoteBoombox(sound: Int): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) {
-      vehicleCommandsApi.playBoomboxSound(vin, RemoteBoomboxRequest(sound))
-    }
+    return sendApiCall { vehicleCommandsApi.playBoomboxSound(vin, RemoteBoomboxRequest(sound)) }
   }
 
   override suspend fun setSeatCooler(
@@ -600,10 +597,8 @@ internal class VehicleCommandsImpl(
   override suspend fun setSteeringWheelHeatLevel(
     level: SeatClimateLevel
   ): Result<VehicleCommandResponse> {
-    return executeCommand(
-      // Not supported via Command Protocol
-      action = null
-    ) {
+    // Not supported via Command Protocol
+    return sendApiCall {
       vehicleCommandsApi.setSteeringWheelHeatLevel(
         vin,
         RemoteSteeringWheelHeatLevelRequest(level.value),
@@ -1016,7 +1011,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun adminClearSpeedLimitPin(): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) { vehicleCommandsApi.speedLimitClearPinAdmin(vin) }
+    return sendApiCall { vehicleCommandsApi.speedLimitClearPinAdmin(vin) }
   }
 
   override suspend fun deactivateSpeedLimit(pin: String): Result<VehicleCommandResponse> {
@@ -1068,9 +1063,7 @@ internal class VehicleCommandsImpl(
 
   override suspend fun takeDrivenote(note: String): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) {
-      vehicleCommandsApi.takeDrivenote(vin, TakeDrivenoteRequest(note))
-    }
+    return sendApiCall { vehicleCommandsApi.takeDrivenote(vin, TakeDrivenoteRequest(note)) }
   }
 
   override suspend fun triggerHomelink(
@@ -1097,7 +1090,7 @@ internal class VehicleCommandsImpl(
     calendarData: String
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) {
+    return sendApiCall {
       vehicleCommandsApi.upcomingCalendarEntries(vin, UpcomingCalendarEntriesRequest(calendarData))
     }
   }
@@ -1141,38 +1134,38 @@ internal class VehicleCommandsImpl(
   }
 
   private suspend fun executeCommand(
-    action: GeneratedMessageV3?,
+    action: Vcsec.UnsignedMessage,
     apiCall: suspend VehicleCommandsApi.() -> CommandResponse,
   ): Result<VehicleCommandResponse> {
-    Log.d("Executing Command")
-    if (action != null) {
-      val domain =
-        when (action) {
-          is CarServer.Action -> Domain.DOMAIN_INFOTAINMENT
-          is Vcsec.UnsignedMessage -> Domain.DOMAIN_VEHICLE_SECURITY
-          else ->
-            return Result.failure(
-              IllegalArgumentException("Unexpected action: ${action::class.qualifiedName}")
-            )
-        }
-      try {
-        val sessionInfo = ensureSessionStarted(domain)
-        if (sessionInfo != null && useCommandProtocol) {
-          val fleetStatus = vehicleEndpoints.getFleetStatus(listOf(vin))
-          val pairedVins = fleetStatus.getOrNull()?.response?.keyPairedVins ?: emptyList()
-          if (!pairedVins.contains(vin)) {
-            val ex = KeyNotPairedException()
-            Log.e("Fleet key is not present on vehicle", ex)
-            return Result.failure(ex)
-          }
-          Log.d("Signing command and sending via command protocol")
-          return signedCommandSender.signAndSend(action, clientPublicKey, sharedSecretFetcher)
-        }
-      } catch (e: Exception) {
-        return Result.failure(e)
-      }
+    val domain = Domain.DOMAIN_VEHICLE_SECURITY
+    return executeCommand(domain, apiCall) {
+      signedCommandSender.signAndSend(
+        domain,
+        action.toByteString(),
+        clientPublicKey,
+        sharedSecretFetcher,
+      )
     }
+  }
 
+  private suspend fun executeCommand(
+    action: CarServer.Action,
+    apiCall: suspend VehicleCommandsApi.() -> CommandResponse,
+  ): Result<VehicleCommandResponse> {
+    val domain = Domain.DOMAIN_INFOTAINMENT
+    return executeCommand(domain, apiCall) {
+      signedCommandSender.signAndSend(
+        domain,
+        action.toByteString(),
+        clientPublicKey,
+        sharedSecretFetcher,
+      )
+    }
+  }
+
+  private suspend fun sendApiCall(
+    apiCall: suspend VehicleCommandsApi.() -> CommandResponse
+  ): Result<VehicleCommandResponse> {
     Log.d("Sending command via legacy API")
     return networkExecutor.execute {
       val response = vehicleCommandsApi.apiCall()
@@ -1187,6 +1180,32 @@ internal class VehicleCommandsImpl(
       }
       Log.d("Command Success")
       response
+    }
+  }
+
+  private suspend fun executeCommand(
+    domain: Domain,
+    apiCall: suspend VehicleCommandsApi.() -> CommandResponse,
+    sendCommand: suspend () -> Result<VehicleCommandResponse>,
+  ): Result<VehicleCommandResponse> {
+    Log.d("Executing Command")
+    try {
+      val sessionInfo = ensureSessionStarted(domain)
+      return if (sessionInfo != null && useCommandProtocol) {
+        val fleetStatus = vehicleEndpoints.getFleetStatus(listOf(vin))
+        val pairedVins = fleetStatus.getOrNull()?.response?.keyPairedVins ?: emptyList()
+        if (!pairedVins.contains(vin)) {
+          val ex = KeyNotPairedException()
+          Log.e("Fleet key is not present on vehicle", ex)
+          return Result.failure(ex)
+        }
+        Log.d("Signing command and sending via command protocol")
+        sendCommand()
+      } else {
+        sendApiCall(apiCall)
+      }
+    } catch (e: Exception) {
+      return Result.failure(e)
     }
   }
 
