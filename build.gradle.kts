@@ -16,6 +16,8 @@ plugins {
 val VERSION = "3.1.2"
 group = "com.boltfortesla"
 version = VERSION
+val ANDROID_BUILD = project.hasProperty("android")
+val ARTIFACT_ID = "tesla-fleet-sdk-kotlin"
 
 tasks.named("ktfmtCheckMain") {
     dependsOn("generateProto")
@@ -26,7 +28,11 @@ ktfmt {
 }
 
 dependencies {
-  implementation("com.google.protobuf:protobuf-kotlin:3.25.5")
+  if(ANDROID_BUILD) {
+    implementation("com.google.protobuf:protobuf-kotlin-lite:3.25.5")
+  } else {
+    implementation("com.google.protobuf:protobuf-kotlin:3.25.5")
+  }
   implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
   implementation("com.squareup.retrofit2:retrofit:2.11.0")
   implementation("com.squareup.retrofit2:converter-gson:2.11.0")
@@ -50,6 +56,13 @@ protobuf {
       task.plugins {
         create("kotlin")
       }
+      if(ANDROID_BUILD) {
+        task.builtins {
+          named("java") {
+            option("lite")
+          }
+        }
+      }
     }
   }
 }
@@ -59,7 +72,12 @@ mavenPublishing {
 
   signAllPublications()
 
-  coordinates("com.boltfortesla", "tesla-fleet-sdk-kotlin", VERSION)
+  val artifactId = if(ANDROID_BUILD) {
+    "$ARTIFACT_ID-android"
+  } else {
+    ARTIFACT_ID
+  }
+  coordinates("com.boltfortesla", artifactId, VERSION)
 
   pom {
     name.set("Kotling Tesla Fleet SDK")
