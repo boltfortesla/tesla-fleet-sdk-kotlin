@@ -78,9 +78,10 @@ mavenPublishing {
     ARTIFACT_ID
   }
   coordinates("com.boltfortesla", artifactId, VERSION)
+  project.base.archivesName = artifactId
 
   pom {
-    name.set("Kotling Tesla Fleet SDK")
+    name.set("Kotlin Tesla Fleet SDK")
     description.set("An implementation of the Tesla Fleet API in Kotlin.")
     inceptionYear.set("2024")
     url.set("https://github.com/boltfortesla/tesla-fleet-sdk-kotlin")
