@@ -13,7 +13,7 @@ plugins {
   id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
-val VERSION = "3.1.4"
+val VERSION = "3.1.5"
 group = "com.boltfortesla"
 version = VERSION
 val ANDROID_BUILD = project.hasProperty("android")
