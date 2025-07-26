@@ -207,10 +207,16 @@ interface TeslaFleetApi {
 
   enum class Region(val baseUrl: String, val authBaseUrl: String) {
     /** North America and Asia/Pacific */
-    NA_APAC("https://fleet-api.prd.na.vn.cloud.tesla.com", "https://auth.tesla.com"),
+    NA_APAC(
+      "https://fleet-api.prd.na.vn.cloud.tesla.com",
+      "https://fleet-auth.prd.vn.cloud.tesla.com",
+    ),
 
     /** Europe, Middle East, Africa. */
-    EMEA("https://fleet-api.prd.eu.vn.cloud.tesla.com", "https://auth.tesla.com"),
+    EMEA(
+      "https://fleet-api.prd.eu.vn.cloud.tesla.com",
+      "https://fleet-auth.prd.vn.cloud.tesla.com",
+    ),
 
     /** China */
     CHINA("https://fleet-api.prd.cn.vn.cloud.tesla.cn", "https://auth.tesla.cn");
