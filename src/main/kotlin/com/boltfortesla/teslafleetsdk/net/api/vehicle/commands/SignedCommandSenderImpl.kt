@@ -21,6 +21,7 @@ import com.tesla.generated.universalmessage.UniversalMessage.Domain
 import com.tesla.generated.universalmessage.UniversalMessage.RoutableMessage
 import com.tesla.generated.vcsec.Vcsec
 import java.util.Base64
+import kotlin.math.max
 import retrofit2.HttpException
 
 /** Implementation of [SignedCommandSender] */
@@ -110,7 +111,7 @@ internal class SignedCommandSenderImpl(
     domain: Domain,
     sharedSecretFetcher: SharedSecretFetcher,
   ) {
-    Log.d("Recovering session after signed message fault")
+    Log.w("Recovering session after signed message fault: ${responseMessage.signedMessageFault()}")
     val responseSessionInfo = Signatures.SessionInfo.parseFrom(responseMessage.sessionInfo)
     val sessionIsValid =
       sessionValidator.isSessionValid(
@@ -122,12 +123,10 @@ internal class SignedCommandSenderImpl(
     if (sessionIsValid) {
       val newCounter =
         if (!requestSessionInfo.epoch.contentEquals(responseSessionInfo.epoch.toByteArray())) {
-          Log.w(
-            "Session epochs did not match, resetting session counter to ${responseSessionInfo.counter}"
-          )
+          Log.w("Session epochs did not match")
           responseSessionInfo.counter
         } else {
-          requestSessionInfo.counter
+          max(requestSessionInfo.counter, responseSessionInfo.counter) + 1
         }
       Log.d("Session valid, updating from response")
       sessionInfoRepository.set(
@@ -136,7 +135,7 @@ internal class SignedCommandSenderImpl(
         SessionInfo(
           responseSessionInfo.epoch.toByteArray(),
           responseSessionInfo.clockTime,
-          newCounter,
+          if (newCounter != 0) newCounter else requestSessionInfo.counter + 1,
           requestSessionInfo.sharedSecret,
         ),
       )
