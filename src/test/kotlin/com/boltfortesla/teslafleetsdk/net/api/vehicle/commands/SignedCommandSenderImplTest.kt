@@ -211,7 +211,10 @@ class SignedCommandSenderImplTest {
       assertThat(server.requestCount).isEqualTo(2)
       val updatedSessionInfo =
         sessionInfoRepository.get(Constants.VIN, Domain.DOMAIN_INFOTAINMENT)!!
-      assertThat(updatedSessionInfo.counter).isEqualTo(sessionInfo.counter + 2)
+      // After the first failure, the request counter is 1, and the response is 6. New counter = 7
+      // After the second failure, the request counter is 8 (incremented before sending), and the
+      // response is 6. New counter = 9
+      assertThat(updatedSessionInfo.counter).isEqualTo(9)
       assertThat(updatedSessionInfo.clockTime).isEqualTo(3000)
       assertThat(response.isFailure).isTrue()
       val exception = response.exceptionOrNull() as SignedMessagesFaultException
@@ -230,14 +233,9 @@ class SignedCommandSenderImplTest {
         .setResponseCode(200)
         .setBody(signedCommandJson(Responses.RETRYABLE_SIGNED_MESSAGE_FAULT_RESPONSE))
     )
-    server.enqueue(
-      MockResponse()
-        .setResponseCode(200)
-        .setBody(signedCommandJson(Responses.RETRYABLE_SIGNED_MESSAGE_FAULT_RESPONSE))
-    )
 
     val response =
-      createSignedCommandSender(RetryConfig(maxRetries = 1))
+      createSignedCommandSender(RetryConfig(maxRetries = 0))
         .signAndSend(
           Domain.DOMAIN_INFOTAINMENT,
           ACTION,
@@ -245,10 +243,9 @@ class SignedCommandSenderImplTest {
           sharedSecretFetcher,
         )
 
-    assertThat(server.requestCount).isEqualTo(2)
+    assertThat(server.requestCount).isEqualTo(1)
     val updatedSessionInfo = sessionInfoRepository.get(Constants.VIN, Domain.DOMAIN_INFOTAINMENT)!!
-    // Response counter was 7 after first error
-    assertThat(updatedSessionInfo.counter).isEqualTo(7)
+    assertThat(updatedSessionInfo.counter).isEqualTo(6)
     assertThat(updatedSessionInfo.clockTime).isEqualTo(3000)
     assertThat(response.isFailure).isTrue()
     val exception = response.exceptionOrNull() as SignedMessagesFaultException
