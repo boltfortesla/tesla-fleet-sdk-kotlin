@@ -33,7 +33,7 @@ dependencies {
   } else {
     implementation("com.google.protobuf:protobuf-kotlin:3.25.5")
   }
-  implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
+  implementation("org.bouncycastle:bcprov-jdk18on:1.84")
   implementation("com.squareup.retrofit2:retrofit:2.11.0")
   implementation("com.squareup.retrofit2:converter-gson:2.11.0")
   implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
